@@ -7,17 +7,48 @@
 //
 
 #import "AppDelegate.h"
+#import "MainViewController.h"
+#import "MMPDeepSleepPreventer.h"
 
 @implementation AppDelegate
 
-@synthesize window = _window;
+@synthesize window, rdio, mainView, awake;
+
++(Rdio *)rdioInstance
+{
+    return [(id)[[UIApplication sharedApplication] delegate] rdio];
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkNetworkStatus:) name:kReachabilityChangedNotification object:nil];
+    
+    internetReachable = [Reachability reachabilityForInternetConnection];
+    [internetReachable startNotifier];
+    
+    // check if a pathway to a random host exists
+    hostReachable = [Reachability reachabilityWithHostname: @"www.apple.com"];
+    [hostReachable startNotifier];
+    
+    // now patiently wait for the notification
+    
+    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logInChanged:) name:@"logInNotification" object:nil];
+    
+    mainView = [[MainViewController alloc] init];
+    
+    rdio = [[Rdio alloc] initWithConsumerKey:@"qdka6u625c2u8c72r3v9x9r4" andSecret:@"GprgYzn5Vp" delegate:mainView];
+    //[[rdio player] setDelegate:mainView];
+    //[rdio authorizeFromController:self];
+    //[[rdio player] playSource:@"t2742133"];
+
+    [self.window setRootViewController:mainView];
+    [self.window addSubview:mainView.view];
     [self.window makeKeyAndVisible];
+
     return YES;
 }
 
@@ -35,6 +66,8 @@
      Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
      If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
      */
+    awake = [[MMPDeepSleepPreventer alloc] init];
+    [awake startPreventSleep];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -58,6 +91,77 @@
      Save data if appropriate.
      See also applicationDidEnterBackground:.
      */
+}
+
+- (void) checkNetworkStatus:(NSNotification *)notice
+{
+    // called after network status changes
+    NetworkStatus internetStatus = [internetReachable currentReachabilityStatus];
+    switch (internetStatus)
+    
+    {
+        case NotReachable:
+        {
+            UIAlertView * alert  = [[UIAlertView alloc] initWithTitle:@"Network Failed" message:@"Please check your connection and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil ];
+            [alert show];
+            NSLog(@"The internet is down.");
+            
+            break;
+            
+        }
+        case ReachableViaWiFi:
+        {               
+            NSLog(@"The internet is working via WIFI.");
+            
+            break;
+            
+        }
+        case ReachableViaWWAN:
+        {
+            NSLog(@"The internet is working via WWAN.");
+            
+            break;
+            
+        }
+    }
+    
+    NetworkStatus hostStatus = [hostReachable currentReachabilityStatus];
+    switch (hostStatus)
+    
+    {
+        case NotReachable:
+        {
+            NSLog(@"A gateway to the host server is down.");
+            
+            break;
+            
+        }
+        case ReachableViaWiFi:
+        {
+            NSLog(@"A gateway to the host server is working via WIFI.");
+            
+            break;
+            
+        }
+        case ReachableViaWWAN:
+        {
+            NSLog(@"A gateway to the host server is working via WWAN.");
+            
+            break;
+            
+        }
+    }
+}
+
+- (void)application:(UIApplication *)application 
+didReceiveLocalNotification:(UILocalNotification *)notification {
+	//[mainView playClicked];
+    UIApplicationState state = [application applicationState];
+    if (state == UIApplicationStateInactive) {
+        //[mainView playClicked];
+        // Application was in the background when notification
+        // was delivered.
+    }
 }
 
 @end
