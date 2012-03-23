@@ -7,12 +7,13 @@
 //
 
 #import "AppDelegate.h"
-#import "MainViewController.h"
+#import "AlarmViewController.h"
+#import "AlarmNavController.h"
 #import "MMPDeepSleepPreventer.h"
 
 @implementation AppDelegate
 
-@synthesize window, rdio, mainView, awake;
+@synthesize window, rdio, awake, loggedIn, mainNav, appBrightness, originalBrightness, alarmIsSet, alarmTime;
 
 +(Rdio *)rdioInstance
 {
@@ -21,10 +22,12 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    application.statusBarHidden = YES;
+    alarmIsSet = NO;
+    originalBrightness = [UIScreen mainScreen].brightness;
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkNetworkStatus:) name:kReachabilityChangedNotification object:nil];
     
     internetReachable = [Reachability reachabilityForInternetConnection];
@@ -36,17 +39,12 @@
     
     // now patiently wait for the notification
     
-    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logInChanged:) name:@"logInNotification" object:nil];
-    
-    mainView = [[MainViewController alloc] init];
-    
-    rdio = [[Rdio alloc] initWithConsumerKey:@"qdka6u625c2u8c72r3v9x9r4" andSecret:@"GprgYzn5Vp" delegate:mainView];
-    //[[rdio player] setDelegate:mainView];
-    //[rdio authorizeFromController:self];
-    //[[rdio player] playSource:@"t2742133"];
+        
+    mainNav = [[AlarmNavController alloc] init];
+    rdio = [[Rdio alloc] initWithConsumerKey:@"qdka6u625c2u8c72r3v9x9r4" andSecret:@"GprgYzn5Vp" delegate:nil];
 
-    [self.window setRootViewController:mainView];
-    [self.window addSubview:mainView.view];
+    [self.window setRootViewController:mainNav];
+    [self.window addSubview:mainNav.view];
     [self.window makeKeyAndVisible];
 
     return YES;
@@ -58,6 +56,20 @@
      Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
      Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
      */
+    [UIScreen mainScreen].brightness = originalBrightness;
+    if (alarmIsSet) {
+    UILocalNotification *alarmTime = [[UILocalNotification alloc] init];
+    
+    alarmTime.fireDate = [NSDate dateWithTimeIntervalSinceNow:5];
+    NSLog(@"alarm will go off: %@", alarmTime.fireDate);
+    alarmTime.timeZone = [NSTimeZone systemTimeZone];
+    
+    alarmTime.alertBody = @"You will not wake up to music if you close out of the Wake Up app.";
+    alarmTime.alertAction = @"Show me";
+    alarmTime.soundName = UILocalNotificationDefaultSoundName;
+    
+    [[UIApplication sharedApplication] scheduleLocalNotification:alarmTime];
+    }
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
@@ -66,8 +78,7 @@
      Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
      If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
      */
-    awake = [[MMPDeepSleepPreventer alloc] init];
-    [awake startPreventSleep];
+    [UIScreen mainScreen].brightness = originalBrightness;
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -75,6 +86,8 @@
     /*
      Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
      */
+    originalBrightness = [UIScreen mainScreen].brightness;
+    [UIScreen mainScreen].brightness = appBrightness;
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
@@ -82,6 +95,7 @@
     /*
      Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
      */
+    
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -163,5 +177,7 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
         // was delivered.
     }
 }
+
+
 
 @end
