@@ -11,8 +11,8 @@
 #import "Reachability.h"
 #import "AlarmViewController.h"
 #import "AlarmNavController.h"
-#import "MMPDeepSleepPreventer.h"
 #import "SimpleKeychain.h"
+#import <MediaPlayer/MPMusicPlayerController.h>
 
 @interface AppDelegate : NSObject <UIApplicationDelegate>
 {
@@ -23,18 +23,23 @@
     bool loggedIn;
     bool alarmIsSet;
     float originalBrightness;
+    float originalVolume;
+    float appVolume;
     float appBrightness;
     UINavigationController *mainNav;
     NSDate  *alarmTime;
+    UILocalNotification *backupAlarm;
+    UILocalNotification *mustBeInApp;
 }
 
 @property (strong, nonatomic) UIWindow *window;
-@property (strong, nonatomic) MMPDeepSleepPreventer *awake;
 @property (readonly, retain) Rdio *rdio;
 @property (nonatomic) bool loggedIn;
 @property (nonatomic) bool alarmIsSet;
 @property (nonatomic) float appBrightness;
 @property (nonatomic) float originalBrightness;
+@property (nonatomic) float originalVolume;
+@property (nonatomic) float appVolume;
 @property (strong, nonatomic) UINavigationController *mainNav;
 @property (strong, nonatomic) NSDate *alarmTime;
 

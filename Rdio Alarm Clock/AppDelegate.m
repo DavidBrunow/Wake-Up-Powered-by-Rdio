@@ -9,11 +9,10 @@
 #import "AppDelegate.h"
 #import "AlarmViewController.h"
 #import "AlarmNavController.h"
-#import "MMPDeepSleepPreventer.h"
 
 @implementation AppDelegate
 
-@synthesize window, rdio, awake, loggedIn, mainNav, appBrightness, originalBrightness, alarmIsSet, alarmTime;
+@synthesize window, rdio, loggedIn, mainNav, appBrightness, originalBrightness, alarmIsSet, alarmTime, originalVolume, appVolume;
 
 +(Rdio *)rdioInstance
 {
@@ -22,6 +21,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [application setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
+    [application setIdleTimerDisabled:YES];
     application.statusBarHidden = YES;
     alarmIsSet = NO;
     originalBrightness = [UIScreen mainScreen].brightness;
@@ -41,6 +42,7 @@
     
         
     mainNav = [[AlarmNavController alloc] init];
+    [mainNav.navigationBar setTintColor:[UIColor blackColor]];
     rdio = [[Rdio alloc] initWithConsumerKey:@"qdka6u625c2u8c72r3v9x9r4" andSecret:@"GprgYzn5Vp" delegate:nil];
 
     [self.window setRootViewController:mainNav];
@@ -56,20 +58,36 @@
      Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
      Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
      */
+    MPMusicPlayerController *music = [[MPMusicPlayerController alloc] init];
     [UIScreen mainScreen].brightness = originalBrightness;
+    
     if (alarmIsSet) {
-    UILocalNotification *alarmTime = [[UILocalNotification alloc] init];
-    
-    alarmTime.fireDate = [NSDate dateWithTimeIntervalSinceNow:5];
-    NSLog(@"alarm will go off: %@", alarmTime.fireDate);
-    alarmTime.timeZone = [NSTimeZone systemTimeZone];
-    
-    alarmTime.alertBody = @"You will not wake up to music if you close out of the Wake Up app.";
-    alarmTime.alertAction = @"Show me";
-    alarmTime.soundName = UILocalNotificationDefaultSoundName;
-    
-    [[UIApplication sharedApplication] scheduleLocalNotification:alarmTime];
+        mustBeInApp = [[UILocalNotification alloc] init];
+        
+        mustBeInApp.fireDate = [NSDate dateWithTimeIntervalSinceNow:5];
+        NSLog(@"alarm will go off: %@", mustBeInApp.fireDate);
+        mustBeInApp.timeZone = [NSTimeZone systemTimeZone];
+        
+        mustBeInApp.alertBody = @"You will not wake up to music if you close out of the Wake Up app.";
+        mustBeInApp.alertAction = @"turn alarm back on";
+        mustBeInApp.soundName = UILocalNotificationDefaultSoundName;
+        
+        [[UIApplication sharedApplication] scheduleLocalNotification:mustBeInApp];
+        
+        backupAlarm = [[UILocalNotification alloc] init];
+        
+        backupAlarm.fireDate = alarmTime;
+        NSLog(@"alarm will go off: %@", backupAlarm.fireDate);
+        backupAlarm.timeZone = [NSTimeZone systemTimeZone];
+        
+        backupAlarm.alertBody = @"Good morning, time to wake up.";
+        backupAlarm.alertAction = @"Show me";
+        backupAlarm.soundName = UILocalNotificationDefaultSoundName;
+        
+        [[UIApplication sharedApplication] scheduleLocalNotification:backupAlarm];
+        [music setVolume:originalVolume];
     }
+    [application setIdleTimerDisabled:NO];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
@@ -79,6 +97,7 @@
      If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
      */
     [UIScreen mainScreen].brightness = originalBrightness;
+    [application setIdleTimerDisabled:NO];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -88,6 +107,13 @@
      */
     originalBrightness = [UIScreen mainScreen].brightness;
     [UIScreen mainScreen].brightness = appBrightness;
+    [[UIApplication sharedApplication] cancelLocalNotification:mustBeInApp];
+    [[UIApplication sharedApplication] cancelLocalNotification:backupAlarm];
+    [application setIdleTimerDisabled:YES];
+    if (alarmIsSet) {
+        MPMusicPlayerController *music = [[MPMusicPlayerController alloc] init];
+        [music setVolume:0.0];
+    }
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
