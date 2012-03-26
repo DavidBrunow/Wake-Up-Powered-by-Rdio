@@ -28,10 +28,16 @@
     AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"yyyy-MM-dd"];
+    if (timeTextField.text.length == 3) {
+        timeTextField.text = [NSString stringWithFormat:@"0%@", timeTextField.text];
+    }
    
     NSString *tempDateString = [formatter stringFromDate:[NSDate date]];    
     [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm"]; //still using military time - need to change to civilian
-    tempDateString = [NSString stringWithFormat:@"%@T%@", tempDateString, timeTextField.text];
+    NSString *endOfTimeTextField = [timeTextField.text substringFromIndex:2];
+    NSString *beginningOfTimeTextField = [timeTextField.text substringToIndex:2];
+    NSString *wakeupTimeString = [NSString stringWithFormat:@"%@:%@", beginningOfTimeTextField, endOfTimeTextField];
+    tempDateString = [NSString stringWithFormat:@"%@T%@", tempDateString, wakeupTimeString];
     appDelegate.alarmTime = [formatter dateFromString:tempDateString];
     if ([appDelegate.alarmTime earlierDate:[NSDate date]]==appDelegate.alarmTime) {
         appDelegate.alarmTime = [appDelegate.alarmTime dateByAddingTimeInterval:86400];
@@ -43,8 +49,6 @@
     self.navigationController.navigationBarHidden = YES;
     
     [self displaySleepScreen];
-    awake = [[MMPDeepSleepPreventer alloc] init];
-    [awake startPreventSleep];
 
 }
 
@@ -64,24 +68,62 @@
     UILabel *sleepLabel = [[UILabel alloc] initWithFrame:labelRect];
     [sleepLabel setText:[NSString stringWithFormat:@"please sleep peacefully. You will wake up to music at %@.", alarmTimeText]];
     [sleepLabel setTextColor:[UIColor grayColor]];
-    [sleepLabel setFont:[UIFont fontWithName:@"Helvetica" size:16.0]];
+    [sleepLabel setFont:[UIFont fontWithName:@"Helvetica bold" size:22.0]];
     [sleepLabel setBackgroundColor:[UIColor blackColor]];
     [sleepLabel setNumberOfLines:10];
     [sleepView addSubview:sleepLabel];
     [self.view addSubview:sleepView]; 
-    [[UIScreen mainScreen] setBrightness:0.0];
-    appDelegate.appBrightness = 0.0;
+    
+    fader = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(fadeScreenOut) userInfo:nil repeats:YES]; 
+    
+    MPMusicPlayerController *music = [[MPMusicPlayerController alloc] init];
+    appDelegate.originalVolume = music.volume;
+    [music setVolume:0.0];
+    //[[UIScreen mainScreen] setBrightness:0.0];
+    //appDelegate.appBrightness = 0.0;
+}
+
+- (void) fadeScreenOut {
+    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    
+    if ([UIScreen mainScreen].brightness <= 0.0) {
+        [fader invalidate];
+        appDelegate.appBrightness = 0.0;
+    } else {
+        float increment = (appDelegate.originalBrightness - 0.0)/100.0;
+        float newBrightness = [UIScreen mainScreen].brightness - increment;
+        [[UIScreen mainScreen] setBrightness:newBrightness];
+    }
+}
+
+- (void) fadeScreenIn {
+    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    MPMusicPlayerController *music = [[MPMusicPlayerController alloc] init];
+    
+    if ([UIScreen mainScreen].brightness >= appDelegate.originalBrightness) {
+        [fader invalidate];
+    } else {
+        float incrementScreen = (appDelegate.originalBrightness - 0.0)/100.0;
+        float newBrightness = [UIScreen mainScreen].brightness + incrementScreen;
+        [[UIScreen mainScreen] setBrightness:newBrightness];
+        appDelegate.appBrightness = newBrightness;
+        
+        float incrementVolume = (appDelegate.originalVolume - 0.0)/100.0;
+        float newVolume = music.volume + incrementVolume;
+        [music setVolume:newVolume];
+        appDelegate.appVolume = newVolume;
+    }
 }
 
 - (void) alarmSounding {
     AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     appDelegate.alarmIsSet = NO;
-    [awake stopPreventSleep];
-    [[UIScreen mainScreen] setBrightness:appDelegate.originalBrightness];
-    appDelegate.appBrightness = originalBrightness;
+    fader = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(fadeScreenIn) userInfo:nil repeats:YES];
+    //[[UIScreen mainScreen] setBrightness:appDelegate.originalBrightness];
     CGRect screenRect = CGRectMake(0.0, 0.0, 320.0, 480.0);
     [sleepView removeFromSuperview];
-    [[[AppDelegate rdioInstance] player] playSource:@"t5732462"];
+    [[[AppDelegate rdioInstance] player] playSource:@"t11460872"];
+    
     
     wakeView = [[UIView alloc] initWithFrame:screenRect];
     
@@ -90,31 +132,33 @@
     [snoozeButton setFrame:snoozeFrame];
     
     [snoozeButton setTitle:@"Snooze" forState: UIControlStateNormal];
+    [snoozeButton setTintColor:[UIColor redColor]];
     [snoozeButton setBackgroundColor:[UIColor clearColor]];
     [snoozeButton addTarget:self action:@selector(startSnooze) forControlEvents:UIControlEventTouchUpInside];
     [wakeView addSubview:snoozeButton];
     
-    CGRect offFrame = CGRectMake(100, 190, 120, 30);
+    /*CGRect offFrame = CGRectMake(100, 190, 120, 30);
     UIButton *offButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [offButton setFrame:offFrame];
     
     [offButton setTitle:@"Off" forState: UIControlStateNormal];
     [offButton setBackgroundColor:[UIColor clearColor]];
     [offButton addTarget:self action:@selector(stopAlarm) forControlEvents:UIControlEventTouchUpInside];
-    [wakeView addSubview:offButton];
+    [wakeView addSubview:offButton]; */
     [self.view addSubview:wakeView];
 }
 
 - (void) startSnooze {
     AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-    [awake startPreventSleep];
-    [[[AppDelegate rdioInstance] player] stop];
+    //double currentPosition = [[AppDelegate rdioInstance] player].position; 
+    [[[AppDelegate rdioInstance] player] togglePause];
     
-    int snoozeTime = 60;
+    int snoozeTime = 300;
     
     appDelegate.alarmTime = [NSDate dateWithTimeIntervalSinceNow:snoozeTime];
     
     t = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(tick) userInfo:nil repeats:YES];
+    [wakeView removeFromSuperview];
     [self displaySleepScreen];
 }
 
@@ -161,8 +205,15 @@
     CGRect fullScreen = CGRectMake(0.0, 0.0, 320.0, 480.0);
     
     setAlarmView = [[UIView alloc] initWithFrame:fullScreen];
+    [setAlarmView setBackgroundColor:[UIColor clearColor]];
     
-    CGRect setAlarmFrame = CGRectMake(100, 140, 120, 30);
+    CGRect setAlarmBGFrame = CGRectMake(0.0, 0.0, 320.0, 480.0);
+    UIImage *setAlarmBG = [UIImage imageNamed:@"background"];
+    UIImageView *setAlarmBGView = [[UIImageView alloc] initWithImage:setAlarmBG];
+    setAlarmBGView.frame = setAlarmBGFrame;
+    [setAlarmView addSubview:setAlarmBGView];
+    
+    CGRect setAlarmFrame = CGRectMake(185, 180, 95, 27);
     UIButton *setAlarmButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [setAlarmButton setFrame:setAlarmFrame];
     
@@ -171,13 +222,20 @@
     [setAlarmButton addTarget:self action:@selector(setAlarmClicked) forControlEvents:UIControlEventTouchUpInside];
     [setAlarmView addSubview:setAlarmButton];
     
-    CGRect timeTextFrame = CGRectMake(100.0, 100, 120, 30);
+    CGRect remindMeFrame = CGRectMake(40.0, 180.0, 120, 30);
+    UISwitch *remindMe = [[UISwitch alloc] initWithFrame:remindMeFrame];
+    [remindMe setOn:YES animated:YES];
+    [setAlarmView addSubview:remindMe];
+    
+    CGRect timeTextFrame = CGRectMake(40.0, 100, 240, 60);
     timeTextField = [[UITextField alloc] initWithFrame:timeTextFrame];
     //[timeTextField setDelegate:self];
     [timeTextField setBackgroundColor:[UIColor blackColor]];
     [timeTextField setTextAlignment:UITextAlignmentCenter];
     [timeTextField setTextColor:[UIColor whiteColor]];
-    [timeTextField setKeyboardType:UIKeyboardTypeNumbersAndPunctuation];
+    [timeTextField setKeyboardType:UIKeyboardTypePhonePad];
+    [timeTextField setFont:[UIFont fontWithName:@"Helvetica" size:48.0]];
+    [timeTextField setContentMode:UIViewContentModeScaleToFill];
     [setAlarmView addSubview:timeTextField];
     
     [self.view addSubview:setAlarmView];

@@ -9,8 +9,8 @@
 #import <UIKit/UIKit.h>
 #import <Rdio/Rdio.h>
 #import "AlarmNavController.h"
-#import "MMPDeepSleepPreventer.h"
 #import "AppDelegate.h"
+#import <MediaPlayer/MPMusicPlayerController.h>
 
 @interface MainViewController : UIViewController <RDPlayerDelegate, RDAPIRequestDelegate, UITextFieldDelegate>
 {
@@ -18,17 +18,14 @@
     UIButton *playButton;
     bool paused;
     bool playing;
-    float originalBrightness;
-    float appBrightness;
-    float originalVolume;
     NSMutableArray *playlists;
     NSDate  *alarmTime;
     NSTimer *t;
+    NSTimer *fader;
     UIView *sleepView;
     UIView *wakeView;
     UIView *setAlarmView;
     UITextField *timeTextField;
-    MMPDeepSleepPreventer *awake;
 }
 
 @property (retain) RDPlayer *player;
@@ -36,5 +33,7 @@
 
 - (void) setAlarmClicked;
 - (void) alarmSounding;
+- (void) fadeScreenIn;
+- (void) fadeScreenOut;
 
 @end
