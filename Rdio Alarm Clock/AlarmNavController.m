@@ -20,7 +20,7 @@
 {
     alarmVC = [[MainViewController alloc] init];
     logIn = [[UIBarButtonItem alloc] initWithTitle:@"Log In" style:UIBarButtonItemStylePlain target:self action:@selector(loginClicked)];
-    
+    self.navigationBar.tintColor = [UIColor blackColor];
     alarmVC.title = @"Wake Up";
     [self pushViewController:alarmVC animated:true];
     
