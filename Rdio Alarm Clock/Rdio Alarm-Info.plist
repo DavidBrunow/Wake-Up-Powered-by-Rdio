@@ -5,13 +5,15 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>Alarm for Rdio</string>
+	<string>Wake Up</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIconFiles</key>
 	<array>
-		<string></string>
-		<string></string>
+		<string>clockicon@114.png</string>
+		<string>clockicon@57.png</string>
+		<string>Default@2x.png</string>
+		<string>Default.png</string>
 	</array>
 	<key>CFBundleIcons</key>
 	<dict>
@@ -21,9 +23,11 @@
 			<array>
 				<string>Mobile_Banking_App_logo_114x114.png</string>
 				<string>Mobile_Banking_App_logo_57x57.png</string>
+				<string>clockicon@114.png</string>
+				<string>clockicon@57.png</string>
+				<string>Default@2x.png</string>
+				<string>Default.png</string>
 			</array>
-			<key>UIPrerenderedIcon</key>
-			<false/>
 		</dict>
 	</dict>
 	<key>CFBundleIdentifier</key>
@@ -42,12 +46,12 @@
 	<string>1.0</string>
 	<key>LSApplicationCategoryType</key>
 	<string>Alarm</string>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>
 	</array>
-	<key>LSRequiresIPhoneOS</key>
-	<true/>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>

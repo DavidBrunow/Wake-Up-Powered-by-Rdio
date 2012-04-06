@@ -12,7 +12,7 @@
 
 @implementation AppDelegate
 
-@synthesize window, rdio, loggedIn, mainNav, appBrightness, originalBrightness, alarmIsSet, alarmTime, originalVolume, appVolume;
+@synthesize window, rdio, loggedIn, mainNav, appBrightness, originalBrightness, alarmIsSet, alarmTime, originalVolume, appVolume, selectedPlaylist, selectedPlaylistPath, numberOfPlaylistsOwned, numberOfPlaylistsCollab, numberOfPlaylistsSubscr, playlistsInfo, typesInfo, tracksInfo;
 
 +(Rdio *)rdioInstance
 {
@@ -28,25 +28,40 @@
     originalBrightness = [UIScreen mainScreen].brightness;
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
-    self.window.backgroundColor = [UIColor whiteColor];
+    self.window.backgroundColor = [UIColor colorWithRed:68.0/255 green:11.0/255 blue:104.0/255 alpha:1.0];
+    
+    rdio = [[Rdio alloc] initWithConsumerKey:@"qdka6u625c2u8c72r3v9x9r4" andSecret:@"GprgYzn5Vp" delegate:nil];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkNetworkStatus:) name:kReachabilityChangedNotification object:nil];
     
     internetReachable = [Reachability reachabilityForInternetConnection];
     [internetReachable startNotifier];
     
     // check if a pathway to a random host exists
-    hostReachable = [Reachability reachabilityWithHostname: @"www.apple.com"];
+    hostReachable = [Reachability reachabilityWithHostname: @"www.rdio.com"];
     [hostReachable startNotifier];
     
     // now patiently wait for the notification
+    UIViewController *authController = [[AuthViewController alloc] init];
     
-        
-    mainNav = [[AlarmNavController alloc] init];
-    [mainNav.navigationBar setTintColor:[UIColor blackColor]];
-    rdio = [[Rdio alloc] initWithConsumerKey:@"qdka6u625c2u8c72r3v9x9r4" andSecret:@"GprgYzn5Vp" delegate:nil];
-
-    [self.window setRootViewController:mainNav];
-    [self.window addSubview:mainNav.view];
+    NSString *accessToken = [SFHFKeychainUtils getPasswordForUsername:@"rdioUser" andServiceName:@"rdioAlarm" error:nil];
+    
+    NSLog(@"access token: %@", accessToken);
+    
+    if(accessToken != nil) {
+        mainNav = [[AlarmNavController alloc] init];
+        [[AppDelegate rdioInstance] authorizeUsingAccessToken:accessToken fromController:authController];
+        [mainNav.navigationBar setTintColor:[UIColor colorWithRed:68.0/255 green:11.0/255 blue:104.0/255 alpha:1.0]];
+        self.loggedIn = YES;
+        [self.window setRootViewController:mainNav];
+        [self.window addSubview:mainNav.view];
+    } else {
+        [self.window setRootViewController:authController];
+        [self.window addSubview:authController.view];
+    }
+    //mainNav = [[AlarmNavController alloc] init];
+    
+    
     [self.window makeKeyAndVisible];
 
     return YES;
@@ -59,9 +74,14 @@
      Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
      */
     MPMusicPlayerController *music = [[MPMusicPlayerController alloc] init];
-    [UIScreen mainScreen].brightness = originalBrightness;
+    //[UIScreen mainScreen].brightness = originalBrightness;
+    
     
     if (alarmIsSet) {
+        NSLog(@"current brightness: %f", [UIScreen mainScreen].brightness);
+        NSLog(@"original brightness: %f", originalBrightness);
+        [[UIScreen mainScreen] setBrightness:originalBrightness];
+        NSLog(@"current brightness: %f", [UIScreen mainScreen].brightness);
         mustBeInApp = [[UILocalNotification alloc] init];
         
         mustBeInApp.fireDate = [NSDate dateWithTimeIntervalSinceNow:5];
@@ -86,6 +106,10 @@
         
         [[UIApplication sharedApplication] scheduleLocalNotification:backupAlarm];
         [music setVolume:originalVolume];
+        NSLog(@"current brightness: %f", [UIScreen mainScreen].brightness);
+        NSLog(@"original brightness: %f", originalBrightness);
+        [[UIScreen mainScreen] setBrightness:originalBrightness];
+        NSLog(@"current brightness: %f", [UIScreen mainScreen].brightness);
     }
     [application setIdleTimerDisabled:NO];
 }
@@ -96,7 +120,7 @@
      Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
      If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
      */
-    [UIScreen mainScreen].brightness = originalBrightness;
+    [[UIScreen mainScreen] setBrightness:originalBrightness];
     [application setIdleTimerDisabled:NO];
 }
 
@@ -105,14 +129,16 @@
     /*
      Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
      */
-    originalBrightness = [UIScreen mainScreen].brightness;
-    [UIScreen mainScreen].brightness = appBrightness;
-    [[UIApplication sharedApplication] cancelLocalNotification:mustBeInApp];
-    [[UIApplication sharedApplication] cancelLocalNotification:backupAlarm];
+    //originalBrightness = [UIScreen mainScreen].brightness;
+    //[UIScreen mainScreen].brightness = appBrightness;
+    
     [application setIdleTimerDisabled:YES];
     if (alarmIsSet) {
         MPMusicPlayerController *music = [[MPMusicPlayerController alloc] init];
         [music setVolume:0.0];
+        [[UIScreen mainScreen] setBrightness:0.0];
+        [[UIApplication sharedApplication] cancelLocalNotification:mustBeInApp];
+        [[UIApplication sharedApplication] cancelLocalNotification:backupAlarm];
     }
 }
 
@@ -121,7 +147,16 @@
     /*
      Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
      */
-    
+    //originalBrightness = [UIScreen mainScreen].brightness;
+    //[UIScreen mainScreen].brightness = appBrightness;
+    /*[[UIApplication sharedApplication] cancelLocalNotification:mustBeInApp];
+    [[UIApplication sharedApplication] cancelLocalNotification:backupAlarm];
+    [application setIdleTimerDisabled:YES];
+    if (alarmIsSet) {
+        MPMusicPlayerController *music = [[MPMusicPlayerController alloc] init];
+        [music setVolume:0.0];
+        [[UIScreen mainScreen] setBrightness:0.0];
+    }*/
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -142,7 +177,7 @@
     {
         case NotReachable:
         {
-            UIAlertView * alert  = [[UIAlertView alloc] initWithTitle:@"Network Failed" message:@"Please check your connection and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil ];
+            UIAlertView * alert  = [[UIAlertView alloc] initWithTitle:@"No Internet Connection" message:@"Internet is needed for this app. Enable internet, or try again later." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil ];
             [alert show];
             NSLog(@"The internet is down.");
             
@@ -172,7 +207,8 @@
         case NotReachable:
         {
             NSLog(@"A gateway to the host server is down.");
-            
+            UIAlertView * alert  = [[UIAlertView alloc] initWithTitle:@"Website Unreachable" message:@"Cannot connect to the website. Try again later." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil ];
+            [alert show];
             break;
             
         }

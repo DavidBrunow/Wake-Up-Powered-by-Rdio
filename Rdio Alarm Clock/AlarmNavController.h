@@ -16,7 +16,6 @@
     
 }
 
-- (void) loginClicked;
-- (void) setLoggedIn:(BOOL)logged_in;
+/*- (void) loginClicked;*/
 
 @end

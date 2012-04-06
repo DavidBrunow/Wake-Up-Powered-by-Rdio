@@ -12,6 +12,7 @@
 #import "AlarmViewController.h"
 #import "AlarmNavController.h"
 #import "SimpleKeychain.h"
+#import "AuthViewController.h"
 #import <MediaPlayer/MPMusicPlayerController.h>
 
 @interface AppDelegate : NSObject <UIApplicationDelegate>
@@ -42,6 +43,14 @@
 @property (nonatomic) float appVolume;
 @property (strong, nonatomic) UINavigationController *mainNav;
 @property (strong, nonatomic) NSDate *alarmTime;
+@property (nonatomic) NSIndexPath *selectedPlaylistPath;
+@property (nonatomic) NSString *selectedPlaylist;
+@property (nonatomic) int numberOfPlaylistsOwned;
+@property (nonatomic) int numberOfPlaylistsCollab;
+@property (nonatomic) int numberOfPlaylistsSubscr;
+@property (nonatomic, retain) NSMutableArray *typesInfo;
+@property (nonatomic, retain) NSMutableArray *playlistsInfo;
+@property (nonatomic, retain) NSMutableArray *tracksInfo;
 
 
 +(Rdio *)rdioInstance;
