@@ -144,6 +144,7 @@
     [cancelButton setBackgroundColor:[UIColor blackColor]];
     [cancelButton setImage:cancelButtonImage forState:UIControlStateNormal];
     [cancelButton setTintColor:[UIColor blackColor]];
+    [cancelButton setAccessibilityLabel:@"Cancel Alarm"];
     //[cancelButton addTarget:self action:@selector(cancelAlarm) forControlEvents:UIControlEventTouchUpInside];
     //[cancelButton addTarget:self action:@selector(slideViewUp) forControlEvents:UIControlEventTouchDragInside];
     [cancelButton addGestureRecognizer:slideViewGesture];
@@ -275,6 +276,7 @@
     UIImage *offButtonImage = [UIImage imageNamed:@"orangex"];
     UIButton *offButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [offButton setImage:offButtonImage forState:UIControlStateNormal];
+    [offButton setAccessibilityLabel:@"Turn Off Alarm"];
     [offButton setFrame:offFrame];
     [offButton setBackgroundColor:[UIColor clearColor]];
     [offButton addTarget:self action:@selector(bounceView) forControlEvents:UIControlEventTouchUpInside];
@@ -286,12 +288,27 @@
 
 - (void) bounceView
 {
+    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    
     CGRect bounceUpFrameFirst = CGRectMake(0.0, -30.0, 320.0, 480.0);
     CGRect bounceUpFrameSecond = CGRectMake(0.0, -15.0, 320.0, 480.0);
     CGRect bounceUpFrameThird = CGRectMake(0.0, -10.0, 320.0, 480.0);
     CGRect bounceDownFrame = CGRectMake(0.0, 0.0, 320.0, 480.0);
     
     [UIView animateWithDuration:0.1 animations:^{[wakeView setFrame:bounceUpFrameFirst]; [sleepView setFrame:bounceUpFrameFirst];} completion:^(BOOL finished){[UIView animateWithDuration:0.1 animations:^{[wakeView setFrame:bounceDownFrame]; [sleepView setFrame:bounceDownFrame];} completion:^(BOOL finished){[UIView animateWithDuration:0.1 animations:^{[wakeView setFrame:bounceUpFrameSecond]; [sleepView setFrame:bounceUpFrameSecond];} completion:^(BOOL finished){[UIView animateWithDuration:0.1 animations:^{[wakeView setFrame:bounceDownFrame]; [sleepView setFrame:bounceDownFrame];} completion:^(BOOL finished){[UIView animateWithDuration:0.1 animations:^{[wakeView setFrame:bounceUpFrameThird]; [sleepView setFrame:bounceUpFrameThird];} completion:^(BOOL finished){[UIView animateWithDuration:0.1 animations:^{[wakeView setFrame:bounceDownFrame]; [sleepView setFrame:bounceDownFrame];}];}];}];}];}];}];
+    
+    if (UIAccessibilityIsVoiceOverRunning())
+    {
+        if (appDelegate.alarmIsSet) {
+            [sleepView removeFromSuperview];
+            [self cancelAlarm];
+            [self setAccessibilityLabel:@"Alarm Canceled"]; 
+        } else {
+            [wakeView removeFromSuperview];
+            [self stopAlarm];
+            [self setAccessibilityLabel:@"Alarm Stopped"]; 
+        }
+    }
 }
 
 - (NSMutableArray *) shuffle: (NSMutableArray *) list
@@ -418,6 +435,7 @@
     [timeTextField setKeyboardType:UIKeyboardTypeNumberPad];
     [timeTextField setFont:[UIFont fontWithName:@"Helvetica" size:48.0]];
     [timeTextField setContentMode:UIViewContentModeScaleToFill];
+    [timeTextField setAccessibilityLabel:@"Choose Alarm Time"];
     [timeTextField addTarget:self action:@selector(textFieldValueChange:) forControlEvents:UIControlEventEditingChanged];
     
     
@@ -450,9 +468,15 @@
         [setAlarmView addSubview:notLoggedInButton];
     }
     
-    MPVolumeView *hideVolume = [[MPVolumeView alloc] init];
+    /* This is supposed to hide the volume controls, but has a problem where the controls are initially shown when this view is added.
+    MPVolumeView *hideVolume = [[MPVolumeView alloc] initWithFrame:CGRectZero];
+    [hideVolume setHidden:YES];
+    [hideVolume setAlpha:0.0];
+    [hideVolume setShowsVolumeSlider:NO];
+    [hideVolume setShowsRouteButton:NO];
     
     [self.view addSubview:hideVolume];
+     */
     
     [self.view addSubview:setAlarmView];
 }
@@ -596,6 +620,7 @@
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"musicCell"];
     
     if (appDelegate.selectedPlaylist != nil) {
+        [cell setAccessibilityLabel:[NSString stringWithFormat:@"Selected Playlist is %@", appDelegate.selectedPlaylist]];
         cell.textLabel.text = appDelegate.selectedPlaylist;
     } else {
         cell.textLabel.text = @"Choose Playlist...";
