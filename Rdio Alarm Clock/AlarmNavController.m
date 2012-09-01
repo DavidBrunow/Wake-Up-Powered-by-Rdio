@@ -37,17 +37,17 @@
     
     [self pushViewController:alarmVC animated:true];
     
-    if (!appDelegate.loggedIn) {
-        [[alarmVC navigationItem] setRightBarButtonItem:logIn animated:YES];
-    }
+    //if (!appDelegate.loggedIn) {
+    [[alarmVC navigationItem] setLeftBarButtonItem:logIn animated:YES];
+    //}
     
     
 	// Do any additional setup after loading the view.
     
-    //NSString *accessToken = [SFHFKeychainUtils getPasswordForUsername:@"rdioUser" andServiceName:@"rdioAlarm" error:nil];
+    NSString *accessToken = [SFHFKeychainUtils getPasswordForUsername:@"rdioUser" andServiceName:@"rdioAlarm" error:nil];
     
     //NSLog(@"access token: %@", accessToken);
-    /*
+    
     if(accessToken != nil) {
         [[AppDelegate rdioInstance] authorizeUsingAccessToken:accessToken fromController:self];
         [logIn setTitle:@"Sign Out"];
@@ -56,7 +56,7 @@
         [logIn setTitle:@"Sign Out"];
     } else {
         [logIn setTitle:@"Sign In"];
-    } */
+    } 
 }
 
 - (void) loginClicked {
@@ -69,6 +69,10 @@
         bool success = [SFHFKeychainUtils deleteItemForUsername:@"rdioUser" andServiceName:@"rdioAlarm" error:nil];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Logout Successful" message:@"You have been logged out of your Rdio account." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
         [alert show];
+        UIViewController *authController = [[AuthViewController alloc] init];
+        [appDelegate.window setRootViewController:authController];
+        [appDelegate.window addSubview:authController.view];
+        
     } else {
         [[AppDelegate rdioInstance] authorizeFromController:self];
         //[logIn setTitle:@"Sign Out"];
@@ -100,7 +104,11 @@
     bool success = [SFHFKeychainUtils storeUsername:@"rdioUser" andPassword:accessToken forServiceName:@"rdioAlarm" updateExisting:TRUE error:nil]; 
     if(!success)
     {
-        NSLog(@"Saving keychain entry not successful.");
+        bool success = [SFHFKeychainUtils deleteItemForUsername:@"rdioUser" andServiceName:@"rdioAlarm" error:nil];
+        if(!success)
+        {
+            NSLog(@"Deleting keychain entry not successful.");
+        }
     }
     /*AlarmNavController *mainNav = [[AlarmNavController alloc] init];
     [mainNav.navigationBar setTintColor:[UIColor purpleColor]];

@@ -26,6 +26,7 @@
     //[self setTitle:@"Playlists"];
     
     [chooseMusic setBackgroundColor:[UIColor clearColor]];
+    [chooseMusic setBackgroundView:nil];
     [chooseMusic setDelegate:self];
     [chooseMusic setDataSource:self];
     

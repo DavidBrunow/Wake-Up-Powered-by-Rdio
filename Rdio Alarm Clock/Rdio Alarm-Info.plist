@@ -11,9 +11,9 @@
 	<key>CFBundleIconFiles</key>
 	<array>
 		<string>clockicon@114.png</string>
-		<string>clockicon@57.png</string>
 		<string>Default@2x.png</string>
 		<string>Default.png</string>
+		<string>clockicon@57.png</string>
 	</array>
 	<key>CFBundleIcons</key>
 	<dict>
@@ -21,12 +21,10 @@
 		<dict>
 			<key>CFBundleIconFiles</key>
 			<array>
-				<string>Mobile_Banking_App_logo_114x114.png</string>
-				<string>Mobile_Banking_App_logo_57x57.png</string>
 				<string>clockicon@114.png</string>
-				<string>clockicon@57.png</string>
 				<string>Default@2x.png</string>
 				<string>Default.png</string>
+				<string>clockicon@57.png</string>
 			</array>
 		</dict>
 	</dict>

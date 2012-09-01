@@ -434,6 +434,7 @@
     [timeTextField setTextColor:[UIColor whiteColor]];
     [timeTextField setKeyboardType:UIKeyboardTypeNumberPad];
     [timeTextField setFont:[UIFont fontWithName:@"Helvetica" size:48.0]];
+    [timeTextField setBounds:CGRectMake(40.0, 87, 240, 60)];
     [timeTextField setContentMode:UIViewContentModeScaleToFill];
     [timeTextField setAccessibilityLabel:@"Choose Alarm Time"];
     [timeTextField addTarget:self action:@selector(textFieldValueChange:) forControlEvents:UIControlEventEditingChanged];
@@ -446,6 +447,7 @@
     _chooseMusic = [[UITableView alloc] initWithFrame:chooseMusicFrame style:UITableViewStyleGrouped];
     [_chooseMusic setScrollEnabled:NO];
     [_chooseMusic setBackgroundColor:[UIColor clearColor]];
+    [_chooseMusic setBackgroundView:nil];
     [_chooseMusic setDelegate:self];
     [_chooseMusic setDataSource:self];
     
