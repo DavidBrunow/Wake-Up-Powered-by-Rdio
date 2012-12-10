@@ -36,12 +36,13 @@
     [self.navigationBar addSubview:navBarLogoView];
     
     [self pushViewController:alarmVC animated:true];
+    [[alarmVC navigationItem] setHidesBackButton:TRUE];
+    if (!appDelegate.loggedIn) {
+        [[alarmVC navigationItem] setLeftBarButtonItem:logIn animated:YES];
+    }
     
-    //if (!appDelegate.loggedIn) {
-    [[alarmVC navigationItem] setLeftBarButtonItem:logIn animated:YES];
-    //}
     
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginClicked) name:@"logOutNotification" object:nil];
 	// Do any additional setup after loading the view.
     
     NSString *accessToken = [SFHFKeychainUtils getPasswordForUsername:@"rdioUser" andServiceName:@"rdioAlarm" error:nil];
@@ -50,12 +51,13 @@
     
     if(accessToken != nil) {
         [[AppDelegate rdioInstance] authorizeUsingAccessToken:accessToken fromController:self];
-        [logIn setTitle:@"Sign Out"];
-        appDelegate.loggedIn = YES;
+        //[logIn setTitle:@"Sign Out"];
+        //appDelegate.loggedIn = YES;
     } else if(appDelegate.loggedIn) {
-        [logIn setTitle:@"Sign Out"];
+        //[logIn setTitle:@"Sign Out"];
     } else {
-        [logIn setTitle:@"Sign In"];
+        //[logIn setTitle:@"Sign In"];
+        //appDelegate.loggedIn = NO;
     } 
 }
 
@@ -63,21 +65,30 @@
     AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     
     if (appDelegate.loggedIn) {
-        [[AppDelegate rdioInstance] logout];
-        //[logIn setTitle:@"Sign In"];
-        //appDelegate.loggedIn = NO;
+        //[[AppDelegate rdioInstance] logout];
+        [logIn setTitle:@"Sign In"];
+        appDelegate.loggedIn = NO;
         bool success = [SFHFKeychainUtils deleteItemForUsername:@"rdioUser" andServiceName:@"rdioAlarm" error:nil];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Logout Successful" message:@"You have been logged out of your Rdio account." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
         [alert show];
-        UIViewController *authController = [[AuthViewController alloc] init];
-        [appDelegate.window setRootViewController:authController];
-        [appDelegate.window addSubview:authController.view];
         
+        UIViewController *logInAlarmVC = [[MainViewController alloc] init];
+
+        [self popToRootViewControllerAnimated:NO];
+        [self popViewControllerAnimated:NO];
+        
+        [alarmVC removeFromParentViewController];
+        alarmVC = nil;
+        alarmVC = [[MainViewController alloc] init];
+        [self pushViewController:alarmVC animated:NO];
+        [[alarmVC navigationItem] setLeftBarButtonItem:logIn animated:NO];
+        [[alarmVC navigationItem] setHidesBackButton:true];
+        //[self popViewControllerAnimated:NO];
     } else {
         [[AppDelegate rdioInstance] authorizeFromController:self];
         //[logIn setTitle:@"Sign Out"];
-        //appDelegate.loggedIn = YES;
-        
+        appDelegate.loggedIn = YES;
+        [[alarmVC navigationItem] setHidesBackButton:true];
     }
 }
 
@@ -96,8 +107,9 @@
 #pragma mark -
 #pragma mark RdioDelegate
 - (void) rdioDidAuthorizeUser:(NSDictionary *)user withAccessToken:(NSString *)accessToken {
-    NSLog(@"got here");
+    NSLog(@"got here rdio did auth");
     [self setLoggedIn:YES];
+    [logIn setTitle:@"Sign Out"];
     NSLog(@"got here");
     AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     

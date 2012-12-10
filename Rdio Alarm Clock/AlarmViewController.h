@@ -26,21 +26,43 @@
     NSDate  *alarmTime;
     NSTimer *t;
     NSTimer *fader;
+    NSTimer *delay;
     UIView *sleepView;
     UIView *wakeView;
     UIView *setAlarmView;
+    UIView *autoStartAlarmView;
     UITextField *timeTextField;
+    float _lastLength;
     UISwitch *remindMe;
     UILocalNotification *nightlyReminder;
     ListsViewController *listsViewController;
     UILabel *_alarmLabel;
+    UILabel *_chargingLabel;
+    UILabel *_lblSnooze;
+    UILabel *_lblSleep;
+    UILabel *_lblAutoStart;
+    UILabel *_lblAMPM;
+    UISwitch *_switchAutoStart;
+    UISlider *_sliderSleep;
+    UISlider *_sliderSnooze;
     UIView *_loadingView;
     UITableView *_chooseMusic;
     NSMutableArray *_canBeStreamed;
+    int snoozeTime;
+    int sleepTime;
+    bool autoStartAlarm;
+    bool _is24h;
+    NSDictionary *_settings;
+    NSString *_settingsPath;
+    NSString *_timeSeparator;
+    NSString *_language;
 }
 
 @property (retain) RDPlayer *player;
 @property (nonatomic, retain) UIButton *playButton;
+@property (nonatomic) int snoozeTime;
+@property (nonatomic) int sleepTime;
+@property (nonatomic) bool autoStartAlarm;
 
 - (void) setAlarmClicked;
 - (void) alarmSounding;

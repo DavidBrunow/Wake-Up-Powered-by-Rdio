@@ -21,7 +21,9 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-    CGRect chooseMusicFrame = CGRectMake(0.0, 0.0, 320.0, 436.0);
+    CGRect chooseMusicFrame = [[UIScreen mainScreen] bounds];
+    chooseMusicFrame.size.height = [[UIScreen mainScreen] bounds].size.height - self.navigationController.navigationBar.bounds.size.height;
+    
     UITableView *chooseMusic = [[UITableView alloc] initWithFrame:chooseMusicFrame style:UITableViewStyleGrouped];
     //[self setTitle:@"Playlists"];
     
@@ -93,11 +95,11 @@
     [sectionView setFont:[UIFont boldSystemFontOfSize:16.0]];
     
     if (section == 0) {
-        sectionView.text = @"   Collaborative";
+        sectionView.text = [NSString stringWithFormat:NSLocalizedString(@"COLLAB HEADER", nil)];
     } else if (section == 1) {
-        sectionView.text = @"   Owned";
+        sectionView.text = [NSString stringWithFormat:NSLocalizedString(@"OWNED HEADER", nil)];
     } else {
-        sectionView.text = @"   Subscribed";
+        sectionView.text = [NSString stringWithFormat:NSLocalizedString(@"SUBSCRIBED HEADER", nil)];
     }
     
     return sectionView;
@@ -108,12 +110,11 @@
     NSString *sectionName = @"";
     
     if (section == 0) {
-        sectionName = @"Collaborative";
+        sectionName = [NSString stringWithFormat:NSLocalizedString(@"COLLAB", nil)];
     } else if (section == 1) {
-        sectionName = @"Owned";
+        sectionName = [NSString stringWithFormat:NSLocalizedString(@"OWNED", nil)];
     } else {
-        sectionName = @"Subscribed";
-    }
+        sectionName = [NSString stringWithFormat:NSLocalizedString(@"SUBSCRIBED", nil)];    }
     
     return sectionName;
 
@@ -128,8 +129,10 @@
     
     //[self.navigationController pushViewController:listsViewController animated:YES];
     appDelegate.selectedPlaylistPath = indexPath;
+
     NSLog(@"section selected: %d, row selected: %d", indexPath.section, indexPath.row);
     appDelegate.selectedPlaylist = [tableView cellForRowAtIndexPath:indexPath].textLabel.text;
+    
     [self.navigationController popViewControllerAnimated:YES];
 }
 

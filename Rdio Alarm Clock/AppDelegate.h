@@ -23,6 +23,7 @@
     UIWindow *window;
     bool loggedIn;
     bool alarmIsSet;
+    bool alarmIsPlaying;
     float originalBrightness;
     float originalVolume;
     float appVolume;
@@ -37,6 +38,7 @@
 @property (readonly, retain) Rdio *rdio;
 @property (nonatomic) bool loggedIn;
 @property (nonatomic) bool alarmIsSet;
+@property (nonatomic) bool alarmIsPlaying;
 @property (nonatomic) float appBrightness;
 @property (nonatomic) float originalBrightness;
 @property (nonatomic) float originalVolume;
