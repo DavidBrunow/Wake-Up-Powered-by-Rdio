@@ -1,0 +1,616 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		111F3B72152F3C3E0075047F /* clockicon@114.png in Resources */ = {isa = PBXBuildFile; fileRef = 111F3B71152F3C3E0075047F /* clockicon@114.png */; };
+		111F3B74152F40350075047F /* navbarclockicon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 111F3B73152F40350075047F /* navbarclockicon@2x.png */; };
+		111F3B76152F424A0075047F /* navbarclockicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 111F3B75152F424A0075047F /* navbarclockicon.png */; };
+		111F3B7C152F64F70075047F /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 111F3B7B152F64F70075047F /* Default@2x.png */; };
+		111F3B7E152F65860075047F /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 111F3B7D152F65860075047F /* Default.png */; };
+		1128DA9D14F1E3D300230CCB /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 1128DA9C14F1E3D300230CCB /* Reachability.m */; };
+		112B4EA71522BE4300438D4B /* x@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 112B4EA61522BE4300438D4B /* x@2x.png */; };
+		112B4EA91522C88400438D4B /* timeSetRoundedRect@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 112B4EA81522C88400438D4B /* timeSetRoundedRect@2x.png */; };
+		115302FB151B69EB00B75800 /* AlarmNavController.m in Sources */ = {isa = PBXBuildFile; fileRef = 115302FA151B69EB00B75800 /* AlarmNavController.m */; };
+		115D9C701537B57100BCCF4B /* clockicon@57.png in Resources */ = {isa = PBXBuildFile; fileRef = 111F3B77152F43CC0075047F /* clockicon@57.png */; };
+		117E7D4314D2235800F986DD /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 117E7D4214D2235800F986DD /* CFNetwork.framework */; };
+		117E7D4514D2236B00F986DD /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 117E7D4414D2236B00F986DD /* SystemConfiguration.framework */; };
+		117E7D4714D223C400F986DD /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 117E7D4614D223C400F986DD /* AudioToolbox.framework */; };
+		117E7D4914D223E200F986DD /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 117E7D4814D223E200F986DD /* Security.framework */; };
+		117E7D4F14D5F12B00F986DD /* AlarmViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 117E7D4E14D5F12B00F986DD /* AlarmViewController.m */; };
+		11A0F0D614BFB57A0055390F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11A0F0D514BFB57A0055390F /* UIKit.framework */; };
+		11A0F0D814BFB57A0055390F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11A0F0D714BFB57A0055390F /* Foundation.framework */; };
+		11A0F0DA14BFB57A0055390F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11A0F0D914BFB57A0055390F /* CoreGraphics.framework */; };
+		11A0F0E214BFB57A0055390F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A0F0E114BFB57A0055390F /* main.m */; };
+		11A0F0E614BFB57A0055390F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A0F0E514BFB57A0055390F /* AppDelegate.m */; };
+		11A0F0EE14BFB57B0055390F /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11A0F0ED14BFB57B0055390F /* SenTestingKit.framework */; };
+		11A0F0EF14BFB57B0055390F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11A0F0D514BFB57A0055390F /* UIKit.framework */; };
+		11A0F0F014BFB57B0055390F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11A0F0D714BFB57A0055390F /* Foundation.framework */; };
+		11A0F0FB14BFB57B0055390F /* Rdio_Alarm_ClockTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A0F0FA14BFB57B0055390F /* Rdio_Alarm_ClockTests.m */; };
+		11DD79891524B0CE0076D6CB /* ListsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DD79881524B0CE0076D6CB /* ListsViewController.m */; };
+		11DD798D1524F2BA0076D6CB /* AuthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DD798C1524F2BA0076D6CB /* AuthViewController.m */; };
+		11E2331214F2DBBA00E2159F /* SimpleKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 11E2331114F2DBB900E2159F /* SimpleKeychain.m */; };
+		11E2331914F5F06700E2159F /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11E2331814F5F06700E2159F /* AVFoundation.framework */; };
+		11E339E3151E24BB00760DAC /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11E339E2151E24BA00760DAC /* MediaPlayer.framework */; };
+		11F872441526371C00EFE7E9 /* orangex@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11F872431526371C00EFE7E9 /* orangex@2x.png */; };
+		11F8724615263B5100EFE7E9 /* x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11F8724515263B5100EFE7E9 /* x.png */; };
+		11F8724815263B6200EFE7E9 /* orangex.png in Resources */ = {isa = PBXBuildFile; fileRef = 11F8724715263B6200EFE7E9 /* orangex.png */; };
+		23523EA8165BC42700F70F14 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 23404E9A1653DFD2002E872B /* Localizable.strings */; };
+		239B2AF815F299290001EA36 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 239B2AF715F299290001EA36 /* QuartzCore.framework */; };
+		239B2AFB15F2A4BD0001EA36 /* 550L_cloth.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 239B2AFA15F2A4BD0001EA36 /* 550L_cloth.jpg */; };
+		239B2AFD15F2A79A0001EA36 /* preferences@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 239B2AFC15F2A79A0001EA36 /* preferences@2x.png */; };
+		239B2AFF15F2A7BC0001EA36 /* preferences.png in Resources */ = {isa = PBXBuildFile; fileRef = 239B2AFE15F2A7BC0001EA36 /* preferences.png */; };
+		239B2B0315F3124E0001EA36 /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 239B2B0215F3124E0001EA36 /* Settings.plist */; };
+		23D2351F1603C57C00CE0FBF /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 23D2351E1603C57C00CE0FBF /* Default-568h@2x.png */; };
+		23E1CB1215EF9A8C00148EE8 /* Rdio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23E1CB1115EF9A8C00148EE8 /* Rdio.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		11A0F0F114BFB57B0055390F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 11A0F0C814BFB5790055390F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 11A0F0D014BFB57A0055390F;
+			remoteInfo = "Rdio Alarm Clock";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		235D522416549C1A00EBCA68 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 12;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		111F3B71152F3C3E0075047F /* clockicon@114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "clockicon@114.png"; path = "../clockicon@114.png"; sourceTree = "<group>"; };
+		111F3B73152F40350075047F /* navbarclockicon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navbarclockicon@2x.png"; path = "../../../navbarclockicon@2x.png"; sourceTree = "<group>"; };
+		111F3B75152F424A0075047F /* navbarclockicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = navbarclockicon.png; path = ../../../navbarclockicon.png; sourceTree = "<group>"; };
+		111F3B77152F43CC0075047F /* clockicon@57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "clockicon@57.png"; path = "../clockicon@57.png"; sourceTree = "<group>"; };
+		111F3B7B152F64F70075047F /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "../Default@2x.png"; sourceTree = "<group>"; };
+		111F3B7D152F65860075047F /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = ../Default.png; sourceTree = "<group>"; };
+		1128DA9B14F1E3D300230CCB /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		1128DA9C14F1E3D300230CCB /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		112B4EA61522BE4300438D4B /* x@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "x@2x.png"; path = "../../../x@2x.png"; sourceTree = "<group>"; };
+		112B4EA81522C88400438D4B /* timeSetRoundedRect@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "timeSetRoundedRect@2x.png"; path = "../../../timeSetRoundedRect@2x.png"; sourceTree = "<group>"; };
+		115302F9151B69EB00B75800 /* AlarmNavController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlarmNavController.h; sourceTree = "<group>"; };
+		115302FA151B69EB00B75800 /* AlarmNavController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlarmNavController.m; sourceTree = "<group>"; };
+		117E7D4214D2235800F986DD /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		117E7D4414D2236B00F986DD /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		117E7D4614D223C400F986DD /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		117E7D4814D223E200F986DD /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		117E7D4D14D5F12B00F986DD /* AlarmViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlarmViewController.h; sourceTree = "<group>"; };
+		117E7D4E14D5F12B00F986DD /* AlarmViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlarmViewController.m; sourceTree = "<group>"; };
+		11A0F0D114BFB57A0055390F /* Rdio Alarm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Rdio Alarm.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		11A0F0D514BFB57A0055390F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		11A0F0D714BFB57A0055390F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		11A0F0D914BFB57A0055390F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		11A0F0E114BFB57A0055390F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		11A0F0E314BFB57A0055390F /* Rdio Alarm-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Rdio Alarm-Prefix.pch"; sourceTree = "<group>"; };
+		11A0F0E414BFB57A0055390F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		11A0F0E514BFB57A0055390F /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		11A0F0EC14BFB57B0055390F /* Rdio AlarmTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Rdio AlarmTests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		11A0F0ED14BFB57B0055390F /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		11A0F0F514BFB57B0055390F /* Rdio AlarmTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Rdio AlarmTests-Info.plist"; sourceTree = "<group>"; };
+		11A0F0F914BFB57B0055390F /* Rdio_Alarm_ClockTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rdio_Alarm_ClockTests.h; sourceTree = "<group>"; };
+		11A0F0FA14BFB57B0055390F /* Rdio_Alarm_ClockTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Rdio_Alarm_ClockTests.m; sourceTree = "<group>"; };
+		11DD79871524B0CE0076D6CB /* ListsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListsViewController.h; sourceTree = "<group>"; };
+		11DD79881524B0CE0076D6CB /* ListsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListsViewController.m; sourceTree = "<group>"; };
+		11DD798B1524F2BA0076D6CB /* AuthViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthViewController.h; sourceTree = "<group>"; };
+		11DD798C1524F2BA0076D6CB /* AuthViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthViewController.m; sourceTree = "<group>"; };
+		11E2331014F2DBB900E2159F /* SimpleKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleKeychain.h; sourceTree = "<group>"; };
+		11E2331114F2DBB900E2159F /* SimpleKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimpleKeychain.m; sourceTree = "<group>"; };
+		11E2331814F5F06700E2159F /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		11E339E2151E24BA00760DAC /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
+		11F872431526371C00EFE7E9 /* orangex@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "orangex@2x.png"; path = "../../../orangex@2x.png"; sourceTree = "<group>"; };
+		11F8724515263B5100EFE7E9 /* x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = x.png; path = ../../../x.png; sourceTree = "<group>"; };
+		11F8724715263B6200EFE7E9 /* orangex.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = orangex.png; path = ../../../orangex.png; sourceTree = "<group>"; };
+		23404E991653DFD2002E872B /* en */ = {isa = PBXFileReference; explicitFileType = text.plist.strings; fileEncoding = 10; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		23404E9B1653DFDC002E872B /* fr */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		23404E9C1653DFDD002E872B /* pt */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/Localizable.strings; sourceTree = "<group>"; };
+		23404E9D1653DFDE002E872B /* de */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		23404E9E1653DFDF002E872B /* da */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/Localizable.strings; sourceTree = "<group>"; };
+		23404E9F1653DFE2002E872B /* es */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		23404EA01653DFE4002E872B /* sv */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Localizable.strings; sourceTree = "<group>"; };
+		23404EA11653DFE7002E872B /* fi */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = fi; path = fi.lproj/Localizable.strings; sourceTree = "<group>"; };
+		23404EA21653DFE8002E872B /* nb */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/Localizable.strings; sourceTree = "<group>"; };
+		235D52221654980800EBCA68 /* Rdio Alarm-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Rdio Alarm-Info.plist"; sourceTree = "<group>"; };
+		239B2AF715F299290001EA36 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		239B2AFA15F2A4BD0001EA36 /* 550L_cloth.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 550L_cloth.jpg; sourceTree = "<group>"; };
+		239B2AFC15F2A79A0001EA36 /* preferences@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "preferences@2x.png"; sourceTree = "<group>"; };
+		239B2AFE15F2A7BC0001EA36 /* preferences.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = preferences.png; sourceTree = "<group>"; };
+		239B2B0215F3124E0001EA36 /* Settings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Settings.plist; sourceTree = "<group>"; };
+		23D2351E1603C57C00CE0FBF /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
+		23E1CB1115EF9A8C00148EE8 /* Rdio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rdio.framework; path = "../../../Downloads/rdio-ios 4/Rdio.framework"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		11A0F0CE14BFB57A0055390F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				239B2AF815F299290001EA36 /* QuartzCore.framework in Frameworks */,
+				23E1CB1215EF9A8C00148EE8 /* Rdio.framework in Frameworks */,
+				11E339E3151E24BB00760DAC /* MediaPlayer.framework in Frameworks */,
+				11E2331914F5F06700E2159F /* AVFoundation.framework in Frameworks */,
+				117E7D4914D223E200F986DD /* Security.framework in Frameworks */,
+				117E7D4714D223C400F986DD /* AudioToolbox.framework in Frameworks */,
+				117E7D4514D2236B00F986DD /* SystemConfiguration.framework in Frameworks */,
+				117E7D4314D2235800F986DD /* CFNetwork.framework in Frameworks */,
+				11A0F0D614BFB57A0055390F /* UIKit.framework in Frameworks */,
+				11A0F0D814BFB57A0055390F /* Foundation.framework in Frameworks */,
+				11A0F0DA14BFB57A0055390F /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		11A0F0E814BFB57B0055390F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				11A0F0EE14BFB57B0055390F /* SenTestingKit.framework in Frameworks */,
+				11A0F0EF14BFB57B0055390F /* UIKit.framework in Frameworks */,
+				11A0F0F014BFB57B0055390F /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		115302F7151B692F00B75800 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				1128DA9B14F1E3D300230CCB /* Reachability.h */,
+				1128DA9C14F1E3D300230CCB /* Reachability.m */,
+				11A0F0E414BFB57A0055390F /* AppDelegate.h */,
+				11A0F0E514BFB57A0055390F /* AppDelegate.m */,
+				117E7D4D14D5F12B00F986DD /* AlarmViewController.h */,
+				117E7D4E14D5F12B00F986DD /* AlarmViewController.m */,
+				11E2331014F2DBB900E2159F /* SimpleKeychain.h */,
+				11E2331114F2DBB900E2159F /* SimpleKeychain.m */,
+				115302F9151B69EB00B75800 /* AlarmNavController.h */,
+				115302FA151B69EB00B75800 /* AlarmNavController.m */,
+				11DD79871524B0CE0076D6CB /* ListsViewController.h */,
+				11DD79881524B0CE0076D6CB /* ListsViewController.m */,
+				11DD798B1524F2BA0076D6CB /* AuthViewController.h */,
+				11DD798C1524F2BA0076D6CB /* AuthViewController.m */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		115302F8151B696A00B75800 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				23D2351E1603C57C00CE0FBF /* Default-568h@2x.png */,
+				239B2AFE15F2A7BC0001EA36 /* preferences.png */,
+				239B2AFC15F2A79A0001EA36 /* preferences@2x.png */,
+				239B2AFA15F2A4BD0001EA36 /* 550L_cloth.jpg */,
+				111F3B7D152F65860075047F /* Default.png */,
+				111F3B7B152F64F70075047F /* Default@2x.png */,
+				111F3B77152F43CC0075047F /* clockicon@57.png */,
+				111F3B71152F3C3E0075047F /* clockicon@114.png */,
+				111F3B75152F424A0075047F /* navbarclockicon.png */,
+				111F3B73152F40350075047F /* navbarclockicon@2x.png */,
+				11F8724715263B6200EFE7E9 /* orangex.png */,
+				11F8724515263B5100EFE7E9 /* x.png */,
+				11F872431526371C00EFE7E9 /* orangex@2x.png */,
+				112B4EA81522C88400438D4B /* timeSetRoundedRect@2x.png */,
+				112B4EA61522BE4300438D4B /* x@2x.png */,
+			);
+			name = Assets;
+			sourceTree = "<group>";
+		};
+		11A0F0C614BFB5790055390F = {
+			isa = PBXGroup;
+			children = (
+				11A0F0DB14BFB57A0055390F /* Rdio Alarm Clock */,
+				11A0F0F314BFB57B0055390F /* Rdio Alarm ClockTests */,
+				11A0F0D414BFB57A0055390F /* Frameworks */,
+				11A0F0D214BFB57A0055390F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		11A0F0D214BFB57A0055390F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				11A0F0D114BFB57A0055390F /* Rdio Alarm.app */,
+				11A0F0EC14BFB57B0055390F /* Rdio AlarmTests.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		11A0F0D414BFB57A0055390F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				239B2AF715F299290001EA36 /* QuartzCore.framework */,
+				23E1CB1115EF9A8C00148EE8 /* Rdio.framework */,
+				11E339E2151E24BA00760DAC /* MediaPlayer.framework */,
+				11E2331814F5F06700E2159F /* AVFoundation.framework */,
+				117E7D4814D223E200F986DD /* Security.framework */,
+				117E7D4614D223C400F986DD /* AudioToolbox.framework */,
+				117E7D4414D2236B00F986DD /* SystemConfiguration.framework */,
+				117E7D4214D2235800F986DD /* CFNetwork.framework */,
+				11A0F0D514BFB57A0055390F /* UIKit.framework */,
+				11A0F0D714BFB57A0055390F /* Foundation.framework */,
+				11A0F0D914BFB57A0055390F /* CoreGraphics.framework */,
+				11A0F0ED14BFB57B0055390F /* SenTestingKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		11A0F0DB14BFB57A0055390F /* Rdio Alarm Clock */ = {
+			isa = PBXGroup;
+			children = (
+				11A0F0DC14BFB57A0055390F /* Supporting Files */,
+				115302F8151B696A00B75800 /* Assets */,
+				115302F7151B692F00B75800 /* Classes */,
+			);
+			path = "Rdio Alarm Clock";
+			sourceTree = "<group>";
+		};
+		11A0F0DC14BFB57A0055390F /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				23404E9A1653DFD2002E872B /* Localizable.strings */,
+				235D52221654980800EBCA68 /* Rdio Alarm-Info.plist */,
+				11A0F0E114BFB57A0055390F /* main.m */,
+				11A0F0E314BFB57A0055390F /* Rdio Alarm-Prefix.pch */,
+				239B2B0215F3124E0001EA36 /* Settings.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		11A0F0F314BFB57B0055390F /* Rdio Alarm ClockTests */ = {
+			isa = PBXGroup;
+			children = (
+				11A0F0F914BFB57B0055390F /* Rdio_Alarm_ClockTests.h */,
+				11A0F0FA14BFB57B0055390F /* Rdio_Alarm_ClockTests.m */,
+				11A0F0F414BFB57B0055390F /* Supporting Files */,
+			);
+			path = "Rdio Alarm ClockTests";
+			sourceTree = "<group>";
+		};
+		11A0F0F414BFB57B0055390F /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				11A0F0F514BFB57B0055390F /* Rdio AlarmTests-Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		11A0F0D014BFB57A0055390F /* Rdio Alarm */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 11A0F0FE14BFB57B0055390F /* Build configuration list for PBXNativeTarget "Rdio Alarm" */;
+			buildPhases = (
+				11A0F0CD14BFB57A0055390F /* Sources */,
+				11A0F0CE14BFB57A0055390F /* Frameworks */,
+				11A0F0CF14BFB57A0055390F /* Resources */,
+				235D522416549C1A00EBCA68 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Rdio Alarm";
+			productName = "Rdio Alarm Clock";
+			productReference = 11A0F0D114BFB57A0055390F /* Rdio Alarm.app */;
+			productType = "com.apple.product-type.application";
+		};
+		11A0F0EB14BFB57B0055390F /* Rdio AlarmTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 11A0F10114BFB57B0055390F /* Build configuration list for PBXNativeTarget "Rdio AlarmTests" */;
+			buildPhases = (
+				11A0F0E714BFB57B0055390F /* Sources */,
+				11A0F0E814BFB57B0055390F /* Frameworks */,
+				11A0F0E914BFB57B0055390F /* Resources */,
+				11A0F0EA14BFB57B0055390F /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				11A0F0F214BFB57B0055390F /* PBXTargetDependency */,
+			);
+			name = "Rdio AlarmTests";
+			productName = "Rdio Alarm ClockTests";
+			productReference = 11A0F0EC14BFB57B0055390F /* Rdio AlarmTests.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		11A0F0C814BFB5790055390F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0430;
+			};
+			buildConfigurationList = 11A0F0CB14BFB5790055390F /* Build configuration list for PBXProject "Rdio Alarm" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				fr,
+				pt,
+				de,
+				da,
+				es,
+				sv,
+				fi,
+				nb,
+			);
+			mainGroup = 11A0F0C614BFB5790055390F;
+			productRefGroup = 11A0F0D214BFB57A0055390F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				11A0F0D014BFB57A0055390F /* Rdio Alarm */,
+				11A0F0EB14BFB57B0055390F /* Rdio AlarmTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		11A0F0CF14BFB57A0055390F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				23523EA8165BC42700F70F14 /* Localizable.strings in Resources */,
+				112B4EA71522BE4300438D4B /* x@2x.png in Resources */,
+				112B4EA91522C88400438D4B /* timeSetRoundedRect@2x.png in Resources */,
+				11F872441526371C00EFE7E9 /* orangex@2x.png in Resources */,
+				11F8724615263B5100EFE7E9 /* x.png in Resources */,
+				11F8724815263B6200EFE7E9 /* orangex.png in Resources */,
+				111F3B72152F3C3E0075047F /* clockicon@114.png in Resources */,
+				111F3B74152F40350075047F /* navbarclockicon@2x.png in Resources */,
+				111F3B76152F424A0075047F /* navbarclockicon.png in Resources */,
+				111F3B7C152F64F70075047F /* Default@2x.png in Resources */,
+				111F3B7E152F65860075047F /* Default.png in Resources */,
+				115D9C701537B57100BCCF4B /* clockicon@57.png in Resources */,
+				239B2AFB15F2A4BD0001EA36 /* 550L_cloth.jpg in Resources */,
+				239B2AFD15F2A79A0001EA36 /* preferences@2x.png in Resources */,
+				239B2AFF15F2A7BC0001EA36 /* preferences.png in Resources */,
+				239B2B0315F3124E0001EA36 /* Settings.plist in Resources */,
+				23D2351F1603C57C00CE0FBF /* Default-568h@2x.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		11A0F0E914BFB57B0055390F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		11A0F0EA14BFB57B0055390F /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		11A0F0CD14BFB57A0055390F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				11A0F0E214BFB57A0055390F /* main.m in Sources */,
+				11A0F0E614BFB57A0055390F /* AppDelegate.m in Sources */,
+				117E7D4F14D5F12B00F986DD /* AlarmViewController.m in Sources */,
+				1128DA9D14F1E3D300230CCB /* Reachability.m in Sources */,
+				11E2331214F2DBBA00E2159F /* SimpleKeychain.m in Sources */,
+				115302FB151B69EB00B75800 /* AlarmNavController.m in Sources */,
+				11DD79891524B0CE0076D6CB /* ListsViewController.m in Sources */,
+				11DD798D1524F2BA0076D6CB /* AuthViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		11A0F0E714BFB57B0055390F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				11A0F0FB14BFB57B0055390F /* Rdio_Alarm_ClockTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		11A0F0F214BFB57B0055390F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 11A0F0D014BFB57A0055390F /* Rdio Alarm */;
+			targetProxy = 11A0F0F114BFB57B0055390F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		23404E9A1653DFD2002E872B /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				23404E991653DFD2002E872B /* en */,
+				23404E9B1653DFDC002E872B /* fr */,
+				23404E9C1653DFDD002E872B /* pt */,
+				23404E9D1653DFDE002E872B /* de */,
+				23404E9E1653DFDF002E872B /* da */,
+				23404E9F1653DFE2002E872B /* es */,
+				23404EA01653DFE4002E872B /* sv */,
+				23404EA11653DFE7002E872B /* fi */,
+				23404EA21653DFE8002E872B /* nb */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		11A0F0FC14BFB57B0055390F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				SDKROOT = iphoneos;
+				VALID_ARCHS = armv7;
+			};
+			name = Debug;
+		};
+		11A0F0FD14BFB57B0055390F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: David Brunow";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "E914B9FC-1B25-4668-B1B2-E0676CF345BC";
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+				VALID_ARCHS = armv7;
+			};
+			name = Release;
+		};
+		11A0F0FF14BFB57B0055390F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../../Downloads/rdio-ios 4\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Rdio Alarm Clock/Rdio Alarm-Prefix.pch";
+				INFOPLIST_FILE = "Rdio Alarm Clock/Rdio Alarm-Info.plist";
+				OTHER_LDFLAGS = "-all_load";
+				PRODUCT_NAME = "Rdio Alarm";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		11A0F10014BFB57B0055390F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: David Brunow (M2JB2FZF76)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../../Downloads/rdio-ios 4\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Rdio Alarm Clock/Rdio Alarm-Prefix.pch";
+				INFOPLIST_FILE = "Rdio Alarm Clock/Rdio Alarm-Info.plist";
+				OTHER_LDFLAGS = "-all_load";
+				PRODUCT_NAME = "Rdio Alarm";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "98638394-1711-499D-86BF-C8CC8A64BBE6";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		11A0F10214BFB57B0055390F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Rdio Alarm Clock.app/Rdio Alarm Clock";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Rdio Alarm Clock/Rdio Alarm Clock-Prefix.pch";
+				INFOPLIST_FILE = "Rdio Alarm ClockTests/Rdio AlarmTests-Info.plist";
+				PRODUCT_NAME = "Rdio AlarmTests";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		11A0F10314BFB57B0055390F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Rdio Alarm Clock.app/Rdio Alarm Clock";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Rdio Alarm Clock/Rdio Alarm Clock-Prefix.pch";
+				INFOPLIST_FILE = "Rdio Alarm ClockTests/Rdio AlarmTests-Info.plist";
+				PRODUCT_NAME = "Rdio AlarmTests";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		11A0F0CB14BFB5790055390F /* Build configuration list for PBXProject "Rdio Alarm" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				11A0F0FC14BFB57B0055390F /* Debug */,
+				11A0F0FD14BFB57B0055390F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		11A0F0FE14BFB57B0055390F /* Build configuration list for PBXNativeTarget "Rdio Alarm" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				11A0F0FF14BFB57B0055390F /* Debug */,
+				11A0F10014BFB57B0055390F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		11A0F10114BFB57B0055390F /* Build configuration list for PBXNativeTarget "Rdio AlarmTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				11A0F10214BFB57B0055390F /* Debug */,
+				11A0F10314BFB57B0055390F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 11A0F0C814BFB5790055390F /* Project object */;
+}

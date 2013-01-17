@@ -51,7 +51,7 @@
     int snoozeTime;
     int sleepTime;
     bool autoStartAlarm;
-    bool _is24h;
+    bool _is24h;    
     NSDictionary *_settings;
     NSString *_settingsPath;
     NSString *_timeSeparator;
