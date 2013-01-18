@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "AlarmViewController.h"
 #import "AlarmNavController.h"
+#import "Credentials.h"
 
 @implementation AppDelegate
 
@@ -35,7 +36,7 @@
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor colorWithRed:68.0/255 green:11.0/255 blue:104.0/255 alpha:1.0];
     
-    rdio = [[Rdio alloc] initWithConsumerKey:@"qdka6u625c2u8c72r3v9x9r4" andSecret:@"GprgYzn5Vp" delegate:nil];
+    rdio = [[Rdio alloc] initWithConsumerKey:CONSUMER_KEY andSecret:CONSUMER_SECRET delegate:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkNetworkStatus:) name:kReachabilityChangedNotification object:nil];
     
@@ -48,7 +49,7 @@
     
     // now patiently wait for the notification
     
-    NSString *accessToken = [SFHFKeychainUtils getPasswordForUsername:@"rdioUser" andServiceName:@"rdioAlarm" error:nil];
+    NSString *accessToken = [SFHFKeychainUtils getPasswordForUsername:USER_NAME andServiceName:SERVICE_NAME error:nil];
     
     if(accessToken != nil) {
         self.loggedIn = YES;

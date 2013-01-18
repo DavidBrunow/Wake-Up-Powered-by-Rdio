@@ -114,6 +114,7 @@
 		11F872431526371C00EFE7E9 /* orangex@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "orangex@2x.png"; path = "../../../orangex@2x.png"; sourceTree = "<group>"; };
 		11F8724515263B5100EFE7E9 /* x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = x.png; path = ../../../x.png; sourceTree = "<group>"; };
 		11F8724715263B6200EFE7E9 /* orangex.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = orangex.png; path = ../../../orangex.png; sourceTree = "<group>"; };
+		233E446316A90DEA00AA86CE /* Credentials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Credentials.h; sourceTree = "<group>"; };
 		23404E991653DFD2002E872B /* en */ = {isa = PBXFileReference; explicitFileType = text.plist.strings; fileEncoding = 10; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		23404E9B1653DFDC002E872B /* fr */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		23404E9C1653DFDD002E872B /* pt */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -168,6 +169,7 @@
 		115302F7151B692F00B75800 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				233E446316A90DEA00AA86CE /* Credentials.h */,
 				1128DA9B14F1E3D300230CCB /* Reachability.h */,
 				1128DA9C14F1E3D300230CCB /* Reachability.m */,
 				11A0F0E414BFB57A0055390F /* AppDelegate.h */,
