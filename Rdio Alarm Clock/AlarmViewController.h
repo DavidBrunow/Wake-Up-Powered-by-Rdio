@@ -12,8 +12,8 @@
 #import "AlarmNavController.h"
 #import "ListsViewController.h"
 #import <MediaPlayer/MPVolumeView.h>
-
 #import <MediaPlayer/MPMusicPlayerController.h>
+#import <MediaPlayer/MediaPlayer.h>
 
 @interface MainViewController : UIViewController <RDPlayerDelegate, RDAPIRequestDelegate, UITextFieldDelegate, UIAlertViewDelegate, UITableViewDelegate, UITableViewDataSource, UIWebViewDelegate>
 {
@@ -63,6 +63,11 @@
 @property (nonatomic) int snoozeTime;
 @property (nonatomic) int sleepTime;
 @property (nonatomic) bool autoStartAlarm;
+@property (nonatomic) bool shuffle;
+@property (nonatomic, retain) UISwitch *switchShuffle;
+@property (nonatomic, retain) UILabel *lblShuffle;
+@property (nonatomic, retain) MPMusicPlayerController *music;
+@property (nonatomic, retain) MPVolumeView *hideVolume;
 
 - (void) setAlarmClicked;
 - (void) alarmSounding;
