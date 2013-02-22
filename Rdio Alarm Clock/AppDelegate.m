@@ -22,6 +22,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [TestFlight takeOff:@"397a28383f7de900ab3c235f67199d7d_Nzk2MTU4MjAxMi0xMi0xOSAyMjo1OTowOS42MDk1MzM"];
+    
     [application setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
     
     alarmIsSet = NO;
@@ -34,7 +36,8 @@
     appVolume = originalVolume;
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
-    self.window.backgroundColor = [UIColor colorWithRed:68.0/255 green:11.0/255 blue:104.0/255 alpha:1.0];
+    //self.window.backgroundColor = [UIColor colorWithRed:68.0/255 green:11.0/255 blue:104.0/255 alpha:1.0];
+    [self.window setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Default-568h"]]];
     
     rdio = [[Rdio alloc] initWithConsumerKey:CONSUMER_KEY andSecret:CONSUMER_SECRET delegate:nil];
     
