@@ -35,7 +35,6 @@
     float _lastLength;
     UISwitch *remindMe;
     UILocalNotification *nightlyReminder;
-    ListsViewController *listsViewController;
     UILabel *_alarmLabel;
     UILabel *_chargingLabel;
     UILabel *_lblSnooze;
@@ -46,7 +45,6 @@
     UISlider *_sliderSleep;
     UISlider *_sliderSnooze;
     UIView *_loadingView;
-    UITableView *_chooseMusic;
     NSMutableArray *_canBeStreamed;
     int snoozeTime;
     int sleepTime;
@@ -63,6 +61,12 @@
 @property (nonatomic) int snoozeTime;
 @property (nonatomic) int sleepTime;
 @property (nonatomic) bool autoStartAlarm;
+@property (nonatomic, retain) UILabel *lblWakeUpTo;
+@property (nonatomic, retain) UILabel *lblPlaylist;
+@property (nonatomic) ListsViewController *listsViewController;
+@property (nonatomic) UITableView *chooseMusic;
+@property (nonatomic) UILabel *lblSleepAmount;
+@property (nonatomic) UILabel *lblSnoozeAmount;
 
 - (void) setAlarmClicked;
 - (void) alarmSounding;
