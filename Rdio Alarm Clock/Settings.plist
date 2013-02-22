@@ -15,6 +15,6 @@
 	<key>Sleep Time</key>
 	<integer>0</integer>
 	<key>Alarm Time</key>
-	<string></string>
+	<string>06:00</string>
 </dict>
 </plist>
