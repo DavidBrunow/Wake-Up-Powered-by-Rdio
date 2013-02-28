@@ -213,7 +213,6 @@
 		11A0F0C614BFB5790055390F = {
 			isa = PBXGroup;
 			children = (
-				23BE595616DFA23A00E4C8F8 /* Rdio.framework */,
 				11A0F0DB14BFB57A0055390F /* Rdio Alarm Clock */,
 				11A0F0F314BFB57B0055390F /* Rdio Alarm ClockTests */,
 				11A0F0D414BFB57A0055390F /* Frameworks */,
@@ -233,6 +232,7 @@
 		11A0F0D414BFB57A0055390F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				23BE595616DFA23A00E4C8F8 /* Rdio.framework */,
 				239B2AF715F299290001EA36 /* QuartzCore.framework */,
 				11E339E2151E24BA00760DAC /* MediaPlayer.framework */,
 				11E2331814F5F06700E2159F /* AVFoundation.framework */,
