@@ -45,8 +45,8 @@
 		239B2AFD15F2A79A0001EA36 /* preferences@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 239B2AFC15F2A79A0001EA36 /* preferences@2x.png */; };
 		239B2AFF15F2A7BC0001EA36 /* preferences.png in Resources */ = {isa = PBXBuildFile; fileRef = 239B2AFE15F2A7BC0001EA36 /* preferences.png */; };
 		239B2B0315F3124E0001EA36 /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 239B2B0215F3124E0001EA36 /* Settings.plist */; };
+		23BE595716DFA23A00E4C8F8 /* Rdio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23BE595616DFA23A00E4C8F8 /* Rdio.framework */; };
 		23D2351F1603C57C00CE0FBF /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 23D2351E1603C57C00CE0FBF /* Default-568h@2x.png */; };
-		23E1CB1215EF9A8C00148EE8 /* Rdio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23E1CB1115EF9A8C00148EE8 /* Rdio.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -130,8 +130,8 @@
 		239B2AFC15F2A79A0001EA36 /* preferences@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "preferences@2x.png"; sourceTree = "<group>"; };
 		239B2AFE15F2A7BC0001EA36 /* preferences.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = preferences.png; sourceTree = "<group>"; };
 		239B2B0215F3124E0001EA36 /* Settings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Settings.plist; sourceTree = "<group>"; };
+		23BE595616DFA23A00E4C8F8 /* Rdio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rdio.framework; path = "Rdio Alarm Clock/External Frameworks/Rdio.framework"; sourceTree = "<group>"; };
 		23D2351E1603C57C00CE0FBF /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
-		23E1CB1115EF9A8C00148EE8 /* Rdio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rdio.framework; path = "../../../Downloads/rdio-ios 4/Rdio.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,8 +139,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				23BE595716DFA23A00E4C8F8 /* Rdio.framework in Frameworks */,
 				239B2AF815F299290001EA36 /* QuartzCore.framework in Frameworks */,
-				23E1CB1215EF9A8C00148EE8 /* Rdio.framework in Frameworks */,
 				11E339E3151E24BB00760DAC /* MediaPlayer.framework in Frameworks */,
 				11E2331914F5F06700E2159F /* AVFoundation.framework in Frameworks */,
 				117E7D4914D223E200F986DD /* Security.framework in Frameworks */,
@@ -185,7 +185,7 @@
 				11DD798B1524F2BA0076D6CB /* AuthViewController.h */,
 				11DD798C1524F2BA0076D6CB /* AuthViewController.m */,
 			);
-			name = Classes;
+			path = Classes;
 			sourceTree = "<group>";
 		};
 		115302F8151B696A00B75800 /* Assets */ = {
@@ -207,12 +207,13 @@
 				112B4EA81522C88400438D4B /* timeSetRoundedRect@2x.png */,
 				112B4EA61522BE4300438D4B /* x@2x.png */,
 			);
-			name = Assets;
+			path = Assets;
 			sourceTree = "<group>";
 		};
 		11A0F0C614BFB5790055390F = {
 			isa = PBXGroup;
 			children = (
+				23BE595616DFA23A00E4C8F8 /* Rdio.framework */,
 				11A0F0DB14BFB57A0055390F /* Rdio Alarm Clock */,
 				11A0F0F314BFB57B0055390F /* Rdio Alarm ClockTests */,
 				11A0F0D414BFB57A0055390F /* Frameworks */,
@@ -233,7 +234,6 @@
 			isa = PBXGroup;
 			children = (
 				239B2AF715F299290001EA36 /* QuartzCore.framework */,
-				23E1CB1115EF9A8C00148EE8 /* Rdio.framework */,
 				11E339E2151E24BA00760DAC /* MediaPlayer.framework */,
 				11E2331814F5F06700E2159F /* AVFoundation.framework */,
 				117E7D4814D223E200F986DD /* Security.framework */,
@@ -520,6 +520,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../../Downloads/rdio-ios 4\"",
+					"\"$(SRCROOT)/Rdio Alarm Clock/External Frameworks\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Rdio Alarm Clock/Rdio Alarm-Prefix.pch";
@@ -537,6 +538,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../../Downloads/rdio-ios 4\"",
+					"\"$(SRCROOT)/Rdio Alarm Clock/External Frameworks\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Rdio Alarm Clock/Rdio Alarm-Prefix.pch";
