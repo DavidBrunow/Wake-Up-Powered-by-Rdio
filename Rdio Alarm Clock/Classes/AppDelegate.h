@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 #import <Rdio/Rdio.h>
 #import "Reachability.h"
-#import "AlarmViewController.h"
 #import "AlarmNavController.h"
 #import "SimpleKeychain.h"
 #import "AuthViewController.h"

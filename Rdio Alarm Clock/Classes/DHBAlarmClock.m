@@ -25,20 +25,20 @@
     if (!self.settings) {
         NSLog(@"Error reading plist: %@, format: %d", errorDesc, format);
     }
-    //NSDictionary *root = [temp objectForKey:@"root"];
+    
     self.sleepTime = [[self.settings valueForKey:@"Sleep Time"] integerValue];
     self.snoozeTime = [[self.settings valueForKey:@"Snooze Time"] integerValue];
-    self.autoStartAlarm = [[self.settings valueForKey:@"Auto Start Alarm"] boolValue];
+    self.isAutoStart = [[self.settings valueForKey:@"Auto Start Alarm"] boolValue];
+    //#TODO: Add shuffle to setting plist.
+    //self.isShuffle = [[self.settings valueForKey:@"Shuffle"] boolValue];
     [self setAlarmTimeFromString:[self.settings valueForKey:@"Alarm Time"]];
-    NSLog(@"Alarm Time: %@", self.alarmTime);
-    NSLog(@"Snooze Time: %d", self.snoozeTime);
 
     NSIndexPath *ipPlaylistPath = [NSIndexPath indexPathForRow:[[self.settings valueForKey:@"Playlist Number"] intValue] inSection:[[self.settings valueForKey:@"Playlist Section"] intValue]] ;
     
     if(ipPlaylistPath.section != -1 && self.playlistPath == nil) {
         self.playlistPath = ipPlaylistPath;
         self.playlistName = [self.settings valueForKey:@"Playlist Name"];
-        NSLog(@"Playlist Name: %@", self.playlistName);
+        NSLog(@"Playlist Name1: %@", self.playlistName);
     }
     
     
@@ -74,6 +74,72 @@
 
         NSLog(@"alarmTimeString: %@", alarmTimeString);
         [self.settings setValue:alarmTimeString forKey:@"Alarm Time"];
+        [self writeSettings];
+    }
+}
+
+-(void)setPlaylistName:(NSString *)playlistName
+{
+    if(playlistName) {
+        _playlistName = playlistName;
+    
+        [self.settings setValue:playlistName forKey:@"Playlist Name"];
+        [self writeSettings];
+    }
+}
+
+-(void)setPlaylistPath:(NSIndexPath *)playlistPath
+{
+    if (playlistPath) {
+        _playlistPath = playlistPath;
+    
+        [self.settings setValue:[NSString stringWithFormat:@"%d", playlistPath.section] forKey:@"Playlist Section"];
+        [self.settings setValue:[NSString stringWithFormat:@"%d", playlistPath.row] forKey:@"Playlist Number"];
+
+        [self writeSettings];
+    }
+}
+
+-(void)setSnoozeTime:(int)snoozeTime
+{
+    if(snoozeTime) {
+        _snoozeTime = snoozeTime;
+        
+        [self.settings setValue:[NSString stringWithFormat:@"%d", snoozeTime] forKey:@"Snooze Time"];
+        
+        [self writeSettings];
+    }
+}
+
+-(void)setSleepTime:(int)sleepTime
+{
+    if(sleepTime) {
+        _sleepTime = sleepTime;
+        
+        [self.settings setValue:[NSString stringWithFormat:@"%d", sleepTime] forKey:@"Sleep Time"];
+        
+        [self writeSettings];
+    }
+}
+
+-(void)setIsAutoStart:(bool)isAutoStart
+{
+    if(isAutoStart) {
+        _isAutoStart = isAutoStart;
+        
+        [self.settings setValue:[NSString stringWithFormat:@"%d", isAutoStart] forKey:@"Auto Start Alarm"];
+        
+        [self writeSettings];
+    }
+}
+
+-(void)setIsShuffle:(bool)isShuffle
+{
+    if(isShuffle) {
+        _isShuffle = isShuffle;
+        
+        [self.settings setValue:[NSString stringWithFormat:@"%d", isShuffle] forKey:@"Shuffle"];
+        
         [self writeSettings];
     }
 }

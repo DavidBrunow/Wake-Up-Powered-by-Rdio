@@ -12,7 +12,8 @@
 
 @property (nonatomic) int snoozeTime;
 @property (nonatomic) int sleepTime;
-@property (nonatomic) bool autoStartAlarm;
+@property (nonatomic) bool isAutoStart;
+@property (nonatomic) bool isShuffle;
 @property (nonatomic) bool is24h;
 @property (nonatomic) NSDictionary *settings;
 @property (nonatomic) NSString *settingsPath;

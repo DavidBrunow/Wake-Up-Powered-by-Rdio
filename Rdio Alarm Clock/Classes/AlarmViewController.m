@@ -8,7 +8,6 @@
 
 #import "AlarmViewController.h"
 #import "AlarmNavController.h"
-#import "AppDelegate.h"
 #import "SimpleKeychain.h"
 #import <Rdio/Rdio.h>
 #import <QuartzCore/QuartzCore.h>
@@ -50,7 +49,6 @@
 }
 
 - (void) getAlarmTime {
-    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"yyyy-MM-dd"];
     NSString *tempTimeString = @"";
@@ -66,19 +64,19 @@
     [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm"];
     
     tempDateString = [NSString stringWithFormat:@"%@T%@", tempDateString, tempTimeString];
-    [appDelegate.alarmClock setAlarmTime:[formatter dateFromString:tempDateString]];
+    [self.appDelegate.alarmClock setAlarmTime:[formatter dateFromString:tempDateString]];
     if(!_is24h) {
-        if ([[appDelegate.alarmClock alarmTime] earlierDate:[NSDate date]]==[appDelegate.alarmClock alarmTime]) {
-            [appDelegate.alarmClock setAlarmTime:[appDelegate.alarmTime dateByAddingTimeInterval:43200]];
-            if ([[appDelegate.alarmClock alarmTime] earlierDate:[NSDate date]]==[appDelegate.alarmClock alarmTime]) {
-                [appDelegate.alarmClock setAlarmTime:[appDelegate.alarmTime dateByAddingTimeInterval:43200]];
+        if ([[self.appDelegate.alarmClock alarmTime] earlierDate:[NSDate date]]==[self.appDelegate.alarmClock alarmTime]) {
+            [self.appDelegate.alarmClock setAlarmTime:[self.appDelegate.alarmTime dateByAddingTimeInterval:43200]];
+            if ([[self.appDelegate.alarmClock alarmTime] earlierDate:[NSDate date]]==[self.appDelegate.alarmClock alarmTime]) {
+                [self.appDelegate.alarmClock setAlarmTime:[self.appDelegate.alarmTime dateByAddingTimeInterval:43200]];
             }
         }
     } else if (_is24h) {
-        if ([[appDelegate.alarmClock alarmTime] earlierDate:[NSDate date]]==[appDelegate.alarmClock alarmTime]) {
-            [appDelegate.alarmClock setAlarmTime:[appDelegate.alarmTime dateByAddingTimeInterval:86400]];
-            if ([[appDelegate.alarmClock alarmTime] earlierDate:[NSDate date]]==[appDelegate.alarmClock alarmTime]) {
-                [appDelegate.alarmClock setAlarmTime:[appDelegate.alarmTime dateByAddingTimeInterval:86400]];
+        if ([[self.appDelegate.alarmClock alarmTime] earlierDate:[NSDate date]]==[self.appDelegate.alarmClock alarmTime]) {
+            [self.appDelegate.alarmClock setAlarmTime:[self.appDelegate.alarmTime dateByAddingTimeInterval:86400]];
+            if ([[self.appDelegate.alarmClock alarmTime] earlierDate:[NSDate date]]==[self.appDelegate.alarmClock alarmTime]) {
+                [self.appDelegate.alarmClock setAlarmTime:[self.appDelegate.alarmTime dateByAddingTimeInterval:86400]];
             }
         }
     }
@@ -112,8 +110,7 @@
 }
 
 - (void) displaySleepScreen {
-    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-    appDelegate.alarmIsSet = YES;
+    self.appDelegate.alarmIsSet = YES;
     CGRect screenRect = [[UIScreen mainScreen] bounds];
     CGRect sleepLabelRect = CGRectMake(20.0, 170.0, 280.0, 200.0);
     CGRect alarmLabelRect = CGRectMake(20.0, 20.0, 280.0, 200.0);
@@ -128,7 +125,7 @@
         [formatter setDateFormat:@"H:mm"];
         NSLog(@"this is 24 hour clock");
     }
-    alarmTimeText = [formatter stringFromDate:[appDelegate.alarmClock alarmTime]];
+    alarmTimeText = [formatter stringFromDate:[self.appDelegate.alarmClock alarmTime]];
     alarmTimeText = [alarmTimeText stringByReplacingOccurrencesOfString:@":" withString:_timeSeparator];
     sleepView = [[UIView alloc] initWithFrame:screenRect];
     
@@ -215,7 +212,7 @@
     }
     
     MPMusicPlayerController *music = [[MPMusicPlayerController alloc] init];
-    appDelegate.originalVolume = music.volume;
+    self.appDelegate.originalVolume = music.volume;
 }
 
 - (void) handlePanGesture:(UIPanGestureRecognizer *)sender {
@@ -226,8 +223,6 @@
     newFrame.origin.y += (translate.y);
     sender.view.superview.frame = newFrame;
         
-         
-    //}
     if (sender.state == UIGestureRecognizerStateEnded) {
         if (translate.y < -100.0) {
             [UIView animateWithDuration:0.3 animations:^{[sender.view.superview setFrame:CGRectMake(0.0, -[[UIScreen mainScreen] bounds].size.height, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height)];} completion:^(BOOL finished){[sender.view.superview removeFromSuperview];[self cancelAlarm];}];
@@ -245,7 +240,6 @@
 }
 
 - (void) fadeScreenOut {
-    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     MPMusicPlayerController *music = [[MPMusicPlayerController alloc] init];
     NSInteger sleepTimeSeconds = sleepTime * 60;
     if (sleepTimeSeconds == 0) {
@@ -257,62 +251,60 @@
         if (sleepTime != 0) {
             [[[AppDelegate rdioInstance] player] togglePause];
         }
-        appDelegate.appBrightness = 0.0;
+        self.appDelegate.appBrightness = 0.0;
         [_alarmLabel removeFromSuperview];
         [_chargingLabel removeFromSuperview];
         [[UIApplication sharedApplication] setIdleTimerDisabled:true];
     } else {
-        float increment = (appDelegate.originalBrightness - 0.0)/(sleepTimeSeconds);
+        float increment = (self.appDelegate.originalBrightness - 0.0)/(sleepTimeSeconds);
         float newBrightness = [UIScreen mainScreen].brightness - increment;
         [[UIScreen mainScreen] setBrightness:newBrightness];
         
-        float incrementVolume = (appDelegate.originalVolume - 0.0)/(sleepTimeSeconds);
+        float incrementVolume = (self.appDelegate.originalVolume - 0.0)/(sleepTimeSeconds);
         float newVolume = music.volume - incrementVolume;
-        if (appDelegate.appVolume > 0) {
+        if (self.appDelegate.appVolume > 0) {
             if (sleepTime != 0) {
                 [music setVolume:newVolume];
-                appDelegate.appVolume = newVolume;
+                self.appDelegate.appVolume = newVolume;
             } else {
                 [music setVolume:0];
-                appDelegate.appVolume = 0;
+                self.appDelegate.appVolume = 0;
             }
         }
     }
 }
 
 - (void) fadeScreenIn {
-    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     MPMusicPlayerController *music = [[MPMusicPlayerController alloc] init];
     
-    if (appDelegate.originalVolume <= 0.1) {
-        appDelegate.originalVolume = 0.5;
+    if (self.appDelegate.originalVolume <= 0.1) {
+        self.appDelegate.originalVolume = 0.5;
     }
     
-    if ([UIScreen mainScreen].brightness >= appDelegate.originalBrightness && music.volume >= appDelegate.originalVolume) {
+    if ([UIScreen mainScreen].brightness >= self.appDelegate.originalBrightness && music.volume >= self.appDelegate.originalVolume) {
         [fader invalidate];
     } else {
-        if ([UIScreen mainScreen].brightness < appDelegate.originalBrightness) {
-            float incrementScreen = (appDelegate.originalBrightness - 0.0)/100.0;
+        if ([UIScreen mainScreen].brightness < self.appDelegate.originalBrightness) {
+            float incrementScreen = (self.appDelegate.originalBrightness - 0.0)/100.0;
             float newBrightness = [UIScreen mainScreen].brightness + incrementScreen;
             [[UIScreen mainScreen] setBrightness:newBrightness];
-            appDelegate.appBrightness = newBrightness;
+            self.appDelegate.appBrightness = newBrightness;
         }
         
-        if (music.volume < appDelegate.originalVolume) {
-            float incrementVolume = (appDelegate.originalVolume - 0.0)/100.0;
+        if (music.volume < self.appDelegate.originalVolume) {
+            float incrementVolume = (self.appDelegate.originalVolume - 0.0)/100.0;
             float newVolume = music.volume + incrementVolume;
-            if (appDelegate.appVolume < appDelegate.originalVolume) {
+            if (self.appDelegate.appVolume < self.appDelegate.originalVolume) {
                 [music setVolume:newVolume];
-                appDelegate.appVolume = newVolume;
+                self.appDelegate.appVolume = newVolume;
             }
         }
     }
 }
 
 - (void) alarmSounding {
-    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-    appDelegate.alarmIsSet = NO;
-    appDelegate.alarmIsPlaying = YES;
+    self.appDelegate.alarmIsSet = NO;
+    self.appDelegate.alarmIsPlaying = YES;
     [fader invalidate];
     fader = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(fadeScreenIn) userInfo:nil repeats:YES];
     CGRect screenRect = [[UIScreen mainScreen] bounds];
@@ -360,9 +352,7 @@
 }
 
 - (void) bounceView
-{
-    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-    
+{    
     CGRect bounceUpFrameFirst = [[UIScreen mainScreen] bounds];
     bounceUpFrameFirst.origin.y = bounceUpFrameFirst.origin.y - 30.0;
     CGRect bounceUpFrameSecond = [[UIScreen mainScreen] bounds];
@@ -375,7 +365,7 @@
     
     if (UIAccessibilityIsVoiceOverRunning())
     {
-        if (appDelegate.alarmIsSet) {
+        if (self.appDelegate.alarmIsSet) {
             [sleepView removeFromSuperview];
             [self cancelAlarm];
             [self setAccessibilityLabel:NSLocalizedString(@"ALARM CANCELED", nil)];
@@ -432,13 +422,12 @@
 }
 
 - (void) startSnooze {
-    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     //double currentPosition = [[AppDelegate rdioInstance] player].position; 
     [[[AppDelegate rdioInstance] player] togglePause];
     
     int snoozeTimeSeconds = snoozeTime * 60;
     //#TODO: Find some way to not save the value this time, since we are only snoozing
-    [appDelegate.alarmClock setAlarmTime:[NSDate dateWithTimeIntervalSinceNow:snoozeTimeSeconds]];
+    [self.appDelegate.alarmClock setAlarmTime:[NSDate dateWithTimeIntervalSinceNow:snoozeTimeSeconds]];
     
     t = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(tick) userInfo:nil repeats:YES];
     [wakeView removeFromSuperview];
@@ -446,14 +435,13 @@
 }
 
 - (void) stopAlarm {
-    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     MPMusicPlayerController *music = [[MPMusicPlayerController alloc] init];
-    appDelegate.alarmIsSet = NO;
-    appDelegate.alarmIsPlaying = NO;
+    self.appDelegate.alarmIsSet = NO;
+    self.appDelegate.alarmIsPlaying = NO;
     
     [[UIApplication sharedApplication] setIdleTimerDisabled:false];
-    [music setVolume:appDelegate.originalVolume];
-    [[UIScreen mainScreen] setBrightness:appDelegate.originalBrightness];
+    [music setVolume:self.appDelegate.originalVolume];
+    [[UIScreen mainScreen] setBrightness:self.appDelegate.originalBrightness];
     self.navigationController.navigationBarHidden = YES;
     [[[AppDelegate rdioInstance] player] stop];
     [self determineStreamableSongs];
@@ -498,10 +486,7 @@
         [self.lblSnoozeAmount setText:[NSString stringWithFormat:@"%d mins", (int)_sliderSnooze.value]];
         //[_lblSnooze setText:[NSString stringWithFormat:NSLocalizedString(@"SNOOZE SLIDER LABEL PLURAL", nil), (int)_sliderSnooze.value]];
     }
-    NSString *sliderSnoozeString = [NSString stringWithFormat:@"%d", (int)_sliderSnooze.value];
-    [_settings setValue:sliderSnoozeString forKey:@"Snooze Time"];
-    self.snoozeTime = (int)_sliderSnooze.value;
-    [self writeSettings];
+    [self.appDelegate.alarmClock setSnoozeTime:(int)_sliderSnooze.value];
 }
 
 - (void) updateSleepLabel {
@@ -538,35 +523,12 @@
 
         //[_lblSleep setText:[NSString stringWithFormat:NSLocalizedString(@"SLEEP SLIDER LABEL PLURAL", nil), (int)sleepTimeValue]];
     }
-    NSString *sliderSleepString = [NSString stringWithFormat:@"%d", (int)sleepTimeValue];
-    [_settings setValue:sliderSleepString forKey:@"Sleep Time"];
-    self.sleepTime = (int)sleepTimeValue;
-    [self writeSettings];
+    [self.appDelegate.alarmClock setSleepTime:(int)sleepTimeValue];
 }
-
-
-
 
 - (void) updateAutoStart {
-    NSString *autoStartString = [NSString stringWithFormat:@"%d", (bool)_switchAutoStart.on];
-    [_settings setValue:autoStartString forKey:@"Auto Start Alarm"];
-    self.autoStartAlarm = (bool)_switchAutoStart.on;
-    [self writeSettings];
+    [self.appDelegate.alarmClock setIsAutoStart:(bool)_switchAutoStart.on];
 }
-
--(void)writeSettings
-{
-    //NSString* docFolder = [NSSearchPathForDirectoriesInDomains( NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    //NSString * path = [docFolder stringByAppendingPathComponent:@"Settings.plist"];
-    
-    if([_settings writeToFile:_settingsPath atomically: YES]){
-    } else {
-
-    }
-    
-}
-
-
 
 - (void) changeBatteryLabel
 {
@@ -592,7 +554,7 @@
 {
     [super viewDidLoad];
     [self.navigationController setNavigationBarHidden:YES];
-    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    self.appDelegate = [[UIApplication sharedApplication] delegate];
     [UIDevice currentDevice].batteryMonitoringEnabled = YES;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeBatteryLabel) name:@"UIDeviceBatteryStateDidChangeNotification" object:nil];
     
@@ -622,9 +584,9 @@
     
     
         
-    self.sleepTime = [appDelegate.alarmClock sleepTime];
-    self.snoozeTime = [appDelegate.alarmClock snoozeTime];
-    self.autoStartAlarm = [appDelegate.alarmClock autoStartAlarm];
+    self.sleepTime = [self.appDelegate.alarmClock sleepTime];
+    self.snoozeTime = [self.appDelegate.alarmClock snoozeTime];
+    self.autoStartAlarm = [self.appDelegate.alarmClock isAutoStart];
     
     _lastLength = 0;
     [self.navigationItem setHidesBackButton:true];
@@ -800,7 +762,7 @@
     
     //[settingsView addSubview:_lblAutoStart];
 
-    if (appDelegate.loggedIn) {
+    if (self.appDelegate.loggedIn) {
         [settingsView addSubview:btnSignOut];
         [settingsView addSubview:_lblSleep];
         [settingsView addSubview:_sliderSleep];
@@ -879,7 +841,7 @@
     [timeTextField addTarget:self action:@selector(textFieldValueChange:) forControlEvents:UIControlEventEditingChanged];
     //[timeTextField setAdjustsFontSizeToFitWidth:YES];
     timeTextField.inputAccessoryView = numberToolbar;
-    NSString *timeTextString = [NSString stringWithFormat:@"%@",[appDelegate.alarmClock getAlarmTimeString] ];
+    NSString *timeTextString = [NSString stringWithFormat:@"%@",[self.appDelegate.alarmClock getAlarmTimeString] ];
     if (timeTextString == nil) {
         timeTextString = [NSString stringWithFormat:@""];
     } else {
@@ -918,7 +880,7 @@
 
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] init];
     self.lblPlaylist = [[UILabel alloc] initWithFrame:CGRectMake(10, 154.0, self.view.frame.size.width, 200.0)];
-    if (appDelegate.loggedIn) {
+    if (self.appDelegate.loggedIn) {
         [self.lblPlaylist setText:[NSString stringWithFormat:NSLocalizedString(@"CHOOSE PLAYLIST", nil)]];
         [tap addTarget:self action:@selector(showPlaylists)];
     } else {
@@ -941,7 +903,7 @@
 
     [setAlarmView addSubview:self.lblPlaylist];
     
-    if (appDelegate.loggedIn) {
+    if (self.appDelegate.loggedIn) {
         //[setAlarmView addSubview:_chooseMusic];
     } else {
         
@@ -1006,7 +968,7 @@
         } else {
             [formatter setDateFormat:[NSString stringWithFormat:@"H:mm"]];
         }
-        alarmTimeText = [formatter stringFromDate:[appDelegate.alarmClock alarmTime]];
+        alarmTimeText = [formatter stringFromDate:[self.appDelegate.alarmClock alarmTime]];
         alarmTimeText = [alarmTimeText stringByReplacingOccurrencesOfString:@":" withString:_timeSeparator];
         self.navigationController.navigationBarHidden = YES;
         autoStartAlarmView = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
@@ -1014,7 +976,7 @@
         UILabel *autoStartAlarmViewLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 40, 240, 400)];
         [autoStartAlarmViewLabel setBackgroundColor:[UIColor clearColor]];
         [autoStartAlarmViewLabel setLineBreakMode:NSLineBreakByWordWrapping];
-        [autoStartAlarmViewLabel setText:[NSString stringWithFormat:NSLocalizedString(@"AUTO ALARM BEING SET", nil), [appDelegate.alarmClock playlistName], alarmTimeText]];
+        [autoStartAlarmViewLabel setText:[NSString stringWithFormat:NSLocalizedString(@"AUTO ALARM BEING SET", nil), [self.appDelegate.alarmClock playlistName], alarmTimeText]];
         [autoStartAlarmViewLabel setNumberOfLines:20];
         [autoStartAlarmViewLabel setAdjustsFontSizeToFitWidth:YES];
         [autoStartAlarmViewLabel setTextColor:[UIColor whiteColor]];
@@ -1042,13 +1004,12 @@
 
 -(void) setAMPMLabel
 {
-    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     [_lblAMPM removeFromSuperview];
     [self getAlarmTime];
     NSString *sAMPM;
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"a"];
-    sAMPM = [formatter stringFromDate:[appDelegate.alarmClock alarmTime]];
+    sAMPM = [formatter stringFromDate:[self.appDelegate.alarmClock alarmTime]];
     
     _lblAMPM = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 62, 12, 75, 50)];
     if ([sAMPM isEqualToString:@"PM"]) {
@@ -1094,7 +1055,6 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     [super viewDidAppear:animated];
     
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
@@ -1107,8 +1067,8 @@
     NSParagraphStyleAttributeName : paragraphStyle
     };
     
-    if([appDelegate.alarmClock playlistName]) {
-        [self.lblPlaylist setAttributedText:[[NSAttributedString alloc] initWithString:[[appDelegate.alarmClock playlistName] lowercaseString] attributes:ats]];
+    if([self.appDelegate.alarmClock playlistName]) {
+        [self.lblPlaylist setAttributedText:[[NSAttributedString alloc] initWithString:[[self.appDelegate.alarmClock playlistName] lowercaseString] attributes:ats]];
     } else {
         [self.lblPlaylist setAttributedText:[[NSAttributedString alloc] initWithString:@"choose playlist..." attributes:ats]];
     }
@@ -1116,29 +1076,16 @@
     [self.lblPlaylist setFrame:CGRectMake(10, 154.0, 300.0, 200.0)];
     [self.lblPlaylist sizeToFit];
     
-    if([appDelegate.alarmClock playlistPath] == nil) {
-        //appDelegate.selectedPlaylistPath = ipPlaylistPath;
-        //appDelegate.selectedPlaylist = [_settings valueForKey:@"Playlist Name"];
-        [self loadSongs];
-    } else if ([appDelegate.alarmClock playlistPath] != nil) {
-        //[_settings setValue:[NSNumber numberWithInteger:appDelegate.selectedPlaylistPath.section] forKey:@"Playlist Section"];
-        //[_settings setValue:[NSNumber numberWithInteger:appDelegate.selectedPlaylistPath.row] forKey:@"Playlist Number"];
-        //[_settings setValue:appDelegate.selectedPlaylist forKey:@"Playlist Name"];
-        NSLog(@"Selected Playlist Name: %@", appDelegate.selectedPlaylist);
-        NSLog(@"Selected Playlist Section: %@", appDelegate.selectedPlaylistPath);
-        //[self writeSettings];
-    }
-    
-    if (appDelegate.loggedIn) {
+    if (self.appDelegate.loggedIn) {
         [_chooseMusic reloadData];
     }
     
-    if ([appDelegate.alarmClock playlistPath] != nil && playlists != nil) {
+    if ([self.appDelegate.alarmClock playlistPath] != nil && playlists != nil) {
         [self loadSongs];
     }
     
     if(playlists == nil) {
-        if(appDelegate.loggedIn) {
+        if(self.appDelegate.loggedIn) {
             NSDictionary *trackInfo = [[NSDictionary alloc] initWithObjectsAndKeys:@"trackKeys", @"extras", nil];
             [[AppDelegate rdioInstance] callAPIMethod:@"getPlaylists" withParameters:trackInfo delegate:self];
             _loadingView = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds] ];
@@ -1277,12 +1224,11 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"musicCell"];
     
-    if ([appDelegate.alarmClock playlistPath] != nil) {
-        [cell setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"SELECTED PLAYLIST IS", nil), [appDelegate.alarmClock playlistName]]];
-        cell.textLabel.text = [appDelegate.alarmClock playlistName];
+    if ([self.appDelegate.alarmClock playlistPath] != nil) {
+        [cell setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"SELECTED PLAYLIST IS", nil), [self.appDelegate.alarmClock playlistName]]];
+        cell.textLabel.text = [self.appDelegate.alarmClock playlistName];
     } else {
         cell.textLabel.text = [NSString stringWithFormat:NSLocalizedString(@"CHOOSE PLAYLIST", nil)];
         
@@ -1440,12 +1386,11 @@
 
 - (void) tick
 {
-    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-    NSLog(@"current time: %@ & alarm time: %@", [NSDate date], [appDelegate.alarmClock alarmTime]);
+    NSLog(@"current time: %@ & alarm time: %@", [NSDate date], [self.appDelegate.alarmClock alarmTime]);
     
     NSDate *now = [NSDate date];
     
-    if([[appDelegate.alarmClock alarmTime] isEqualToDate:([[appDelegate.alarmClock alarmTime] earlierDate:now])] && !playing)
+    if([[self.appDelegate.alarmClock alarmTime] isEqualToDate:([[self.appDelegate.alarmClock alarmTime] earlierDate:now])] && !playing)
     {
         [self alarmSounding];
         [t invalidate];
@@ -1516,10 +1461,7 @@
  */
 - (void)rdioRequest:(RDAPIRequest *)request didLoadData:(id)data {
     NSString *method = [request.parameters objectForKey:@"method"];
-    
-    NSLog(@"request: %@", [request.parameters objectForKey:@"method"]);
-    //NSLog(@"data: %@", [data objectAtIndex:0]);
-    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+
     if([method isEqualToString:@"getTopCharts"]) {
         if(playlists != nil) {
             playlists = nil;
@@ -1529,72 +1471,63 @@
         songsToPlay = [[NSMutableArray alloc] initWithCapacity:playlists.count];
         //listsViewController.tableInfo = [[NSMutableArray alloc] initWithCapacity:playlists.count];
         for (int x = 0; x < playlists.count; x++) {
-            NSLog(@"top chart song: %@", [[playlists objectAtIndex:x] objectForKey:@"key"]);
             [songsToPlay addObject:[[playlists objectAtIndex:x] objectForKey:@"key"]];
-            
-            //[listsViewController.tableInfo addObject:songsToPlay];
         }
         [self determineStreamableSongs];
-        //[self getTrackKeysForAlbums];
     } else if([method isEqualToString:@"getPlaylists"]) {
         // we are returned a dictionary but it will be easier to work with an array
         // for our needs
 
         playlists = [[NSMutableArray alloc] initWithCapacity:[data count]];
-        appDelegate.typesInfo = [[NSMutableArray alloc] init];
-        appDelegate.playlistsInfo = [[NSMutableArray alloc] init];
-        appDelegate.tracksInfo = [[NSMutableArray alloc] init];
+        self.appDelegate.typesInfo = [[NSMutableArray alloc] init];
+        self.appDelegate.playlistsInfo = [[NSMutableArray alloc] init];
+        self.appDelegate.tracksInfo = [[NSMutableArray alloc] init];
         
         int x = 0;
         for(NSString *key in [data allKeys]) {
             [playlists addObject:[data objectForKey:key]];
             //NSLog(@"playlist added: %@", [data objectForKey:key]);
             for (int xy = 0; xy < [[playlists objectAtIndex:x] count]; xy++) {
-                [appDelegate.playlistsInfo addObject:[[[playlists objectAtIndex:x] objectAtIndex:xy] objectForKey:@"name"]];
+                [self.appDelegate.playlistsInfo addObject:[[[playlists objectAtIndex:x] objectAtIndex:xy] objectForKey:@"name"]];
                 if (x == 0) {
-                    appDelegate.numberOfPlaylistsCollab = [[playlists objectAtIndex:x] count];
+                    self.appDelegate.numberOfPlaylistsCollab = [[playlists objectAtIndex:x] count];
                 } else if (x == 1) {
-                    appDelegate.numberOfPlaylistsOwned = [[playlists objectAtIndex:x] count];
+                    self.appDelegate.numberOfPlaylistsOwned = [[playlists objectAtIndex:x] count];
                 } else {
-                    appDelegate.numberOfPlaylistsSubscr = [[playlists objectAtIndex:x] count];
+                    self.appDelegate.numberOfPlaylistsSubscr = [[playlists objectAtIndex:x] count];
                 }
             }
             for (int y = 0; y < [[playlists objectAtIndex:x] count]; y++) {
                 //[listsViewController.playlistsInfo addObject:[[[playlists objectAtIndex:x] objectAtIndex:y] objectForKey:@"name"]];
                 for (int z = 0; z < [[[[playlists objectAtIndex:x] objectAtIndex:y] objectForKey:@"trackKeys"] count]; z++) {
-                    [appDelegate.tracksInfo addObject:[[[playlists objectAtIndex:x] objectAtIndex:y] objectForKey:@"trackKeys"]];
+                    [self.appDelegate.tracksInfo addObject:[[[playlists objectAtIndex:x] objectAtIndex:y] objectForKey:@"trackKeys"]];
                 }
             }
             x++;
         }
-        [appDelegate.alarmClock setPlaylistPath:nil];
+        [self.appDelegate.alarmClock setPlaylistPath:nil];
         for (int i = 0; i < [playlists count]; i++) {
             for(int j = 0; j < [[playlists objectAtIndex:i] count]; j++) {
-                if ([[[[playlists objectAtIndex:i] objectAtIndex:j] objectForKey:@"name"] isEqualToString:[appDelegate.alarmClock playlistName]]) {
-                    NSLog(@"I found the right playlist! %d, %d", i, j);
-                    NSLog(@"For reference: %@", [appDelegate.alarmClock playlistName]);
-                    [appDelegate.alarmClock setPlaylistPath:[NSIndexPath indexPathForRow:j inSection:i]];
-                    [appDelegate.alarmClock setPlaylistName:[[[playlists objectAtIndex:i] objectAtIndex:j] objectForKey:@"name"]];
-                    NSLog(@"Then after setting it: %@", [appDelegate.alarmClock playlistName]);
+                if ([[[[playlists objectAtIndex:i] objectAtIndex:j] objectForKey:@"name"] isEqualToString:[self.appDelegate.alarmClock playlistName]]) {
+                    [self.appDelegate.alarmClock setPlaylistPath:[NSIndexPath indexPathForRow:j inSection:i]];
+                    [self.appDelegate.alarmClock setPlaylistName:[[[playlists objectAtIndex:i] objectAtIndex:j] objectForKey:@"name"]];
                 }
             }
         }
         
-        if(([appDelegate.alarmClock playlistPath] == nil && [appDelegate.alarmClock playlistName] != nil) || [appDelegate.alarmClock alarmTime] == nil) {
+        if(([self.appDelegate.alarmClock playlistPath] == nil && [self.appDelegate.alarmClock playlistName] != nil) || [self.appDelegate.alarmClock alarmTime] == nil) {
             //alert the user that the playlist could not be found
             [self cancelAutoStart];
-            [appDelegate.alarmClock setPlaylistName:nil];
+            [self.appDelegate.alarmClock setPlaylistName:nil];
             
         }
         
-        if([appDelegate.alarmClock playlistPath] != nil) {
+        if([self.appDelegate.alarmClock playlistPath]) {
             [self loadSongs];
             [self testToEnableAlarmButton];
         }
         [_loadingView removeFromSuperview];
-        //[self loadSongs];
-        //[self determineStreamableSongs];
-        //[self loadAlbumChoices];
+        
     } else if ([method isEqualToString:@"get"]) {
         NSLog(@"total number of keys: %d", [data allKeys].count);
         for(NSString *key in [data allKeys]) {
@@ -1611,17 +1544,12 @@
 }
 
 - (void) loadSongs 
-{
-    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+{    
+    if ([self.appDelegate.alarmClock playlistPath] != nil && playlists != nil) {
+        songsToPlay = [[NSMutableArray alloc] initWithArray:[[[playlists objectAtIndex:[self.appDelegate.alarmClock playlistPath].section] objectAtIndex:[self.appDelegate.alarmClock playlistPath].row] objectForKey:@"trackKeys"]];
+        songsToPlay = [[[playlists objectAtIndex:[self.appDelegate.alarmClock playlistPath].section] objectAtIndex:[self.appDelegate.alarmClock playlistPath].row] objectForKey:@"trackKeys"];
+    }
     
-    if ([appDelegate.alarmClock playlistPath] != nil && playlists != nil) {
-        songsToPlay = [[NSMutableArray alloc] initWithArray:[[[playlists objectAtIndex:[appDelegate.alarmClock playlistPath].section] objectAtIndex:[appDelegate.alarmClock playlistPath].row] objectForKey:@"trackKeys"]];
-        NSLog(@"section selected: %d, row selected: %d", [appDelegate.alarmClock playlistPath].section, [appDelegate.alarmClock playlistPath].row);
-        songsToPlay = [[[playlists objectAtIndex:[appDelegate.alarmClock playlistPath].section] objectAtIndex:[appDelegate.alarmClock playlistPath].row] objectForKey:@"trackKeys"];
-    } /* else {
-        songsToPlay = [[NSMutableArray alloc] initWithArray:[[[playlists objectAtIndex:1] objectAtIndex:1] objectForKey:@"trackKeys"]];
-        songsToPlay = [[[playlists objectAtIndex:1] objectAtIndex:1] objectForKey:@"trackKeys"];
-    } */
     [self determineStreamableSongs];
 }
 

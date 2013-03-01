@@ -183,10 +183,10 @@
     } else if(indexPath.section == 2) {
         selectedSection = 0;
     }
-    appDelegate.selectedPlaylistPath = [NSIndexPath indexPathForItem:indexPath.row inSection:selectedSection];
+    [appDelegate.alarmClock setPlaylistPath:[NSIndexPath indexPathForItem:indexPath.row inSection:selectedSection]];
 
     NSLog(@"section selected: %d, row selected: %d", indexPath.section, indexPath.row);
-    appDelegate.selectedPlaylist = [tableView cellForRowAtIndexPath:indexPath].textLabel.text;
+    [appDelegate.alarmClock setPlaylistName:[tableView cellForRowAtIndexPath:indexPath].textLabel.text];
     
     [self.navigationController popViewControllerAnimated:YES];
 }

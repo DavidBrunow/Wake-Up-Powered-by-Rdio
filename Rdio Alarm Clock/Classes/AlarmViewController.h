@@ -12,7 +12,7 @@
 #import "AlarmNavController.h"
 #import "ListsViewController.h"
 #import <MediaPlayer/MPVolumeView.h>
-
+#import "AppDelegate.h"
 #import <MediaPlayer/MPMusicPlayerController.h>
 
 @interface MainViewController : UIViewController <RDPlayerDelegate, RDAPIRequestDelegate, UITextFieldDelegate, UIAlertViewDelegate, UITableViewDelegate, UITableViewDataSource, UIWebViewDelegate>
@@ -67,6 +67,7 @@
 @property (nonatomic) UITableView *chooseMusic;
 @property (nonatomic) UILabel *lblSleepAmount;
 @property (nonatomic) UILabel *lblSnoozeAmount;
+@property (nonatomic) AppDelegate *appDelegate;
 
 - (void) setAlarmClicked;
 - (void) alarmSounding;
