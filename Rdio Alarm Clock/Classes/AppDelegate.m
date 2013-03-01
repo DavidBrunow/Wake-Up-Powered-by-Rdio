@@ -59,6 +59,9 @@
     } else {
         self.loggedIn = NO;
     }
+    
+    self.alarmClock = [[DHBAlarmClock alloc] init];
+    NSLog(@"here");
     mainNav = [[AlarmNavController alloc] init];
     [mainNav.navigationBar setTintColor:[UIColor colorWithRed:68.0/255 green:11.0/255 blue:104.0/255 alpha:1.0]];
     

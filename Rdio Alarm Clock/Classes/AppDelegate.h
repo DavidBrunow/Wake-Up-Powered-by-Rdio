@@ -14,6 +14,7 @@
 #import "SimpleKeychain.h"
 #import "AuthViewController.h"
 #import <MediaPlayer/MPMusicPlayerController.h>
+#import "DHBAlarmClock.h"
 
 @interface AppDelegate : NSObject <UIApplicationDelegate>
 {
@@ -53,6 +54,7 @@
 @property (nonatomic, retain) NSMutableArray *typesInfo;
 @property (nonatomic, retain) NSMutableArray *playlistsInfo;
 @property (nonatomic, retain) NSMutableArray *tracksInfo;
+@property (nonatomic, retain) DHBAlarmClock *alarmClock;
 
 
 +(Rdio *)rdioInstance;
