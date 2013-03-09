@@ -620,7 +620,7 @@
     [_sliderSnooze setThumbImage:[UIImage imageNamed:@"settings-sliderknob"] forState:UIControlStateNormal];
     [_sliderSnooze setThumbImage:[UIImage imageNamed:@"settings-sliderknob"] forState:UIControlStateHighlighted];
 
-    [_sliderSnooze setMinimumTrackImage:[UIImage imageNamed:@"settings-sliderbase"] forState:UIControlStateNormal];
+    [_sliderSnooze setMinimumTrackImage:[[UIImage imageNamed:@"settings-sliderbase"] stretchableImageWithLeftCapWidth:9 topCapHeight:0] forState:UIControlStateNormal];
     [_sliderSnooze setMaximumTrackImage:[UIImage imageNamed:@"settings-sliderbase"] forState:UIControlStateNormal];
 
     [_sliderSnooze addTarget:self action:@selector(updateSnoozeLabel) forControlEvents:UIControlEventAllEvents];
@@ -675,7 +675,7 @@
     [_sliderSleep setThumbImage:[UIImage imageNamed:@"settings-sliderknob"] forState:UIControlStateNormal];
     [_sliderSleep setThumbImage:[UIImage imageNamed:@"settings-sliderknob"] forState:UIControlStateHighlighted];
     
-    [_sliderSleep setMinimumTrackImage:[UIImage imageNamed:@"settings-sliderbase"] forState:UIControlStateNormal];
+    [_sliderSleep setMinimumTrackImage:[[UIImage imageNamed:@"settings-sliderbase"] stretchableImageWithLeftCapWidth:9 topCapHeight:0] forState:UIControlStateNormal];
     [_sliderSleep setMaximumTrackImage:[UIImage imageNamed:@"settings-sliderbase"] forState:UIControlStateNormal];
 
     [_sliderSleep addTarget:self action:@selector(updateSleepLabel) forControlEvents:UIControlEventAllEvents];
