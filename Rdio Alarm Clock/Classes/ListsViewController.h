@@ -28,5 +28,6 @@
 @property (nonatomic) int numberOfPlaylistsSubscr;
 @property (nonatomic) NSIndexPath *selectedPlaylistPath;
 @property (nonatomic) NSString *selectedPlaylist;
+@property (nonatomic) UITableView *chooseMusic;
 
 @end

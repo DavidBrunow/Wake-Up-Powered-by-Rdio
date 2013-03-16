@@ -14,11 +14,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
 }
 
 - (void) viewWillAppear:(BOOL)animated 
 {
-    [self.view setBackgroundColor:[UIColor colorWithRed:68.0/255 green:11.0/255 blue:104.0/255 alpha:1.0]];
+    //[self.view setBackgroundColor:[UIColor colorWithRed:68.0/255 green:11.0/255 blue:104.0/255 alpha:1.0]];
 }
 
 - (void) viewDidAppear:(BOOL)animated
@@ -27,6 +28,7 @@
     [[AppDelegate rdioInstance] setDelegate:self];
     alarmVC = [[MainViewController alloc] init];
     logIn = [[UIBarButtonItem alloc] initWithTitle:@"Sign In" style:UIBarButtonItemStylePlain target:self action:@selector(loginClicked)];
+    [self setNavigationBarHidden:YES];
     self.navigationBar.tintColor = [UIColor colorWithRed:68.0/255 green:11.0/255 blue:104.0/255 alpha:1.0];
     //alarmVC.title = @"Wake Up";
     
@@ -39,6 +41,7 @@
     [[alarmVC navigationItem] setHidesBackButton:TRUE];
     if (!appDelegate.loggedIn) {
         [[alarmVC navigationItem] setLeftBarButtonItem:logIn animated:YES];
+        [self loginClicked];
     }
     
     
@@ -72,7 +75,7 @@
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Logout Successful" message:@"You have been logged out of your Rdio account." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
         [alert show];
         
-        UIViewController *logInAlarmVC = [[MainViewController alloc] init];
+        //UIViewController *logInAlarmVC = [[MainViewController alloc] init];
 
         [self popToRootViewControllerAnimated:NO];
         [self popViewControllerAnimated:NO];
@@ -111,7 +114,6 @@
     [self setLoggedIn:YES];
     [logIn setTitle:@"Sign Out"];
     NSLog(@"got here");
-    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     
     bool success = [SFHFKeychainUtils storeUsername:@"rdioUser" andPassword:accessToken forServiceName:@"rdioAlarm" updateExisting:TRUE error:nil]; 
     if(!success)
