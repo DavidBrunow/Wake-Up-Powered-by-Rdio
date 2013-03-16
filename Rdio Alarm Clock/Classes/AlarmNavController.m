@@ -29,13 +29,13 @@
     alarmVC = [[MainViewController alloc] init];
     logIn = [[UIBarButtonItem alloc] initWithTitle:@"Sign In" style:UIBarButtonItemStylePlain target:self action:@selector(loginClicked)];
     [self setNavigationBarHidden:YES];
-    self.navigationBar.tintColor = [UIColor colorWithRed:68.0/255 green:11.0/255 blue:104.0/255 alpha:1.0];
+    //self.navigationBar.tintColor = [UIColor colorWithRed:68.0/255 green:11.0/255 blue:104.0/255 alpha:1.0];
     //alarmVC.title = @"Wake Up";
     
-    UIImage *navBarLogo = [UIImage imageNamed:@"navbarclockicon"];
-    UIImageView *navBarLogoView = [[UIImageView alloc] initWithImage:navBarLogo];
-    [navBarLogoView setFrame:CGRectMake(140.0, 0.0, 40.0, 40.0)];
-    [self.navigationBar addSubview:navBarLogoView];
+    //UIImage *navBarLogo = [UIImage imageNamed:@"navbarclockicon"];
+    //UIImageView *navBarLogoView = [[UIImageView alloc] initWithImage:navBarLogo];
+    //[navBarLogoView setFrame:CGRectMake(140.0, 0.0, 40.0, 40.0)];
+    //[self.navigationBar addSubview:navBarLogoView];
     
     [self pushViewController:alarmVC animated:true];
     [[alarmVC navigationItem] setHidesBackButton:TRUE];

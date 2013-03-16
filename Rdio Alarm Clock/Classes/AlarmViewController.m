@@ -14,30 +14,26 @@
 
 @implementation MainViewController
 
-@synthesize player, playButton, snoozeTime, sleepTime, autoStartAlarm;
-
 -(RDPlayer*)getPlayer
 {
-    if (player == nil) {
-        player = [AppDelegate rdioInstance].player;
+    if (self.player == nil) {
+        self.player = [AppDelegate rdioInstance].self.player;
     }
-    return player;
+    return self.player;
+}
+
+-(void)rdioPlayerChangedFromState:(RDPlayerState)oldState toState:(RDPlayerState)newState
+{
+    
 }
 
 - (void) setAlarmClicked {
     NSRange colonRange = NSRangeFromString(@"2,1");
-    
-<<<<<<< HEAD:Rdio Alarm Clock/Classes/AlarmViewController.m
-    if (timeTextField.text.length == 4 && [[timeTextField.text substringWithRange:colonRange] isEqualToString:_timeSeparator]) {
-        timeTextField.text = [timeTextField.text stringByReplacingOccurrencesOfString:_timeSeparator withString:@""];
-        timeTextField.text = [NSString stringWithFormat:@"%@%@%@", [timeTextField.text substringToIndex:1], _timeSeparator, [timeTextField.text substringFromIndex:1]];
-        //NSLog(@"newtime: %@", timeTextField.text);
-=======
+
     if (self.timeTextField.text.length == 4 && [[self.timeTextField.text substringWithRange:colonRange] isEqualToString:_timeSeparator]) {
         self.timeTextField.text = [self.timeTextField.text stringByReplacingOccurrencesOfString:_timeSeparator withString:@""];
         self.timeTextField.text = [NSString stringWithFormat:@"%@%@%@", [self.timeTextField.text substringToIndex:1], _timeSeparator, [self.timeTextField.text substringFromIndex:1]];
         NSLog(@"newtime: %@", self.timeTextField.text);
->>>>>>> refs/heads/UI-Redesign:Rdio Alarm Clock/Classes/AlarmViewController.m
     }
     
     [self setAlarm];
@@ -89,19 +85,10 @@
 }
 
 - (void) setAlarm {
-<<<<<<< HEAD:Rdio Alarm Clock/Classes/AlarmViewController.m
-    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-    [timeTextField resignFirstResponder];
-    //[timeTextField removeFromSuperview];
-    //[remindMe removeFromSuperview];
-    //[setAlarmView removeFromSuperview];
-    [self getAlarmTime];
-    //NSLog(@"alarm time: %@", appDelegate.alarmTime);
-=======
+
     [self.timeTextField resignFirstResponder];
     
     [self getAlarmTime];
->>>>>>> refs/heads/UI-Redesign:Rdio Alarm Clock/Classes/AlarmViewController.m
     
     if (remindMe.on) {
         nightlyReminder = [[UILocalNotification alloc] init];
@@ -214,16 +201,11 @@
     
     [fader invalidate];
     
-    if (sleepTime != 0) {
+    if ([self.appDelegate.alarmClock sleepTime] != 0) {
         if ([[AppDelegate rdioInstance] player].state == RDPlayerStatePaused) {
             [[[AppDelegate rdioInstance] player] togglePause];
         } else {
-<<<<<<< HEAD:Rdio Alarm Clock/Classes/AlarmViewController.m
-            self.shuffle = NO; //remove this code once the toggle for shuffling is in place
-            if(self.shuffle) {
-=======
             if([self.appDelegate.alarmClock isShuffle]) {
->>>>>>> refs/heads/UI-Redesign:Rdio Alarm Clock/Classes/AlarmViewController.m
                 songsToPlay = [self shuffle:songsToPlay];
             }
             songsToPlay = [self getEnough:songsToPlay];
@@ -234,15 +216,7 @@
         fader = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(fadeScreenOut) userInfo:nil repeats:YES]; 
     }
     
-<<<<<<< HEAD:Rdio Alarm Clock/Classes/AlarmViewController.m
-    //appDelegate.originalVolume = music.volume;
-    //[music setVolume:0.0];
-    //[[UIScreen mainScreen] setBrightness:0.0];
-    //appDelegate.appBrightness = 0.0;
-=======
-    MPMusicPlayerController *music = [[MPMusicPlayerController alloc] init];
-    self.appDelegate.originalVolume = music.volume;
->>>>>>> refs/heads/UI-Redesign:Rdio Alarm Clock/Classes/AlarmViewController.m
+    self.appDelegate.originalVolume = self.music.volume;
 }
 
 - (void) handlePanGesture:(UIPanGestureRecognizer *)sender {
@@ -270,20 +244,14 @@
 }
 
 - (void) fadeScreenOut {
-<<<<<<< HEAD:Rdio Alarm Clock/Classes/AlarmViewController.m
-    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-    
-=======
-    MPMusicPlayerController *music = [[MPMusicPlayerController alloc] init];
->>>>>>> refs/heads/UI-Redesign:Rdio Alarm Clock/Classes/AlarmViewController.m
-    NSInteger sleepTimeSeconds = sleepTime * 60;
+    NSInteger sleepTimeSeconds = [self.appDelegate.alarmClock sleepTime] * 60;
     if (sleepTimeSeconds == 0) {
         sleepTimeSeconds = 100;
     }
     
     if ([UIScreen mainScreen].brightness <= 0.0) {
         [fader invalidate];
-        if (sleepTime != 0) {
+        if ([self.appDelegate.alarmClock sleepTime] != 0) {
             [[[AppDelegate rdioInstance] player] togglePause];
         }
         self.appDelegate.appBrightness = 0.0;
@@ -294,48 +262,26 @@
         float newBrightness = [UIScreen mainScreen].brightness - increment;
         [[UIScreen mainScreen] setBrightness:newBrightness];
         
-<<<<<<< HEAD:Rdio Alarm Clock/Classes/AlarmViewController.m
-        float incrementVolume = (appDelegate.originalVolume - 0.0)/(sleepTimeSeconds);
-        float newVolume = [self.music volume] - incrementVolume;
-        if (appDelegate.appVolume > 0) {
-            if (sleepTime != 0) {
-                [self.music setVolume:newVolume];
-                appDelegate.appVolume = newVolume;
-            } else {
-                [self.music setVolume:0];
-                appDelegate.appVolume = 0;
-=======
         float incrementVolume = (self.appDelegate.originalVolume - 0.0)/(sleepTimeSeconds);
-        float newVolume = music.volume - incrementVolume;
+        float newVolume = self.music.volume - incrementVolume;
         if (self.appDelegate.appVolume > 0) {
-            if (sleepTime != 0) {
-                [music setVolume:newVolume];
+            if ([self.appDelegate.alarmClock sleepTime] != 0) {
+                [self.music setVolume:newVolume];
                 self.appDelegate.appVolume = newVolume;
             } else {
-                [music setVolume:0];
+                [self.music setVolume:0];
                 self.appDelegate.appVolume = 0;
->>>>>>> refs/heads/UI-Redesign:Rdio Alarm Clock/Classes/AlarmViewController.m
             }
         }
     }
 }
 
-- (void) fadeScreenIn {
-<<<<<<< HEAD:Rdio Alarm Clock/Classes/AlarmViewController.m
-    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-=======
-    MPMusicPlayerController *music = [[MPMusicPlayerController alloc] init];
->>>>>>> refs/heads/UI-Redesign:Rdio Alarm Clock/Classes/AlarmViewController.m
-    
+- (void) fadeScreenIn {    
     if (self.appDelegate.originalVolume <= 0.1) {
         self.appDelegate.originalVolume = 0.5;
     }
     
-<<<<<<< HEAD:Rdio Alarm Clock/Classes/AlarmViewController.m
-    if ([UIScreen mainScreen].brightness >= appDelegate.originalBrightness && [self.music volume] >= appDelegate.originalVolume) {
-=======
-    if ([UIScreen mainScreen].brightness >= self.appDelegate.originalBrightness && music.volume >= self.appDelegate.originalVolume) {
->>>>>>> refs/heads/UI-Redesign:Rdio Alarm Clock/Classes/AlarmViewController.m
+    if ([UIScreen mainScreen].brightness >= self.appDelegate.originalBrightness && self.music.volume >= self.appDelegate.originalVolume) {
         [fader invalidate];
     } else {
         if ([UIScreen mainScreen].brightness < self.appDelegate.originalBrightness) {
@@ -345,21 +291,12 @@
             self.appDelegate.appBrightness = newBrightness;
         }
         
-<<<<<<< HEAD:Rdio Alarm Clock/Classes/AlarmViewController.m
-        if ([self.music volume] < appDelegate.originalVolume) {
-            float incrementVolume = (appDelegate.originalVolume - 0.0)/100.0;
-            float newVolume = [self.music volume] + incrementVolume;
-            if (appDelegate.appVolume < appDelegate.originalVolume) {
-                [self.music setVolume:newVolume];
-                appDelegate.appVolume = newVolume;
-=======
-        if (music.volume < self.appDelegate.originalVolume) {
+        if (self.music.volume < self.appDelegate.originalVolume) {
             float incrementVolume = (self.appDelegate.originalVolume - 0.0)/100.0;
-            float newVolume = music.volume + incrementVolume;
+            float newVolume = self.music.volume + incrementVolume;
             if (self.appDelegate.appVolume < self.appDelegate.originalVolume) {
-                [music setVolume:newVolume];
+                [self.music setVolume:newVolume];
                 self.appDelegate.appVolume = newVolume;
->>>>>>> refs/heads/UI-Redesign:Rdio Alarm Clock/Classes/AlarmViewController.m
             }
         }
     }
@@ -448,30 +385,15 @@
     int x = 0;
     int oldListCount = list.count;
     
-<<<<<<< HEAD:Rdio Alarm Clock/Classes/AlarmViewController.m
-    while (oldListCount != newList.count) {
-        //NSLog(@"oldlistcount: %d, newlistcount: %d", list.count, newList.count);
-         
-=======
     while (oldListCount != newList.count) {         
->>>>>>> refs/heads/UI-Redesign:Rdio Alarm Clock/Classes/AlarmViewController.m
         int listIndex = (arc4random() % list.count);
         NSString *testObject = [list objectAtIndex:listIndex];
 
-<<<<<<< HEAD:Rdio Alarm Clock/Classes/AlarmViewController.m
-        //NSLog(@"_canBeStreamed: %@",[_canBeStreamed objectAtIndex:listIndex]);
-        if ([_canBeStreamed objectAtIndex:listIndex] == @"YES") {
-=======
         if ([[_canBeStreamed objectAtIndex:listIndex] isEqualToString:@"YES"]) {
->>>>>>> refs/heads/UI-Redesign:Rdio Alarm Clock/Classes/AlarmViewController.m
             [newList  addObject:testObject];
             [list removeObjectAtIndex:listIndex];
             [_canBeStreamed removeObjectAtIndex:listIndex];
             
-<<<<<<< HEAD:Rdio Alarm Clock/Classes/AlarmViewController.m
-            //NSLog(@"list item #%d: %@", x, [newList objectAtIndex:x]);
-=======
->>>>>>> refs/heads/UI-Redesign:Rdio Alarm Clock/Classes/AlarmViewController.m
             x++;
         } else {
             //NSLog(@"list item not added: %@", [list objectAtIndex:listIndex]);
@@ -490,10 +412,6 @@
     
     while (newList.count < 120) {
         [newList addObjectsFromArray:list];
-<<<<<<< HEAD:Rdio Alarm Clock/Classes/AlarmViewController.m
-        //NSLog(@"number of items in songstoplay now: %d", newList.count);
-=======
->>>>>>> refs/heads/UI-Redesign:Rdio Alarm Clock/Classes/AlarmViewController.m
     }
     
     return newList;
@@ -503,7 +421,7 @@
     //double currentPosition = [[AppDelegate rdioInstance] player].position; 
     [[[AppDelegate rdioInstance] player] togglePause];
     
-    int snoozeTimeSeconds = snoozeTime * 60;
+    int snoozeTimeSeconds = [self.appDelegate.alarmClock snoozeTime] * 60;
     [self.appDelegate.alarmClock setAlarmTime:[NSDate dateWithTimeIntervalSinceNow:snoozeTimeSeconds] save:NO];
     
     t = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(tick) userInfo:nil repeats:YES];
@@ -512,17 +430,6 @@
 }
 
 - (void) stopAlarm {
-<<<<<<< HEAD:Rdio Alarm Clock/Classes/AlarmViewController.m
-    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-    
-    appDelegate.alarmIsSet = NO;
-    appDelegate.alarmIsPlaying = NO;
-    
-    [[UIApplication sharedApplication] setIdleTimerDisabled:false];
-    [self.music setVolume:appDelegate.originalVolume];
-    [[UIScreen mainScreen] setBrightness:appDelegate.originalBrightness];
-    self.navigationController.navigationBarHidden = NO;
-=======
     MPMusicPlayerController *music = [[MPMusicPlayerController alloc] init];
     self.appDelegate.alarmIsSet = NO;
     self.appDelegate.alarmIsPlaying = NO;
@@ -531,7 +438,7 @@
     [music setVolume:self.appDelegate.originalVolume];
     [[UIScreen mainScreen] setBrightness:self.appDelegate.originalBrightness];
     self.navigationController.navigationBarHidden = YES;
->>>>>>> refs/heads/UI-Redesign:Rdio Alarm Clock/Classes/AlarmViewController.m
+
     [[[AppDelegate rdioInstance] player] stop];
     [self determineStreamableSongs];
     [[UIApplication sharedApplication] setIdleTimerDisabled:true];
@@ -601,55 +508,9 @@
         [self.lblSleepAmount setAdjustsFontSizeToFitWidth:YES];
         [_sliderSleep setValue:0.0];
     } else {
-<<<<<<< HEAD:Rdio Alarm Clock/Classes/AlarmViewController.m
         [_lblSleep setText:[NSString stringWithFormat:NSLocalizedString(@"SLEEP SLIDER LABEL PLURAL", nil), (int)sleepTimeValue]];
     }
-    NSString *sliderSleepString = [NSString stringWithFormat:@"%d", (int)sleepTimeValue];
-    [_settings setValue:sliderSleepString forKey:@"Sleep Time"];
-    self.sleepTime = (int)sleepTimeValue;
-    [self writeSettings];
-}
-
-- (void) updateAutoStart {
-    NSString *autoStartString = [NSString stringWithFormat:@"%d", (bool)_switchAutoStart.on];
-    [_settings setValue:autoStartString forKey:@"Auto Start Alarm"];
-    self.autoStartAlarm = (bool)_switchAutoStart.on;
-    [self writeSettings];
-}
-
-- (void) updateShuffle {
-    //NSString *shuffleString = [NSString stringWithFormat:@"%d", (bool)self.switchShuffle.on];
-    //[_settings setValue:shuffleString forKey:@"Shuffle"];
-    //self.shuffle = (bool)self.switchShuffle.on;
-    //[self writeSettings];
-}
-
--(void)writeSettings
-{
-    //NSString* docFolder = [NSSearchPathForDirectoriesInDomains( NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    //NSString * path = [docFolder stringByAppendingPathComponent:@"Settings.plist"];
-    
-    if([_settings writeToFile:_settingsPath atomically: YES]){
-    } else {
-
-    }
-    
-}
-=======
-        [self.lblSleepAmount setAdjustsFontSizeToFitWidth:NO];
->>>>>>> refs/heads/UI-Redesign:Rdio Alarm Clock/Classes/AlarmViewController.m
-
-        if(sleepTimeValue < 10) {
-            [self.lblSleepAmount setFrame:CGRectMake((self.view.frame.size.width - 106) / 2, 235.0, 126, 43)];
-        } else {
-            [self.lblSleepAmount setFrame:CGRectMake((self.view.frame.size.width - 126) / 2, 235.0, 126, 43)];
-            
-        }
-        [self.lblSleepAmount setText:[NSString stringWithFormat:@"%d mins", (int)sleepTimeValue]];
-
-        //[_lblSleep setText:[NSString stringWithFormat:NSLocalizedString(@"SLEEP SLIDER LABEL PLURAL", nil), (int)sleepTimeValue]];
-    }
-    [self.appDelegate.alarmClock setSleepTime:(int)sleepTimeValue];
+    [self.appDelegate.alarmClock setSleepTime:(int)_sliderSleep.value];
 }
 
 - (void) updateAutoStart {
@@ -708,18 +569,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-<<<<<<< HEAD:Rdio Alarm Clock/Classes/AlarmViewController.m
-    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-    [self moveSettingsToDocumentsDir];
-    self.music = [[MPMusicPlayerController alloc] init];
-    appDelegate.originalVolume = [self.music volume];
-=======
+
     self.lightTextColor = [UIColor colorWithRed:(122.0/255.0) green:(94.0/255.0) blue:(148.0/255.0) alpha:(1.0)];
     self.darkTextColor = [UIColor colorWithRed:(23.0/255.0) green:(16.0/255.0) blue:(30.0/255.0) alpha:(1.0)];
-    
+    self.music = [[MPMusicPlayerController alloc] init];
+
     [self.navigationController setNavigationBarHidden:YES];
     self.appDelegate = [[UIApplication sharedApplication] delegate];
->>>>>>> refs/heads/UI-Redesign:Rdio Alarm Clock/Classes/AlarmViewController.m
     [UIDevice currentDevice].batteryMonitoringEnabled = YES;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeBatteryLabel) name:@"UIDeviceBatteryStateDidChangeNotification" object:nil];
     
@@ -747,13 +603,6 @@
     NSRange pmRange = [dateString rangeOfString:[formatter PMSymbol]];
     _is24h = (amRange.location == NSNotFound && pmRange.location == NSNotFound);
     //NSLog(@"%@\n",(_is24h ? @"YES" : @"NO"));
-
-    
-    
-        
-    self.sleepTime = [self.appDelegate.alarmClock sleepTime];
-    self.snoozeTime = [self.appDelegate.alarmClock snoozeTime];
-    self.autoStartAlarm = [self.appDelegate.alarmClock isAutoStart];
     
     _lastLength = 0;
     [self.navigationItem setHidesBackButton:true];
@@ -783,7 +632,7 @@
     _sliderSnooze = [[UISlider alloc] initWithFrame:CGRectMake((self.view.frame.size.width - 270) / 2, 150, 270, 50)];
     [_sliderSnooze setMinimumValue:1.0];
     [_sliderSnooze setMaximumValue:30.0];
-    [_sliderSnooze setValue:snoozeTime animated:NO];
+    [_sliderSnooze setValue:[self.appDelegate.alarmClock snoozeTime] animated:NO];
     [_sliderSnooze setThumbImage:[UIImage imageNamed:@"settings-sliderknob"] forState:UIControlStateNormal];
     [_sliderSnooze setThumbImage:[UIImage imageNamed:@"settings-sliderknob"] forState:UIControlStateHighlighted];
 
@@ -838,7 +687,7 @@
     _sliderSleep = [[UISlider alloc] initWithFrame:CGRectMake((self.view.frame.size.width - 270) / 2, 280, 270, 50)];
     [_sliderSleep setMinimumValue:0.0];
     [_sliderSleep setMaximumValue:60.0];
-    [_sliderSleep setValue:sleepTime animated:NO];
+    [_sliderSleep setValue:[self.appDelegate.alarmClock sleepTime] animated:NO];
     [_sliderSleep setThumbImage:[UIImage imageNamed:@"settings-sliderknob"] forState:UIControlStateNormal];
     [_sliderSleep setThumbImage:[UIImage imageNamed:@"settings-sliderknob"] forState:UIControlStateHighlighted];
     
@@ -958,10 +807,10 @@
     self.lblShuffle = [[UILabel alloc] initWithFrame:CGRectMake(5, 310, 200, 60)];
     [self.lblShuffle setText:[NSString stringWithFormat:NSLocalizedString(@"SHUFFLE", nil)]];
     [self.lblShuffle setTextColor:[UIColor whiteColor]];
-    [self.lblShuffle setTextAlignment:UITextAlignmentCenter];
+    [self.lblShuffle setTextAlignment:NSTextAlignmentCenter];
     [self.lblShuffle setFont:[UIFont fontWithName:@"Helvetica" size:16.0]];
     [self.lblShuffle setBackgroundColor:[UIColor clearColor]];
-    [self.lblShuffle setLineBreakMode:UILineBreakModeWordWrap];
+    [self.lblShuffle setLineBreakMode:NSLineBreakByWordWrapping];
     [self.lblShuffle setNumberOfLines:10];
     [self.lblShuffle setAdjustsFontSizeToFitWidth:YES];
     
@@ -1250,14 +1099,14 @@
     }
 }
 
-<<<<<<< HEAD:Rdio Alarm Clock/Classes/AlarmViewController.m
 -(void) hideVolumeView
 {
     NSLog(@"Here");
     self.hideVolume = [[MPVolumeView alloc] initWithFrame:CGRectMake(-100, 0, 10, 0)];
     [self.hideVolume sizeToFit];
     //[self.view addSubview:self.hideVolume];
-=======
+}
+
 -(void) doneWithNumberPad
 {
     [self.timeTextField resignFirstResponder];
@@ -1268,7 +1117,6 @@
     self.listsViewController = [[ListsViewController alloc] init];
     
     [self.navigationController pushViewController:self.listsViewController animated:YES];
->>>>>>> refs/heads/UI-Redesign:Rdio Alarm Clock/Classes/AlarmViewController.m
 }
 
 -(void) setAMPMLabel
@@ -1346,20 +1194,7 @@
     paragraphStyle.lineHeightMultiple = 50.0f;
     paragraphStyle.maximumLineHeight = 50.0;
     paragraphStyle.minimumLineHeight = 50.0f;
-    
-<<<<<<< HEAD:Rdio Alarm Clock/Classes/AlarmViewController.m
-    if(ipPlaylistPath.section != -1 && appDelegate.selectedPlaylistPath == nil) {
-        //appDelegate.selectedPlaylistPath = ipPlaylistPath;
-        //appDelegate.selectedPlaylist = [_settings valueForKey:@"Playlist Name"];
-        [self loadSongs];
-    } else if (appDelegate.selectedPlaylistPath != nil) {
-        [_settings setValue:[NSNumber numberWithInteger:appDelegate.selectedPlaylistPath.section] forKey:@"Playlist Section"];
-        [_settings setValue:[NSNumber numberWithInteger:appDelegate.selectedPlaylistPath.row] forKey:@"Playlist Number"];
-        [_settings setValue:appDelegate.selectedPlaylist forKey:@"Playlist Name"];
-        //NSLog(@"Selected Playlist Name: %@", appDelegate.selectedPlaylist);
-        //NSLog(@"Selected Playlist Section: %@", appDelegate.selectedPlaylistPath);
-        [self writeSettings];
-=======
+
     NSDictionary *ats = @{
     NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Bold" size:50.0],
     NSParagraphStyleAttributeName : paragraphStyle
@@ -1369,7 +1204,6 @@
         [self.lblPlaylist setAttributedText:[[NSAttributedString alloc] initWithString:[[self.appDelegate.alarmClock playlistName] lowercaseString] attributes:ats]];
     } else {
         [self.lblPlaylist setAttributedText:[[NSAttributedString alloc] initWithString:@"choose playlist..." attributes:ats]];
->>>>>>> refs/heads/UI-Redesign:Rdio Alarm Clock/Classes/AlarmViewController.m
     }
     //[self.lblPlaylist setText:[appDelegate.selectedPlaylist lowercaseString]];
     [self.lblPlaylist setFrame:CGRectMake(10, 154.0, 300.0, 200.0)];
@@ -1437,10 +1271,7 @@
     for (int x = 1; x < songsToPlay.count; x++) {
         songsToPlayString = [NSString stringWithFormat:@"%@, %@", songsToPlayString, [songsToPlay objectAtIndex:x]];
     }
-<<<<<<< HEAD:Rdio Alarm Clock/Classes/AlarmViewController.m
-    //NSLog(@"Songs to play: %@", songsToPlayString);
-=======
->>>>>>> refs/heads/UI-Redesign:Rdio Alarm Clock/Classes/AlarmViewController.m
+    
     NSDictionary *trackInfo = [[NSDictionary alloc] initWithObjectsAndKeys:songsToPlayString, @"keys", @"canStream", @"extras", nil];
     [[AppDelegate rdioInstance] callAPIMethod:@"get" withParameters:trackInfo delegate:self];
 }
@@ -1755,16 +1586,6 @@
     return NO;
 }
 
-- (void) rdioPlayerChangedFromState:(RDPlayerState)fromState toState:(RDPlayerState)state {
-    playing = (state != RDPlayerStateInitializing && state != RDPlayerStateStopped);
-    paused = (state == RDPlayerStatePaused);
-    if (paused || !playing) {
-        [playButton setTitle:@"Play" forState:UIControlStateNormal];
-    } else {
-        [playButton setTitle:@"Pause" forState:UIControlStateNormal];
-    }
-}
-
 #pragma mark -
 #pragma mark RDAPIRequestDelegate
 /**
@@ -1777,14 +1598,7 @@
  */
 - (void)rdioRequest:(RDAPIRequest *)request didLoadData:(id)data {
     NSString *method = [request.parameters objectForKey:@"method"];
-<<<<<<< HEAD:Rdio Alarm Clock/Classes/AlarmViewController.m
-    
-    //NSLog(@"request: %@", [request.parameters objectForKey:@"method"]);
-    //NSLog(@"data: %@", [data objectAtIndex:0]);
-    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-=======
 
->>>>>>> refs/heads/UI-Redesign:Rdio Alarm Clock/Classes/AlarmViewController.m
     if([method isEqualToString:@"getTopCharts"]) {
         if(playlists != nil) {
             playlists = nil;
@@ -1794,10 +1608,6 @@
         songsToPlay = [[NSMutableArray alloc] initWithCapacity:playlists.count];
         //listsViewController.tableInfo = [[NSMutableArray alloc] initWithCapacity:playlists.count];
         for (int x = 0; x < playlists.count; x++) {
-<<<<<<< HEAD:Rdio Alarm Clock/Classes/AlarmViewController.m
-            //NSLog(@"top chart song: %@", [[playlists objectAtIndex:x] objectForKey:@"key"]);
-=======
->>>>>>> refs/heads/UI-Redesign:Rdio Alarm Clock/Classes/AlarmViewController.m
             [songsToPlay addObject:[[playlists objectAtIndex:x] objectForKey:@"key"]];
         }
         [self determineStreamableSongs];
@@ -1835,17 +1645,9 @@
         [self.appDelegate.alarmClock setPlaylistPath:nil];
         for (int i = 0; i < [playlists count]; i++) {
             for(int j = 0; j < [[playlists objectAtIndex:i] count]; j++) {
-<<<<<<< HEAD:Rdio Alarm Clock/Classes/AlarmViewController.m
-                if ([[[[playlists objectAtIndex:i] objectAtIndex:j] objectForKey:@"name"] isEqualToString:appDelegate.selectedPlaylist]) {
-                    //NSLog(@"I found the right playlist! %d, %d", i, j);
-                    //NSLog(@"For reference: %@", appDelegate.selectedPlaylistPath);
-                    appDelegate.selectedPlaylistPath = [NSIndexPath indexPathForRow:j inSection:i];
-                    //NSLog(@"Then after setting it: %@", appDelegate.selectedPlaylistPath);
-=======
                 if ([[[[playlists objectAtIndex:i] objectAtIndex:j] objectForKey:@"name"] isEqualToString:[self.appDelegate.alarmClock playlistName]]) {
                     [self.appDelegate.alarmClock setPlaylistPath:[NSIndexPath indexPathForRow:j inSection:i]];
                     [self.appDelegate.alarmClock setPlaylistName:[[[playlists objectAtIndex:i] objectAtIndex:j] objectForKey:@"name"]];
->>>>>>> refs/heads/UI-Redesign:Rdio Alarm Clock/Classes/AlarmViewController.m
                 }
             }
         }
@@ -1865,13 +1667,7 @@
         [_loadingView removeFromSuperview];
         
     } else if ([method isEqualToString:@"get"]) {
-<<<<<<< HEAD:Rdio Alarm Clock/Classes/AlarmViewController.m
-        //NSLog(@"total number of keys: %d", [data allKeys].count);
         for(NSString *key in [data allKeys]) {
-            //NSLog(@"canstream: %@", [[data objectForKey:key] objectForKey:@"canStream"]);
-=======
-        for(NSString *key in [data allKeys]) {
->>>>>>> refs/heads/UI-Redesign:Rdio Alarm Clock/Classes/AlarmViewController.m
             //[_canBeStreamed addObject:[[data objectForKey:key] objectForKey:@"canStream"]];
             if ([[[data objectForKey:key] objectForKey:@"canStream"] isEqual:[NSNumber numberWithBool:YES]]) {
                 [_canBeStreamed addObject:@"YES"];
@@ -1884,26 +1680,12 @@
 }
 
 - (void) loadSongs 
-<<<<<<< HEAD:Rdio Alarm Clock/Classes/AlarmViewController.m
-{
-    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-    
-    if (appDelegate.selectedPlaylistPath != nil && playlists != nil) {
-        songsToPlay = [[NSMutableArray alloc] initWithArray:[[[playlists objectAtIndex:appDelegate.selectedPlaylistPath.section] objectAtIndex:appDelegate.selectedPlaylistPath.row] objectForKey:@"trackKeys"]];
-        //NSLog(@"section selected: %d, row selected: %d", appDelegate.selectedPlaylistPath.section, appDelegate.selectedPlaylistPath.row);
-        songsToPlay = [[[playlists objectAtIndex:appDelegate.selectedPlaylistPath.section] objectAtIndex:appDelegate.selectedPlaylistPath.row] objectForKey:@"trackKeys"];
-    } /* else {
-        songsToPlay = [[NSMutableArray alloc] initWithArray:[[[playlists objectAtIndex:1] objectAtIndex:1] objectForKey:@"trackKeys"]];
-        songsToPlay = [[[playlists objectAtIndex:1] objectAtIndex:1] objectForKey:@"trackKeys"];
-    } */
-=======
 {    
     if ([self.appDelegate.alarmClock playlistPath] != nil && playlists != nil) {
         songsToPlay = [[NSMutableArray alloc] initWithArray:[[[playlists objectAtIndex:[self.appDelegate.alarmClock playlistPath].section] objectAtIndex:[self.appDelegate.alarmClock playlistPath].row] objectForKey:@"trackKeys"]];
         songsToPlay = [[[playlists objectAtIndex:[self.appDelegate.alarmClock playlistPath].section] objectAtIndex:[self.appDelegate.alarmClock playlistPath].row] objectForKey:@"trackKeys"];
     }
     
->>>>>>> refs/heads/UI-Redesign:Rdio Alarm Clock/Classes/AlarmViewController.m
     [self determineStreamableSongs];
 }
 

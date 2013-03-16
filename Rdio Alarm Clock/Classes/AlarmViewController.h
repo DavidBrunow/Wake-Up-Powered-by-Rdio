@@ -12,18 +12,13 @@
 #import "AlarmNavController.h"
 #import "ListsViewController.h"
 #import <MediaPlayer/MPVolumeView.h>
-<<<<<<< HEAD:Rdio Alarm Clock/Classes/AlarmViewController.h
 #import <MediaPlayer/MPMusicPlayerController.h>
 #import <MediaPlayer/MediaPlayer.h>
-=======
 #import "AppDelegate.h"
-#import <MediaPlayer/MPMusicPlayerController.h>
 #import "DHBTextField.h"
->>>>>>> refs/heads/UI-Redesign:Rdio Alarm Clock/Classes/AlarmViewController.h
 
 @interface MainViewController : UIViewController <RDPlayerDelegate, RDAPIRequestDelegate, UITextFieldDelegate, UIAlertViewDelegate, UITableViewDelegate, UITableViewDataSource, UIWebViewDelegate>
 {
-    RDPlayer* player;
     UIButton *setAlarmButton;
     bool paused;
     bool playing;
@@ -50,8 +45,6 @@
     UISlider *_sliderSnooze;
     UIView *_loadingView;
     NSMutableArray *_canBeStreamed;
-    int snoozeTime;
-    int sleepTime;
     bool autoStartAlarm;
     bool _is24h;    
     NSDictionary *_settings;
@@ -62,16 +55,9 @@
 
 @property (retain) RDPlayer *player;
 @property (nonatomic, retain) UIButton *playButton;
-@property (nonatomic) int snoozeTime;
-@property (nonatomic) int sleepTime;
-@property (nonatomic) bool autoStartAlarm;
-<<<<<<< HEAD:Rdio Alarm Clock/Classes/AlarmViewController.h
-@property (nonatomic) bool shuffle;
 @property (nonatomic, retain) UISwitch *switchShuffle;
-@property (nonatomic, retain) UILabel *lblShuffle;
 @property (nonatomic, retain) MPMusicPlayerController *music;
 @property (nonatomic, retain) MPVolumeView *hideVolume;
-=======
 @property (nonatomic, retain) UILabel *lblWakeUpTo;
 @property (nonatomic, retain) UILabel *lblPlaylist;
 @property (nonatomic) ListsViewController *listsViewController;
@@ -90,8 +76,6 @@
 @property (nonatomic) DHBTextField *timeTextField;
 @property (nonatomic) UIColor *lightTextColor;
 @property (nonatomic) UIColor *darkTextColor;
-
->>>>>>> refs/heads/UI-Redesign:Rdio Alarm Clock/Classes/AlarmViewController.h
 
 - (void) setAlarmClicked;
 - (void) alarmSounding;
