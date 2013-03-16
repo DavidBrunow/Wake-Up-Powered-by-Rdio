@@ -27,14 +27,11 @@
 - (void) setAlarmClicked {
     NSRange colonRange = NSRangeFromString(@"2,1");
     
-    if (timeTextField.text.length == 4 && [[timeTextField.text substringWithRange:colonRange] isEqualToString:_timeSeparator]) {
-        timeTextField.text = [timeTextField.text stringByReplacingOccurrencesOfString:_timeSeparator withString:@""];
-        timeTextField.text = [NSString stringWithFormat:@"%@%@%@", [timeTextField.text substringToIndex:1], _timeSeparator, [timeTextField.text substringFromIndex:1]];
-        NSLog(@"newtime: %@", timeTextField.text);
+    if (self.timeTextField.text.length == 4 && [[self.timeTextField.text substringWithRange:colonRange] isEqualToString:_timeSeparator]) {
+        self.timeTextField.text = [self.timeTextField.text stringByReplacingOccurrencesOfString:_timeSeparator withString:@""];
+        self.timeTextField.text = [NSString stringWithFormat:@"%@%@%@", [self.timeTextField.text substringToIndex:1], _timeSeparator, [self.timeTextField.text substringFromIndex:1]];
+        NSLog(@"newtime: %@", self.timeTextField.text);
     }
-    
-    NSString *tempTimeString = timeTextField.text;
-    tempTimeString = [NSString stringWithFormat:@"%@ AM", tempTimeString];
     
     [self setAlarm];
 }
@@ -53,10 +50,10 @@
     [formatter setDateFormat:@"yyyy-MM-dd"];
     NSString *tempTimeString = @"";
     
-    if (timeTextField.text.length == 4) {
-        tempTimeString = [NSString stringWithFormat:@"0%@", timeTextField.text];
+    if (self.timeTextField.text.length == 4) {
+        tempTimeString = [NSString stringWithFormat:@"0%@", self.timeTextField.text];
     } else {
-        tempTimeString = timeTextField.text;
+        tempTimeString = self.timeTextField.text;
     }
     tempTimeString = [tempTimeString stringByReplacingOccurrencesOfString:_timeSeparator withString:@":"];
         
@@ -64,19 +61,20 @@
     [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm"];
     
     tempDateString = [NSString stringWithFormat:@"%@T%@", tempDateString, tempTimeString];
-    [self.appDelegate.alarmClock setAlarmTime:[formatter dateFromString:tempDateString]];
+    [self.appDelegate.alarmClock setAlarmTime:[formatter dateFromString:tempDateString] save:YES];
     if(!_is24h) {
         if ([[self.appDelegate.alarmClock alarmTime] earlierDate:[NSDate date]]==[self.appDelegate.alarmClock alarmTime]) {
-            [self.appDelegate.alarmClock setAlarmTime:[self.appDelegate.alarmTime dateByAddingTimeInterval:43200]];
+            [self.appDelegate.alarmClock setAlarmTime:[[self.appDelegate.alarmClock alarmTime] dateByAddingTimeInterval:43200] save:NO];
+
             if ([[self.appDelegate.alarmClock alarmTime] earlierDate:[NSDate date]]==[self.appDelegate.alarmClock alarmTime]) {
-                [self.appDelegate.alarmClock setAlarmTime:[self.appDelegate.alarmTime dateByAddingTimeInterval:43200]];
+                [self.appDelegate.alarmClock setAlarmTime:[[self.appDelegate.alarmClock alarmTime] dateByAddingTimeInterval:43200] save:NO];
             }
         }
     } else if (_is24h) {
         if ([[self.appDelegate.alarmClock alarmTime] earlierDate:[NSDate date]]==[self.appDelegate.alarmClock alarmTime]) {
-            [self.appDelegate.alarmClock setAlarmTime:[self.appDelegate.alarmTime dateByAddingTimeInterval:86400]];
+            [self.appDelegate.alarmClock setAlarmTime:[[self.appDelegate.alarmClock alarmTime] dateByAddingTimeInterval:86400] save:NO];
             if ([[self.appDelegate.alarmClock alarmTime] earlierDate:[NSDate date]]==[self.appDelegate.alarmClock alarmTime]) {
-                [self.appDelegate.alarmClock setAlarmTime:[self.appDelegate.alarmTime dateByAddingTimeInterval:86400]];
+                [self.appDelegate.alarmClock setAlarmTime:[[self.appDelegate.alarmClock alarmTime] dateByAddingTimeInterval:86400] save:NO];
             }
         }
     }
@@ -84,7 +82,7 @@
 }
 
 - (void) setAlarm {
-    [timeTextField resignFirstResponder];
+    [self.timeTextField resignFirstResponder];
     
     [self getAlarmTime];
     
@@ -134,7 +132,7 @@
     [sleepView setBackgroundColor:[UIColor blackColor]];
     UILabel *sleepLabel = [[UILabel alloc] initWithFrame:sleepLabelRect];
     //[sleepLabel setText:NSLocalizedString(@"PLEASE REST PEACEFULLY", nil)];
-    [sleepLabel setTextColor:[UIColor colorWithRed:.09 green:.06 blue:.117 alpha:1.0]];
+    [sleepLabel setTextColor:self.darkTextColor];
     //[sleepLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:50.0]];
     [sleepLabel setLineBreakMode:NSLineBreakByWordWrapping];
     [sleepLabel setBackgroundColor:[UIColor blackColor]];
@@ -157,7 +155,7 @@
     
     _alarmLabel = [[UILabel alloc] initWithFrame:alarmLabelRect];
     //[_alarmLabel setText:[NSString stringWithFormat:NSLocalizedString(@"YOUR ALARM IS SET", nil), alarmTimeText]];
-    [_alarmLabel setTextColor:[UIColor colorWithRed:.09 green:.06 blue:.117 alpha:1.0]];
+    [_alarmLabel setTextColor:self.darkTextColor];
     //[_alarmLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:22.0]];
     [_alarmLabel setBackgroundColor:[UIColor blackColor]];
     [_alarmLabel setNumberOfLines:10];
@@ -168,7 +166,7 @@
     
     _chargingLabel = [[UILabel alloc] initWithFrame:chargingLabelRect];
     //[_chargingLabel setText:NSLocalizedString(@"PLUG ME IN", nil)];
-    [_chargingLabel setTextColor:[UIColor colorWithRed:.09 green:.06 blue:.117 alpha:1.0]];
+    [_chargingLabel setTextColor:self.darkTextColor];
     [_chargingLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:22.0]];
     [_chargingLabel setBackgroundColor:[UIColor blackColor]];
     [_chargingLabel setNumberOfLines:10];
@@ -183,7 +181,7 @@
     UIButton *cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [cancelButton setFrame:cancelFrame];
     
-    UIImage *cancelButtonImage = [UIImage imageNamed:@"x"];
+    UIImage *cancelButtonImage = [UIImage imageNamed:@"sleepmode-grippy"];
     
     [cancelButton setBackgroundColor:[UIColor blackColor]];
     [cancelButton setImage:cancelButtonImage forState:UIControlStateNormal];
@@ -202,7 +200,9 @@
         if ([[AppDelegate rdioInstance] player].state == RDPlayerStatePaused) {
             [[[AppDelegate rdioInstance] player] togglePause];
         } else {
-            songsToPlay = [self shuffle:songsToPlay];
+            if([self.appDelegate.alarmClock isShuffle]) {
+                songsToPlay = [self shuffle:songsToPlay];
+            }
             songsToPlay = [self getEnough:songsToPlay];
             [[[AppDelegate rdioInstance] player] playSources:songsToPlay];
         }
@@ -313,7 +313,9 @@
     if ([[AppDelegate rdioInstance] player].state == RDPlayerStatePaused) {
         [[[AppDelegate rdioInstance] player] togglePause];
     } else {
-        songsToPlay = [self shuffle:songsToPlay];
+        if ([self.appDelegate.alarmClock isShuffle]) {
+            songsToPlay = [self shuffle:songsToPlay];
+        }
         [[[AppDelegate rdioInstance] player] playSources:songsToPlay];
     }
     
@@ -338,7 +340,7 @@
     [wakeView addSubview:snoozeButton];
     
     CGRect offFrame = CGRectMake((self.view.frame.size.width - 49) / 2, self.view.frame.size.height - 19 - 49, 49, 49);
-    UIImage *offButtonImage = [UIImage imageNamed:@"orangex"];
+    UIImage *offButtonImage = [UIImage imageNamed:@"sleepmode-grippy"];
     UIButton *offButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [offButton setImage:offButtonImage forState:UIControlStateNormal];
     [offButton setAccessibilityLabel:NSLocalizedString(@"TURN OFF ALARM", nil)];
@@ -384,19 +386,15 @@
     int x = 0;
     int oldListCount = list.count;
     
-    while (oldListCount != newList.count) {
-        NSLog(@"oldlistcount: %d, newlistcount: %d", list.count, newList.count);
-         
+    while (oldListCount != newList.count) {         
         int listIndex = (arc4random() % list.count);
         testObject = [list objectAtIndex:listIndex];
 
-        NSLog(@"_canBeStreamed: %@",[_canBeStreamed objectAtIndex:listIndex]); 
         if ([[_canBeStreamed objectAtIndex:listIndex] isEqualToString:@"YES"]) {
             [newList  addObject:testObject];
             [list removeObjectAtIndex:listIndex];
             [_canBeStreamed removeObjectAtIndex:listIndex];
             
-            NSLog(@"list item #%d: %@", x, [newList objectAtIndex:x]);
             x++;
         } else {
             NSLog(@"list item not added: %@", [list objectAtIndex:listIndex]);
@@ -415,7 +413,6 @@
     
     while (newList.count < 120) {
         [newList addObjectsFromArray:list];
-        NSLog(@"number of items in songstoplay now: %d", newList.count);
     }
     
     return newList;
@@ -426,8 +423,7 @@
     [[[AppDelegate rdioInstance] player] togglePause];
     
     int snoozeTimeSeconds = snoozeTime * 60;
-    //#TODO: Find some way to not save the value this time, since we are only snoozing
-    [self.appDelegate.alarmClock setAlarmTime:[NSDate dateWithTimeIntervalSinceNow:snoozeTimeSeconds]];
+    [self.appDelegate.alarmClock setAlarmTime:[NSDate dateWithTimeIntervalSinceNow:snoozeTimeSeconds] save:NO];
     
     t = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(tick) userInfo:nil repeats:YES];
     [wakeView removeFromSuperview];
@@ -527,7 +523,36 @@
 }
 
 - (void) updateAutoStart {
-    [self.appDelegate.alarmClock setIsAutoStart:(bool)_switchAutoStart.on];
+    if ([self.appDelegate.alarmClock isAutoStart]) {
+        [self.lblAutoStartNO setHidden:NO];
+        [self.lblAutoStartYES setHidden:YES];
+        [self.sliderAutoStart setValue:0.05 animated:YES];
+        [self.sliderAutoStart setThumbImage:[UIImage imageNamed:@"settings-onoff-knoboff"] forState:UIControlStateNormal];
+        [self.appDelegate.alarmClock setIsAutoStart:NO];
+    } else {
+        [self.lblAutoStartNO setHidden:YES];
+        [self.lblAutoStartYES setHidden:NO];
+        [self.sliderAutoStart bringSubviewToFront:self.inputView];
+        [self.sliderAutoStart setValue:0.95 animated:YES];
+        [self.sliderAutoStart setThumbImage:[UIImage imageNamed:@"settings-onoff-knobon"] forState:UIControlStateNormal];        
+        [self.appDelegate.alarmClock setIsAutoStart:YES];
+    }
+}
+
+- (void) updateShuffle {
+    if ([self.appDelegate.alarmClock isShuffle]) {
+        [self.lblShuffleNO setHidden:NO];
+        [self.lblShuffleYES setHidden:YES];
+        [self.sliderShuffle setValue:0.05 animated:YES];
+        [self.sliderShuffle setThumbImage:[UIImage imageNamed:@"settings-onoff-knoboff"] forState:UIControlStateNormal];
+        [self.appDelegate.alarmClock setIsShuffle:NO];
+    } else {
+        [self.lblShuffleNO setHidden:YES];
+        [self.lblShuffleYES setHidden:NO];
+        [self.sliderShuffle setValue:0.95 animated:YES];
+        [self.sliderShuffle setThumbImage:[UIImage imageNamed:@"settings-onoff-knobon"] forState:UIControlStateNormal];
+        [self.appDelegate.alarmClock setIsShuffle:YES];
+    }
 }
 
 - (void) changeBatteryLabel
@@ -553,6 +578,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.lightTextColor = [UIColor colorWithRed:(122.0/255.0) green:(94.0/255.0) blue:(148.0/255.0) alpha:(1.0)];
+    self.darkTextColor = [UIColor colorWithRed:(23.0/255.0) green:(16.0/255.0) blue:(30.0/255.0) alpha:(1.0)];
+    
     [self.navigationController setNavigationBarHidden:YES];
     self.appDelegate = [[UIApplication sharedApplication] delegate];
     [UIDevice currentDevice].batteryMonitoringEnabled = YES;
@@ -600,20 +628,20 @@
     //UIColor *backgroundColor = [[UIColor alloc] initWithPatternImage:[UIImage imageNamed:@"550L_cloth.jpg"]];
     [settingsView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"settings-darkbg"]]];
     
-    CGRect frameBtnSignOut = CGRectMake((self.view.frame.size.width - 89) / 2, self.view.frame.size.height - 125, 89, 29);
+    CGRect frameBtnSignOut = CGRectMake((self.view.frame.size.width - 78) / 2, self.view.frame.size.height - 125, 78, 29);
     UIButton *btnSignOut = [UIButton buttonWithType:UIButtonTypeCustom];
     [btnSignOut setFrame:frameBtnSignOut];
     [btnSignOut setTitle:[NSString stringWithFormat:NSLocalizedString(@"SIGN OUT", nil)] forState:UIControlStateNormal];
     [btnSignOut.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12.0]];
     
     [btnSignOut.titleLabel setAdjustsFontSizeToFitWidth:YES];
-    [btnSignOut setTitleColor:[UIColor colorWithRed:0.48 green:0.37 blue:0.58 alpha:1.0] forState:UIControlStateNormal];
+    [btnSignOut setTitleColor:self.lightTextColor forState:UIControlStateNormal];
     [btnSignOut setBackgroundImage:[UIImage imageNamed:@"settings-btn-signout"] forState:UIControlStateNormal];
     [btnSignOut setBackgroundImage:[UIImage imageNamed:@"settings-btn-signout-pressed"] forState:UIControlStateHighlighted];
 
     [btnSignOut addTarget:self action:@selector(loginClicked) forControlEvents:UIControlEventTouchUpInside];
     
-    _sliderSnooze = [[UISlider alloc] initWithFrame:CGRectMake((self.view.frame.size.width - 250) / 2, 150, 250, 50)];
+    _sliderSnooze = [[UISlider alloc] initWithFrame:CGRectMake((self.view.frame.size.width - 270) / 2, 150, 270, 50)];
     [_sliderSnooze setMinimumValue:1.0];
     [_sliderSnooze setMaximumValue:30.0];
     [_sliderSnooze setValue:snoozeTime animated:NO];
@@ -633,8 +661,8 @@
     } else {
         [_lblSnooze setText:[NSString stringWithFormat:NSLocalizedString(@"SNOOZE SLIDER LABEL PLURAL", nil), (int)_sliderSnooze.value]];
     }
-    //[_lblSnooze setTextColor:[UIColor colorWithRed:0.48 green:0.37 blue:0.58 alpha:1.0]];
-    [_lblSnooze setTextColor:[UIColor colorWithRed:.09 green:.06 blue:.117 alpha:1.0]];
+    //[_lblSnooze setTextColor:self.lightTextColor];
+    [_lblSnooze setTextColor:self.darkTextColor];
 
     [_lblSnooze setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:18.0]];
     [_lblSnooze setBackgroundColor:[UIColor clearColor]];
@@ -664,11 +692,11 @@
     
     [self.lblSnoozeAmount setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:34.0]];
     [self.lblSnoozeAmount setBackgroundColor:[UIColor clearColor]];
-    [self.lblSnoozeAmount setTextColor:[UIColor colorWithRed:0.48 green:0.37 blue:0.58 alpha:1.0]];
+    [self.lblSnoozeAmount setTextColor:self.lightTextColor];
     
     [settingsView addSubview:self.lblSnoozeAmount];
     
-    _sliderSleep = [[UISlider alloc] initWithFrame:CGRectMake((self.view.frame.size.width - 250) / 2, 280, 250, 50)];
+    _sliderSleep = [[UISlider alloc] initWithFrame:CGRectMake((self.view.frame.size.width - 270) / 2, 280, 270, 50)];
     [_sliderSleep setMinimumValue:0.0];
     [_sliderSleep setMaximumValue:60.0];
     [_sliderSleep setValue:sleepTime animated:NO];
@@ -689,8 +717,8 @@
     } else {
         [_lblSleep setText:[NSString stringWithFormat:NSLocalizedString(@"SLEEP SLIDER LABEL PLURAL", nil), (int)_sliderSleep.value]];
     }
-    //[_lblSleep setTextColor:[UIColor colorWithRed:0.48 green:0.37 blue:0.58 alpha:1.0]];
-    [_lblSleep setTextColor:[UIColor colorWithRed:.09 green:.06 blue:.117 alpha:1.0]];
+    //[_lblSleep setTextColor:self.lightTextColor];
+    [_lblSleep setTextColor:self.darkTextColor];
     [_lblSleep setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:18.0]];
     [_lblSleep setBackgroundColor:[UIColor clearColor]];
     [_lblSleep setNumberOfLines:10];
@@ -703,64 +731,136 @@
     [settingsView addSubview:sleepBubble];
     
     self.lblSleepAmount = [[UILabel alloc] initWithFrame:CGRectMake((self.view.frame.size.width - 126) / 2, 105.0, 126, 43)];
-    
-    float sleepTimeValue;
-    double svalue = _sliderSleep.value / 10.0;
-    double dvalue = svalue - floor(svalue);
-    //Check if the decimal value is closer to a 5 or not
-    if(dvalue >= 0.25 && dvalue < 0.75)
-        dvalue = floorf(svalue) + 0.5f;
-    else
-        dvalue = roundf(svalue);
-    sleepTimeValue = dvalue * 10;
-    
-    if (sleepTimeValue < 5) {
+    NSLog(@"Sleep time: %d", [self.appDelegate.alarmClock sleepTime]);
+    if ([self.appDelegate.alarmClock sleepTime] == 0) {
         //[_lblSleep setText:[NSString stringWithFormat:NSLocalizedString(@"SLEEP SLIDER LABEL DISABLED", nil)]];
         [self.lblSleepAmount setText:[NSString stringWithFormat:@"DISABLED"]];
         [self.lblSleepAmount setFrame:CGRectMake((self.view.frame.size.width - 124) / 2, 232.0, 126, 43)];
         [self.lblSleepAmount setAdjustsFontSizeToFitWidth:YES];
-        [_sliderSleep setValue:0.0];
+        [_sliderSleep setValue:[self.appDelegate.alarmClock sleepTime]];
     } else {
         [self.lblSleepAmount setAdjustsFontSizeToFitWidth:NO];
         
-        if(sleepTimeValue < 10) {
+        if([self.appDelegate.alarmClock sleepTime] < 10) {
             [self.lblSleepAmount setFrame:CGRectMake((self.view.frame.size.width - 106) / 2, 235.0, 126, 43)];
         } else {
             [self.lblSleepAmount setFrame:CGRectMake((self.view.frame.size.width - 126) / 2, 235.0, 126, 43)];
             
         }
-        [self.lblSleepAmount setText:[NSString stringWithFormat:@"%d mins", (int)sleepTimeValue]];
+        [_sliderSleep setValue:[self.appDelegate.alarmClock sleepTime]];
+        [self.lblSleepAmount setText:[NSString stringWithFormat:@"%d mins", [self.appDelegate.alarmClock sleepTime]]];
         
         //[_lblSleep setText:[NSString stringWithFormat:NSLocalizedString(@"SLEEP SLIDER LABEL PLURAL", nil), (int)sleepTimeValue]];
     }
     
     [self.lblSleepAmount setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:34.0]];
     [self.lblSleepAmount setBackgroundColor:[UIColor clearColor]];
-    [self.lblSleepAmount setTextColor:[UIColor colorWithRed:0.48 green:0.37 blue:0.58 alpha:1.0]];
+    [self.lblSleepAmount setTextColor:self.lightTextColor];
     
     [settingsView addSubview:self.lblSleepAmount];
     
-    _switchAutoStart = [[UISwitch alloc] initWithFrame:CGRectMake((self.view.frame.size.width - 80) / 2, 325, 50, 50)];
-    [_switchAutoStart setOn:autoStartAlarm animated:NO];
-    [_switchAutoStart setTintColor:[UIColor colorWithRed:0.48 green:0.37 blue:0.58 alpha:1.0]];
-    //[_switchAutoStart setThumbTintColor:[UIColor colorWithRed:0.48 green:0.37 blue:0.58 alpha:1.0]];];
-    [_switchAutoStart addTarget:self action:@selector(updateAutoStart) forControlEvents:UIControlEventAllEvents];
+    self.sliderAutoStart = [[UISlider alloc] initWithFrame:CGRectMake((self.view.frame.size.width - 88), 345, 78, 28)];
+    [self.sliderAutoStart setThumbImage:[UIImage imageNamed:@"settings-onoff-knoboff"] forState:UIControlStateNormal];
+    [self.sliderAutoStart setThumbImage:[UIImage imageNamed:@"settings-onoff-knoboff"] forState:UIControlStateHighlighted];
     
-    //[settingsView addSubview:_switchAutoStart];
-    
-    _lblAutoStart = [[UILabel alloc] initWithFrame:CGRectMake((self.view.frame.size.width - 200) / 2, 260, 200, 60)];
-    [_lblAutoStart setText:[NSString stringWithFormat:NSLocalizedString(@"AUTO ALARM", nil)]];
-    [_lblAutoStart setTextColor:[UIColor colorWithRed:0.48 green:0.37 blue:0.58 alpha:1.0]];
-    //[_lblAutoStart setTextColor:[UIColor colorWithRed:.09 green:.06 blue:.117 alpha:1.0]];
+    [self.sliderAutoStart setMinimumTrackImage:[[UIImage imageNamed:@"settings-onoff-bg"] resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 15.0, 0.0, 15.0)] forState:UIControlStateNormal];
+    [self.sliderAutoStart setMaximumTrackImage:[[UIImage imageNamed:@"settings-onoff-bg"] resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 15.0, 0.0, 15.0)] forState:UIControlStateNormal];
+    [self.sliderAutoStart addTarget:self action:@selector(updateAutoStart) forControlEvents:UIControlEventTouchDown]; 
+    [self.sliderAutoStart addTarget:self action:@selector(updateAutoStart) forControlEvents:UIControlEventTouchDragInside];
+    [self.sliderAutoStart addTarget:self action:@selector(updateAutoStart) forControlEvents:UIControlEventTouchDragOutside];
+    [self.sliderAutoStart setContinuous:NO];
 
-    [_lblAutoStart setTextAlignment:NSTextAlignmentCenter];
+    [settingsView addSubview:self.sliderAutoStart];
+    
+    self.lblAutoStartNO = [[UILabel alloc] initWithFrame:CGRectMake(38,0,30,28)];
+    [self.lblAutoStartNO setText:[NSString stringWithFormat:NSLocalizedString(@"LBLSLIDERNO", nil)]];
+    [self.lblAutoStartNO setBackgroundColor:[UIColor clearColor]];
+    [self.lblAutoStartNO setTextColor:self.lightTextColor];
+    [self.lblAutoStartNO setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12.0]];
+
+    self.lblAutoStartYES = [[UILabel alloc] initWithFrame:CGRectMake(18,0,30,28)];
+    [self.lblAutoStartYES setText:[NSString stringWithFormat:NSLocalizedString(@"LBLSLIDERYES", nil)]];
+    [self.lblAutoStartYES setBackgroundColor:[UIColor clearColor]];
+    [self.lblAutoStartYES setTextColor:self.lightTextColor];
+    [self.lblAutoStartYES setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12.0]];
+
+    [self.sliderAutoStart addSubview:self.lblAutoStartYES];
+    [self.sliderAutoStart addSubview:self.lblAutoStartNO];
+    
+    if ([self.appDelegate.alarmClock isAutoStart]) {
+        [self.lblAutoStartNO setHidden:YES];
+        [self.sliderAutoStart setThumbImage:[UIImage imageNamed:@"settings-onoff-knobon"] forState:UIControlStateNormal];
+        [self.sliderAutoStart setThumbImage:[UIImage imageNamed:@"settings-onoff-knobon"] forState:UIControlStateHighlighted];
+        [self.sliderAutoStart setValue:0.95 animated:NO];
+    } else {
+        [self.lblAutoStartYES setHidden:YES];
+        [self.sliderAutoStart setValue:0.05 animated:NO];
+    }
+    
+    _lblAutoStart = [[UILabel alloc] initWithFrame:CGRectMake(15, 329, 200, 60)];
+    [_lblAutoStart setText:[NSString stringWithFormat:NSLocalizedString(@"AUTO ALARM", nil)]];
+    [_lblAutoStart setTextColor:self.lightTextColor];
+
+    [_lblAutoStart setTextAlignment:NSTextAlignmentLeft];
     [_lblAutoStart setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:16.0]];
     [_lblAutoStart setBackgroundColor:[UIColor clearColor]];
     [_lblAutoStart setLineBreakMode:NSLineBreakByWordWrapping];
-    [_lblAutoStart setNumberOfLines:10];
+    [_lblAutoStart setNumberOfLines:2];
     [_lblAutoStart setAdjustsFontSizeToFitWidth:YES];
     
-    //[settingsView addSubview:_lblAutoStart];
+    [settingsView addSubview:_lblAutoStart];
+
+    self.sliderShuffle = [[UISlider alloc] initWithFrame:CGRectMake((self.view.frame.size.width - 88), 405, 78, 28)];
+    [self.sliderShuffle setThumbImage:[UIImage imageNamed:@"settings-onoff-knoboff"] forState:UIControlStateNormal];
+    [self.sliderShuffle setThumbImage:[UIImage imageNamed:@"settings-onoff-knoboff"] forState:UIControlStateHighlighted];
+    
+    [self.sliderShuffle setMinimumTrackImage:[[UIImage imageNamed:@"settings-onoff-bg"] resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 15.0, 0.0, 15.0)] forState:UIControlStateNormal];
+    [self.sliderShuffle setMaximumTrackImage:[[UIImage imageNamed:@"settings-onoff-bg"] resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 15.0, 0.0, 15.0)] forState:UIControlStateNormal];
+    [self.sliderShuffle addTarget:self action:@selector(updateShuffle) forControlEvents:UIControlEventTouchDown];
+    [self.sliderShuffle addTarget:self action:@selector(updateShuffle) forControlEvents:UIControlEventTouchDragInside];
+    [self.sliderShuffle addTarget:self action:@selector(updateShuffle) forControlEvents:UIControlEventTouchDragOutside];
+    [self.sliderShuffle setContinuous:NO];
+    
+    [settingsView addSubview:self.sliderShuffle];
+    
+    self.lblShuffleNO = [[UILabel alloc] initWithFrame:CGRectMake(38,0,30,28)];
+    [self.lblShuffleNO setText:[NSString stringWithFormat:NSLocalizedString(@"LBLSLIDERNO", nil)]];
+    [self.lblShuffleNO setBackgroundColor:[UIColor clearColor]];
+    [self.lblShuffleNO setTextColor:self.lightTextColor];
+    [self.lblShuffleNO setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12.0]];
+    
+    self.lblShuffleYES = [[UILabel alloc] initWithFrame:CGRectMake(18,0,30,28)];
+    [self.lblShuffleYES setText:[NSString stringWithFormat:NSLocalizedString(@"LBLSLIDERYES", nil)]];
+    [self.lblShuffleYES setBackgroundColor:[UIColor clearColor]];
+    [self.lblShuffleYES setTextColor:self.lightTextColor];
+    [self.lblShuffleYES setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12.0]];
+    
+    [self.sliderShuffle addSubview:self.lblShuffleYES];
+    [self.sliderShuffle addSubview:self.lblShuffleNO];
+    
+    if ([self.appDelegate.alarmClock isShuffle]) {
+        [self.lblShuffleNO setHidden:YES];
+        [self.sliderShuffle setThumbImage:[UIImage imageNamed:@"settings-onoff-knobon"] forState:UIControlStateNormal];
+        [self.sliderShuffle setThumbImage:[UIImage imageNamed:@"settings-onoff-knobon"] forState:UIControlStateHighlighted];
+        [self.sliderShuffle setValue:0.95 animated:NO];
+    } else {
+        [self.lblShuffleYES setHidden:YES];
+        [self.sliderShuffle setValue:0.05 animated:NO];
+    }
+    
+    self.lblShuffle = [[UILabel alloc] initWithFrame:CGRectMake(15, 389, 200, 60)];
+    [self.lblShuffle setText:[NSString stringWithFormat:NSLocalizedString(@"SHUFFLE", nil)]];
+    [self.lblShuffle setTextColor:self.lightTextColor];
+    //[_lblAutoStart setTextColor:self.darkTextColor];
+    
+    [self.lblShuffle setTextAlignment:NSTextAlignmentLeft];
+    [self.lblShuffle setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:16.0]];
+    [self.lblShuffle setBackgroundColor:[UIColor clearColor]];
+    [self.lblShuffle setLineBreakMode:NSLineBreakByWordWrapping];
+    [self.lblShuffle setNumberOfLines:2];
+    [self.lblShuffle setAdjustsFontSizeToFitWidth:YES];
+    
+    [settingsView addSubview:self.lblShuffle];
 
     if (self.appDelegate.loggedIn) {
         [settingsView addSubview:btnSignOut];
@@ -776,7 +876,7 @@
     UILabel *lblName = [[UILabel alloc] initWithFrame:CGRectMake((self.view.frame.size.width - 300) / 2, self.view.frame.size.height - 60, 300, 50)];
     [lblName setText:[NSString stringWithFormat:@"David Brunow\n@davidbrunow\nhelloDavid@brunow.org"]];
     [lblName setText:[NSString stringWithFormat:@"Designed and Developed in Texas by\nJenni Leder @thoughtbrain jenni.leder@gmail.com\nDavid Brunow @davidbrunow helloDavid@brunow.org"]];
-    [lblName setTextColor:[UIColor colorWithRed:.09 green:.06 blue:.117 alpha:1.0]];
+    [lblName setTextColor:self.darkTextColor];
     [lblName setTextColor:[UIColor blackColor]];
 
     [lblName setFont:[UIFont fontWithName:@"HelveticaNeue" size:11.0]];
@@ -789,7 +889,6 @@
     [self.view addSubview:settingsView];
     
     setAlarmView = [[UIView alloc] initWithFrame:fullScreen];
-    //[setAlarmView setBackgroundColor:[UIColor colorWithRed:68.0/255 green:11.0/255 blue:104.0/255 alpha:1.0]];
     [setAlarmView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Default-568h"]]];
     
     CGRect setAlarmFrame = CGRectMake((self.view.frame.size.width - 240) / 2, self.view.frame.size.height - 150, 240, 50);
@@ -802,7 +901,7 @@
     [setAlarmButton.titleLabel setAdjustsFontSizeToFitWidth:TRUE];
     [setAlarmButton addTarget:self action:@selector(setAlarmClicked) forControlEvents:UIControlEventTouchUpInside];
     [setAlarmButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:35.0]];
-    [setAlarmButton setTitleColor:[UIColor colorWithRed:0.48 green:0.37 blue:0.58 alpha:1.0] forState:UIControlStateNormal];
+    [setAlarmButton setTitleColor:self.lightTextColor forState:UIControlStateNormal];
     [setAlarmButton setTitleColor:[UIColor grayColor] forState:UIControlStateDisabled];
     [setAlarmButton setEnabled:NO];
     [setAlarmView addSubview:setAlarmButton];
@@ -828,26 +927,27 @@
     [numberToolbar sizeToFit];
     
     
-    timeTextField = [[UITextField alloc] initWithFrame:timeTextFrame];
-    [timeTextField setDelegate:self];
-    [timeTextField setBackgroundColor:[UIColor clearColor]];
-    [timeTextField setTextAlignment:NSTextAlignmentLeft];
-    [timeTextField setTextColor:[UIColor colorWithRed:.09 green:.06 blue:.117 alpha:1.0]];
-    [timeTextField setKeyboardType:UIKeyboardTypeNumberPad];
-    [timeTextField setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:92]];
+    self.timeTextField = [[DHBTextField alloc] initWithFrame:timeTextFrame];
+    [self.timeTextField setDelegate:self];
+    [self.timeTextField setBackgroundColor:[UIColor clearColor]];
+    [self.timeTextField setTextAlignment:NSTextAlignmentLeft];
+    [self.timeTextField setTextColor:self.darkTextColor];
+    [self.timeTextField setKeyboardType:UIKeyboardTypeNumberPad];
+    [self.timeTextField setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:92]];
     //[timeTextField setBounds:CGRectMake(5.0, 60, 300, 150)];
     //[timeTextField setContentMode:UIViewContentModeScaleToFill];
-    [timeTextField setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"CHOOSE ALARM TIME", nil)]];
-    [timeTextField addTarget:self action:@selector(textFieldValueChange:) forControlEvents:UIControlEventEditingChanged];
+    [self.timeTextField setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"CHOOSE ALARM TIME", nil)]];
+    [self.timeTextField addTarget:self action:@selector(textFieldValueChange:) forControlEvents:UIControlEventEditingChanged];
     //[timeTextField setAdjustsFontSizeToFitWidth:YES];
-    timeTextField.inputAccessoryView = numberToolbar;
+    self.timeTextField.inputAccessoryView = numberToolbar;
+    [self.timeTextField setKeyboardAppearance:UIKeyboardAppearanceAlert];
     NSString *timeTextString = [NSString stringWithFormat:@"%@",[self.appDelegate.alarmClock getAlarmTimeString] ];
     if (timeTextString == nil) {
         timeTextString = [NSString stringWithFormat:@""];
     } else {
         timeTextString = [timeTextString stringByReplacingOccurrencesOfString:@"h" withString:_timeSeparator];
     }
-    [timeTextField setText:timeTextString];
+    [self.timeTextField setText:timeTextString];
     
     //TODO: Make sure that the default time of 06:00 will work with 24 hour clocks
     
@@ -856,8 +956,8 @@
     
     [self.view addGestureRecognizer:dismissTap];
     
-    [timeTextField setPlaceholder:_timeSeparator];
-    [setAlarmView addSubview:timeTextField];
+    [self.timeTextField setPlaceholder:_timeSeparator];
+    [setAlarmView addSubview:self.timeTextField];
     
     CGRect chooseMusicFrame = CGRectMake(30.0, 300, 260.0, 100.0);
     _chooseMusic = [[UITableView alloc] initWithFrame:chooseMusicFrame style:UITableViewStyleGrouped];
@@ -870,9 +970,9 @@
     self.lblWakeUpTo = [[UILabel alloc] initWithFrame:CGRectMake(10, 131.0, 300.0, 40.0)];
     [self.lblWakeUpTo setText:[NSString stringWithFormat:NSLocalizedString(@"WAKE UP TO", nil)]];
     [self.lblWakeUpTo setBackgroundColor:[UIColor clearColor]];
-    [self.lblWakeUpTo setTextColor:[UIColor colorWithRed:.09 green:.06 blue:.117 alpha:1.0]];
+    [self.lblWakeUpTo setTextColor:self.darkTextColor];
     [self.lblWakeUpTo setNumberOfLines:1];
-    [self.lblWakeUpTo setContentMode:UIControlContentVerticalAlignmentTop];
+    [self.lblWakeUpTo setContentMode:UIViewContentModeTop];
     [self.lblWakeUpTo setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:19.0]];
     [self.lblWakeUpTo sizeToFit];
     
@@ -888,7 +988,7 @@
         [tap addTarget:self action:@selector(RdioSignUp)];
     }
     [self.lblPlaylist setBackgroundColor:[UIColor clearColor]];
-    [self.lblPlaylist setTextColor:[UIColor colorWithRed:0.48 green:0.37 blue:0.58 alpha:1.0]];
+    [self.lblPlaylist setTextColor:self.lightTextColor];
     [self.lblPlaylist sizeToFit];
     if (self.view.frame.size.height > 480) {
         [self.lblPlaylist setNumberOfLines:4];
@@ -899,8 +999,6 @@
     [self.lblPlaylist setUserInteractionEnabled:YES];
     [self.lblPlaylist addGestureRecognizer:tap];
     
-    
-
     [setAlarmView addSubview:self.lblPlaylist];
     
     if (self.appDelegate.loggedIn) {
@@ -937,18 +1035,19 @@
     [self.view addSubview:hideVolume];
 */
     [setAlarmView.layer setShadowColor:[UIColor blackColor].CGColor];
-    [setAlarmView.layer setShadowOffset:CGSizeMake(2.0, 2.0)];
-    [setAlarmView.layer setShadowRadius:6.0];
-    [setAlarmView.layer setShadowOpacity:1.0];
+    [setAlarmView.layer setShadowOffset:CGSizeMake(1.0, 1.0)];
+    [setAlarmView.layer setShadowRadius:1.0];
+    [setAlarmView.layer setShadowOpacity:7.0];
     
-    CGRect settingsButtonFrame = CGRectMake((self.view.frame.size.width - 161) / 2, self.view.frame.size.height - 45, 161, 34);
+    
+    UIPanGestureRecognizer *slideViewGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleSettingsPanGesture:)];
+    
     UIImage *settingsButtonImage = [UIImage imageNamed:@"icon-settings"];
     UIButton *btnSettings = [UIButton buttonWithType:UIButtonTypeCustom];
     [btnSettings setImage:settingsButtonImage forState:UIControlStateNormal];
     [btnSettings setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"CHANGE SETTINGS", nil)]];
-    [btnSettings setFrame:settingsButtonFrame];
-    //TODO: Make settings button respond to swipes
-    //[btnSettings setBackgroundColor:[UIColor colorWithRed:68.0/255 green:11.0/255 blue:104.0/255 alpha:1.0]];
+    [btnSettings setFrame:CGRectMake((self.view.frame.size.width - 161) / 2, self.view.frame.size.height - 45, 161, 34)];
+    [btnSettings addGestureRecognizer:slideViewGesture];
     [btnSettings setTintColor:[UIColor clearColor]];
     
     [btnSettings addTarget:self action:@selector(showSettings) forControlEvents:UIControlEventTouchUpInside];
@@ -959,7 +1058,7 @@
     
     [self setAMPMLabel];
     
-    if (_switchAutoStart.on && ![timeTextString isEqualToString:@""]) {
+    if ([self.appDelegate.alarmClock isAutoStart] && ![timeTextString isEqualToString:@""]) {
         [self getAlarmTime];
         NSString *alarmTimeText;
         NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
@@ -972,15 +1071,24 @@
         alarmTimeText = [alarmTimeText stringByReplacingOccurrencesOfString:@":" withString:_timeSeparator];
         self.navigationController.navigationBarHidden = YES;
         autoStartAlarmView = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-        [autoStartAlarmView setBackgroundColor:[UIColor colorWithRed:68.0/255 green:11.0/255 blue:104.0/255 alpha:1.0]];
-        UILabel *autoStartAlarmViewLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 40, 240, 400)];
+        [autoStartAlarmView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Default-568h"]]];
+        UILabel *autoStartAlarmViewLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 15, 300, [[UIScreen mainScreen] bounds].size.height - 20)];
         [autoStartAlarmViewLabel setBackgroundColor:[UIColor clearColor]];
         [autoStartAlarmViewLabel setLineBreakMode:NSLineBreakByWordWrapping];
-        [autoStartAlarmViewLabel setText:[NSString stringWithFormat:NSLocalizedString(@"AUTO ALARM BEING SET", nil), [self.appDelegate.alarmClock playlistName], alarmTimeText]];
-        [autoStartAlarmViewLabel setNumberOfLines:20];
-        [autoStartAlarmViewLabel setAdjustsFontSizeToFitWidth:YES];
-        [autoStartAlarmViewLabel setTextColor:[UIColor whiteColor]];
-        [autoStartAlarmViewLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:22.0]];
+        
+        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+        paragraphStyle.lineHeightMultiple = 50.0f;
+        paragraphStyle.maximumLineHeight = 50.0;
+        paragraphStyle.minimumLineHeight = 50.0f;
+        
+        NSDictionary *ats = @{
+                              NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Bold" size:50.0],
+                              NSParagraphStyleAttributeName : paragraphStyle
+                              };
+
+        [autoStartAlarmViewLabel setAttributedText:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:NSLocalizedString(@"AUTO ALARM BEING SET", nil), [self.appDelegate.alarmClock playlistName], alarmTimeText] attributes:ats]];
+        [autoStartAlarmViewLabel setNumberOfLines:0];
+        [autoStartAlarmViewLabel setTextColor:self.lightTextColor];
         [autoStartAlarmView addSubview:autoStartAlarmViewLabel];
         
         [self.view addSubview:autoStartAlarmView];
@@ -992,7 +1100,7 @@
 
 -(void) doneWithNumberPad
 {
-    [timeTextField resignFirstResponder];
+    [self.timeTextField resignFirstResponder];
 }
 
 -(void) showPlaylists
@@ -1018,7 +1126,7 @@
     [_lblAMPM setBackgroundColor:[UIColor clearColor]];
     [_lblAMPM setLineBreakMode:NSLineBreakByWordWrapping];
     [_lblAMPM setText:[NSString stringWithFormat:@"%@", [sAMPM lowercaseString]]];
-    [_lblAMPM setTextColor:[UIColor colorWithRed:.09 green:.06 blue:.117 alpha:1.0]];
+    [_lblAMPM setTextColor:self.darkTextColor];
     [_lblAMPM setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:35.0]];
     if (sAMPM.length > 0 && !_is24h) {
         [setAlarmView addSubview:_lblAMPM];
@@ -1032,25 +1140,41 @@
     }
 }
 
+- (void) handleSettingsPanGesture:(UIPanGestureRecognizer *)sender {
+    CGPoint translate = [sender translationInView:sender.view.superview];
+    
+    CGRect newFrame = [[UIScreen mainScreen] bounds];
+    
+    if ([self settingsOpen]) {
+        newFrame.origin.y = -[[UIScreen mainScreen] bounds].size.height + 60;
+    }
+    
+    newFrame.origin.y += (translate.y);
+    sender.view.superview.frame = newFrame;
+    
+    if (sender.state == UIGestureRecognizerStateEnded) {
+        [self showSettings];
+    }
+}
+
 - (void) showSettings
 {
     CGRect settingsOpenFrame = [[UIScreen mainScreen] bounds];
     settingsOpenFrame.origin.y = -[[UIScreen mainScreen] bounds].size.height + 60;
     CGRect settingsClosedFrame = [[UIScreen mainScreen] bounds];
 
-    CGFloat y = setAlarmView.frame.origin.y;
-    
-    if (y == 0 ) {
+    if (![self settingsOpen]) {
         [UIView animateWithDuration:0.3 animations:^{[setAlarmView setFrame:settingsOpenFrame];}];
         setAlarmButton.enabled = false;
         [self setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"SETTINGS OPENED", nil)]];
+        [self setSettingsOpen:YES];
     } else {
         [UIView animateWithDuration:0.3 animations:^{[setAlarmView setFrame:settingsClosedFrame];}];
         //setAlarmButton.enabled = true;
         [self testToEnableAlarmButton];
         [self setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"SETTINGS CLOSED", nil)]];
+        [self setSettingsOpen:NO];
     }
-    
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -1104,9 +1228,7 @@
             [loadingLabel setAdjustsFontSizeToFitWidth:YES];
             [_loadingView addSubview:loadingLabel];
             [_loadingView addSubview:aiView];
-            if (!_switchAutoStart.on) {
-                //[self.view addSubview:_loadingView];
-            }
+            
         } else {
             //choose songs from top songs chart
             NSDictionary *trackInfo = [[NSDictionary alloc] initWithObjectsAndKeys:@"Track", @"type", nil];
@@ -1124,48 +1246,11 @@
 }
 
 - (void) testToEnableAlarmButton
-{
-    //TODO: Make this work with the new leading 0 format
-    NSString *firstChar = @"";
-    NSString *secondChar = @"";
-    NSString *thirdChar = @"";
-    NSString *fourthChar = @"";
-    
-    if (timeTextField.text.length > 0) {
-        firstChar = [timeTextField.text substringToIndex:1];
-    }
-    
-    NSRange secondCharRange = NSRangeFromString(@"1,1");
-    if (timeTextField.text.length > 1) {
-        secondChar = [timeTextField.text substringWithRange:secondCharRange];
-    }
-    
-    NSRange thirdCharRange = NSRangeFromString(@"2,1");
-    if (timeTextField.text.length > 2) {
-        thirdChar = [timeTextField.text substringWithRange:thirdCharRange];
-    }
-    
-    NSRange fourthCharRange = NSRangeFromString(@"3,1");
-    if (timeTextField.text.length > 3) {
-        fourthChar = [timeTextField.text substringWithRange:fourthCharRange];
-    }
-    
-    if (!_is24h) {
-        if (songsToPlay != nil && timeTextField.text.length == 6 && [secondChar isEqualToString:@"1"] && ([thirdChar isEqualToString:@"0"] || [thirdChar isEqualToString:@"1"] || [thirdChar isEqualToString:@"2"])) {
+{    
+    if (songsToPlay != nil && self.timeTextField.text.length == 5) {
             [setAlarmButton setEnabled:YES];
-        } else if (songsToPlay != nil && timeTextField.text.length == 5 ) {
-            [setAlarmButton setEnabled:YES];
-        } else {
+    } else {
             [setAlarmButton setEnabled:NO];
-        }
-    } else if(_is24h) {
-        if (songsToPlay != nil && timeTextField.text.length == 5 && ([firstChar isEqualToString:@"1"] || ([firstChar isEqualToString:@"2"] && ([secondChar isEqualToString:@"0"] || [secondChar isEqualToString:@"1"] || [secondChar isEqualToString:@"2"] || [secondChar isEqualToString:@"3"])))) {
-            [setAlarmButton setEnabled:YES];
-        } else if (songsToPlay != nil && timeTextField.text.length == 4 ) {
-            [setAlarmButton setEnabled:YES];
-        } else {
-            [setAlarmButton setEnabled:NO];
-        }
     }
 }
 
@@ -1177,7 +1262,6 @@
     for (int x = 1; x < songsToPlay.count; x++) {
         songsToPlayString = [NSString stringWithFormat:@"%@, %@", songsToPlayString, [songsToPlay objectAtIndex:x]];
     }
-    NSLog(@"Songs to play: %@", songsToPlayString);
     NSDictionary *trackInfo = [[NSDictionary alloc] initWithObjectsAndKeys:songsToPlayString, @"keys", @"canStream", @"extras", nil];
     [[AppDelegate rdioInstance] callAPIMethod:@"get" withParameters:trackInfo delegate:self];
 }
@@ -1256,7 +1340,7 @@
 {
     //TODO: Make this work with the new leading 0 format
 
-    float currentLength = textField.text.length;
+    int currentLength = textField.text.length;
         
     if (_lastLength == 0) {
         _lastLength = currentLength;
@@ -1295,41 +1379,91 @@
     }
     
     if(!_is24h) {
-        if (([firstChar isEqualToString: @"0"]) && [secondChar isEqualToString: @"0"]) {
-            textField.Text = [NSString stringWithFormat:@"0"];
-        } else if (!([secondChar isEqualToString: @"1"]) || [thirdChar isEqualToString:_timeSeparator]) {
-            
-            if(currentLength == 6) {
-                textField.text = [textField.text substringToIndex:4];
-            } else if(currentLength == 2 && _lastLength <= currentLength) {
-                textField.text = [NSString stringWithFormat:@"%@%@%@", firstChar, secondChar, _timeSeparator];
-            } else if (currentLength == 2 && _lastLength > currentLength) {
-                textField.text = [NSString stringWithFormat:@""];
-            } else if(currentLength == 3 && _lastLength <= currentLength) {
-                if ([thirdChar isEqualToString: @"0"] || [thirdChar isEqualToString: @"1"] || [thirdChar isEqualToString: @"2"] || [thirdChar isEqualToString: @"3"] || [thirdChar isEqualToString: @"4"] || [thirdChar isEqualToString: @"5"]) {
-                    textField.text = [NSString stringWithFormat:@"%@%@%@", firstChar, _timeSeparator, secondChar ];
-                } else if (![thirdChar isEqualToString:_timeSeparator]) {
-                    textField.text = [NSString stringWithFormat:@"%@", firstChar];
+        if ([firstChar isEqualToString: @"0"] && _lastLength <= textField.text.length) {
+            if([secondChar isEqualToString:@"0"]) {
+                textField.Text = [NSString stringWithFormat:@"0"];
+            } else if(textField.text.length == 2 ) {
+                textField.Text = [NSString stringWithFormat:@"%@%@:", firstChar, secondChar];
+            } else if(textField.text.length == 4) {
+                if([fourthChar isEqualToString:@"6"] || [fourthChar isEqualToString:@"7"] || [fourthChar isEqualToString:@"8"] || [fourthChar isEqualToString:@"9"]) {
+                    textField.text = [NSString stringWithFormat:@"%@%@:", firstChar, secondChar];
                 }
-            } else if (currentLength == 3 && _lastLength > currentLength) {
-                textField.text = [NSString stringWithFormat:@"%@", firstChar];
+            } else if(textField.text.length > 5) {
+                textField.text = [NSString stringWithFormat:@"%@%@:%@%@", firstChar, secondChar, fourthChar, fifthChar];
             }
-        } else {
-            if(currentLength == 7) {
-                textField.text = [textField.text substringToIndex:5];
-            } else if(currentLength == 2 && _lastLength <= currentLength) {
-                if ([thirdChar isEqualToString: @"3"] || [thirdChar isEqualToString: @"4"] || [thirdChar isEqualToString: @"5"]) {
-                    textField.Text = [NSString stringWithFormat:@"%@%@%@", firstChar, _timeSeparator, secondChar ];
-                } else if ([thirdChar isEqualToString: @"0"] || [thirdChar isEqualToString: @"1"] || [thirdChar isEqualToString: @"2"]) {
-                    textField.Text = [NSString stringWithFormat:@"%@%@", textField.text, _timeSeparator ];
-                } else {
-                    textField.text = [NSString stringWithFormat:@"%@", firstChar];
+        
+        } else if ([firstChar isEqualToString: @"1"] && _lastLength <= textField.text.length) {
+            if([secondChar isEqualToString:@"3"] || [secondChar isEqualToString:@"4"] || [secondChar isEqualToString:@"5"]) {
+                textField.Text = [NSString stringWithFormat:@"0%@:%@", firstChar, secondChar];
+            } else if([secondChar isEqualToString:@"6"] || [secondChar isEqualToString:@"7"] || [secondChar isEqualToString:@"8"] || [secondChar isEqualToString:@"9"]) {
+                textField.Text = [NSString stringWithFormat:@"%@", firstChar];
+            } else if(textField.text.length == 2 ) {
+                textField.Text = [NSString stringWithFormat:@"%@%@:", firstChar, secondChar];
+            } else if(textField.text.length == 4) {
+                if([fourthChar isEqualToString:@"6"] || [fourthChar isEqualToString:@"7"] || [fourthChar isEqualToString:@"8"] || [fourthChar isEqualToString:@"9"]) {
+                    textField.text = [NSString stringWithFormat:@"%@%@:", firstChar, secondChar];
                 }
-            } else if (currentLength == 2 && _lastLength > currentLength) {
-                textField.text = [NSString stringWithFormat:@"%@", firstChar];
+            } else if(textField.text.length > 5) {
+                textField.text = [NSString stringWithFormat:@"%@%@:%@%@", firstChar, secondChar, fourthChar, fifthChar];
+            }
+            
+        } else if (_lastLength <= textField.text.length) {
+            textField.text = [NSString stringWithFormat:@"0%@:", firstChar];
+        }
+        
+        if(_lastLength > textField.text.length) {
+            if(textField.text.length == 2) {
+                textField.Text = [NSString stringWithFormat:@"%@", firstChar];
             }
         }
     } else if (_is24h) {
+        if ([firstChar isEqualToString: @"0"] && _lastLength <= textField.text.length) {
+            if([secondChar isEqualToString:@"0"]) {
+                textField.Text = [NSString stringWithFormat:@"0"];
+            } else if(textField.text.length == 2 ) {
+                textField.Text = [NSString stringWithFormat:@"%@%@:", firstChar, secondChar];
+            } else if(textField.text.length == 4) {
+                if([fourthChar isEqualToString:@"6"] || [fourthChar isEqualToString:@"7"] || [fourthChar isEqualToString:@"8"] || [fourthChar isEqualToString:@"9"]) {
+                    textField.text = [NSString stringWithFormat:@"%@%@:", firstChar, secondChar];
+                }
+            } else if(textField.text.length > 5) {
+                textField.text = [NSString stringWithFormat:@"%@%@:%@%@", firstChar, secondChar, fourthChar, fifthChar];
+            }
+            
+        } else if ([firstChar isEqualToString: @"1"] && _lastLength <= textField.text.length) {
+            if(textField.text.length == 2 ) {
+                textField.Text = [NSString stringWithFormat:@"%@%@:", firstChar, secondChar];
+            } else if(textField.text.length == 4) {
+                if([fourthChar isEqualToString:@"6"] || [fourthChar isEqualToString:@"7"] || [fourthChar isEqualToString:@"8"] || [fourthChar isEqualToString:@"9"]) {
+                    textField.text = [NSString stringWithFormat:@"%@%@:", firstChar, secondChar];
+                }
+            } else if(textField.text.length > 5) {
+                textField.text = [NSString stringWithFormat:@"%@%@:%@%@", firstChar, secondChar, fourthChar, fifthChar];
+            }
+        } else if ([firstChar isEqualToString: @"2"] && _lastLength <= textField.text.length) {
+            if([secondChar isEqualToString:@"4"] || [secondChar isEqualToString:@"5"] || [secondChar isEqualToString:@"6"] || [secondChar isEqualToString:@"7"] || [secondChar isEqualToString:@"8"] || [secondChar isEqualToString:@"9"]) {
+                textField.Text = [NSString stringWithFormat:@"%@", firstChar];
+            } else if(textField.text.length == 2 ) {
+                textField.Text = [NSString stringWithFormat:@"%@%@:", firstChar, secondChar];
+            } else if(textField.text.length == 4) {
+                if([fourthChar isEqualToString:@"6"] || [fourthChar isEqualToString:@"7"] || [fourthChar isEqualToString:@"8"] || [fourthChar isEqualToString:@"9"]) {
+                    textField.text = [NSString stringWithFormat:@"%@%@:", firstChar, secondChar];
+                }
+            } else if(textField.text.length > 5) {
+                textField.text = [NSString stringWithFormat:@"%@%@:%@%@", firstChar, secondChar, fourthChar, fifthChar];
+            }
+            
+        } else if (_lastLength <= textField.text.length) {
+            textField.text = [NSString stringWithFormat:@"0%@:", firstChar];
+        }
+        
+        if(_lastLength > textField.text.length) {
+            if(textField.text.length == 2) {
+                textField.Text = [NSString stringWithFormat:@"%@", firstChar];
+            }
+        }
+        
+        /*
         if (([firstChar isEqualToString: @"0"])) {
             textField.Text = [NSString stringWithFormat:@""];
         } else if (!([firstChar isEqualToString: @"1"] || [firstChar isEqualToString:@"2"]) || [secondChar isEqualToString:_timeSeparator]) {
@@ -1376,9 +1510,12 @@
                 textField.text = [NSString stringWithFormat:@"%@%@%@", firstChar, secondChar, _timeSeparator];
             }
         }
-
+*/
     }
     
+    if (textField.text.length > _lastLength && textField.text.length == 5) {
+        [textField resignFirstResponder];
+    }
     [self testToEnableAlarmButton];
     [self setAMPMLabel];
     _lastLength = textField.text.length;
@@ -1525,13 +1662,12 @@
         if([self.appDelegate.alarmClock playlistPath]) {
             [self loadSongs];
             [self testToEnableAlarmButton];
+            [[self.listsViewController chooseMusic] reloadData];
         }
         [_loadingView removeFromSuperview];
         
     } else if ([method isEqualToString:@"get"]) {
-        NSLog(@"total number of keys: %d", [data allKeys].count);
         for(NSString *key in [data allKeys]) {
-            NSLog(@"canstream: %@", [[data objectForKey:key] objectForKey:@"canStream"]);
             //[_canBeStreamed addObject:[[data objectForKey:key] objectForKey:@"canStream"]];
             if ([[[data objectForKey:key] objectForKey:@"canStream"] isEqual:[NSNumber numberWithBool:YES]]) {
                 [_canBeStreamed addObject:@"YES"];

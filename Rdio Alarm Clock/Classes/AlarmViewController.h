@@ -14,6 +14,7 @@
 #import <MediaPlayer/MPVolumeView.h>
 #import "AppDelegate.h"
 #import <MediaPlayer/MPMusicPlayerController.h>
+#import "DHBTextField.h"
 
 @interface MainViewController : UIViewController <RDPlayerDelegate, RDAPIRequestDelegate, UITextFieldDelegate, UIAlertViewDelegate, UITableViewDelegate, UITableViewDataSource, UIWebViewDelegate>
 {
@@ -31,8 +32,7 @@
     UIView *wakeView;
     UIView *setAlarmView;
     UIView *autoStartAlarmView;
-    UITextField *timeTextField;
-    float _lastLength;
+    int _lastLength;
     UISwitch *remindMe;
     UILocalNotification *nightlyReminder;
     UILabel *_alarmLabel;
@@ -41,7 +41,6 @@
     UILabel *_lblSleep;
     UILabel *_lblAutoStart;
     UILabel *_lblAMPM;
-    UISwitch *_switchAutoStart;
     UISlider *_sliderSleep;
     UISlider *_sliderSnooze;
     UIView *_loadingView;
@@ -68,6 +67,18 @@
 @property (nonatomic) UILabel *lblSleepAmount;
 @property (nonatomic) UILabel *lblSnoozeAmount;
 @property (nonatomic) AppDelegate *appDelegate;
+@property (nonatomic) UISlider *sliderAutoStart;
+@property (nonatomic) UILabel *lblAutoStartYES;
+@property (nonatomic) UILabel *lblAutoStartNO;
+@property (nonatomic) UISlider *sliderShuffle;
+@property (nonatomic) UILabel *lblShuffle;
+@property (nonatomic) UILabel *lblShuffleYES;
+@property (nonatomic) UILabel *lblShuffleNO;
+@property (nonatomic) bool settingsOpen;
+@property (nonatomic) DHBTextField *timeTextField;
+@property (nonatomic) UIColor *lightTextColor;
+@property (nonatomic) UIColor *darkTextColor;
+
 
 - (void) setAlarmClicked;
 - (void) alarmSounding;

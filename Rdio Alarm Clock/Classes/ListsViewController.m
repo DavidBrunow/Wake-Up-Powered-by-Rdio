@@ -29,17 +29,17 @@
         chooseMusicFrame.size.height = [[UIScreen mainScreen] bounds].size.height - self.navigationController.navigationBar.bounds.size.height;
     }
         
-    UITableView *chooseMusic = [[UITableView alloc] initWithFrame:chooseMusicFrame style:UITableViewStylePlain];
+    self.chooseMusic = [[UITableView alloc] initWithFrame:chooseMusicFrame style:UITableViewStylePlain];
     //[chooseMusic setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Default-568h"]]];
     //[self setTitle:@"Playlists"];
     
-    [chooseMusic setBackgroundColor:[UIColor clearColor]];
-    [chooseMusic setSeparatorColor:[UIColor colorWithRed:.09 green:.06 blue:.117 alpha:1.0]];
-    [chooseMusic setBackgroundView:nil];
-    [chooseMusic setDelegate:self];
-    [chooseMusic setDataSource:self];
+    [self.chooseMusic setBackgroundColor:[UIColor clearColor]];
+    [self.chooseMusic setSeparatorColor:[UIColor colorWithRed:.09 green:.06 blue:.117 alpha:1.0]];
+    [self.chooseMusic setBackgroundView:nil];
+    [self.chooseMusic setDelegate:self];
+    [self.chooseMusic setDataSource:self];
     
-    [self.view addSubview:chooseMusic];
+    [self.view addSubview:self.chooseMusic];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
