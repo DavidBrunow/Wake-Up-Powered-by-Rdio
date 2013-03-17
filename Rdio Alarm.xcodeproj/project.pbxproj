@@ -661,7 +661,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: David Brunow";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: David Brunow";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -676,6 +677,8 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				PROVISIONING_PROFILE = "E37026F2-0E02-45A8-A6A8-D9613DCFE5EB";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "E37026F2-0E02-45A8-A6A8-D9613DCFE5EB";
 				SDKROOT = iphoneos;
 				VALID_ARCHS = armv7;
 			};
@@ -687,6 +690,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: David Brunow";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: David Brunow";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -696,7 +700,8 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "E914B9FC-1B25-4668-B1B2-E0676CF345BC";
+				PROVISIONING_PROFILE = "E37026F2-0E02-45A8-A6A8-D9613DCFE5EB";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "E37026F2-0E02-45A8-A6A8-D9613DCFE5EB";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = armv7;
@@ -727,7 +732,7 @@
 		11A0F10014BFB57B0055390F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: David Brunow (M2JB2FZF76)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: David Brunow";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Rdio Alarm Clock/External Frameworks\"",
@@ -742,7 +747,7 @@
 				);
 				OTHER_LDFLAGS = "-all_load";
 				PRODUCT_NAME = "Rdio Alarm";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "98638394-1711-499D-86BF-C8CC8A64BBE6";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "E37026F2-0E02-45A8-A6A8-D9613DCFE5EB";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
