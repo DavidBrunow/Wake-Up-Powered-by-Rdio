@@ -26,6 +26,16 @@
         NSLog(@"Error reading plist: %@, format: %d", errorDesc, format);
     }
     
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setLocale:[NSLocale currentLocale]];
+    [formatter setDateStyle:NSDateFormatterNoStyle];
+    [formatter setTimeStyle:NSDateFormatterShortStyle];
+    NSString *dateString = [formatter stringFromDate:[NSDate date]];
+    NSRange amRange = [dateString rangeOfString:[formatter AMSymbol]];
+    NSRange pmRange = [dateString rangeOfString:[formatter PMSymbol]];
+    
+    [self setIs24h:(amRange.location == NSNotFound && pmRange.location == NSNotFound)];
+    
     self.sleepTime = [[self.settings valueForKey:@"Sleep Time"] integerValue];
     self.snoozeTime = [[self.settings valueForKey:@"Snooze Time"] integerValue];
     self.isAutoStart = [[self.settings valueForKey:@"Auto Start Alarm"] boolValue];
@@ -47,7 +57,11 @@
 -(NSString *) getAlarmTimeString
 {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"hh:mm"];
+    if (self.is24h) {
+        [dateFormatter setDateFormat:@"HH:mm"];
+    } else {
+        [dateFormatter setDateFormat:@"hh:mm"];
+    }
 
     NSString *alarmTimeString = [dateFormatter stringFromDate:self.alarmTime];
     
@@ -57,8 +71,15 @@
 -(void)setAlarmTimeFromString:(NSString *)alarmTime
 {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"hh:mm"];
-    [self setAlarmTime:[dateFormatter dateFromString:alarmTime]];
+    if (self.is24h) {
+        [dateFormatter setDateFormat:@"HH:mm"];
+    } else {
+        [dateFormatter setDateFormat:@"hh:mm"];
+    }
+    NSLog(@"Setting this string as the alarm time: %@", alarmTime);
+    NSLog(@"Setting this date as the alarm time: %@", [dateFormatter dateFromString:alarmTime]);
+
+    [self setAlarmTime:[dateFormatter dateFromString:alarmTime] save:NO];
 }
 
 -(void)setAlarmTime:(NSDate *)alarmTime save:(bool)needToSave
@@ -67,7 +88,11 @@
         _alarmTime = alarmTime;
     
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setDateFormat:@"hh:mm"];
+        if (self.is24h) {
+            [dateFormatter setDateFormat:@"HH:mm"];
+        } else {
+            [dateFormatter setDateFormat:@"hh:mm"];
+        }
         NSString *alarmTimeString = [dateFormatter stringFromDate:alarmTime];
         NSLog(@"alarmTime: %@", alarmTime);
 

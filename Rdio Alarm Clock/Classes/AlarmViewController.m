@@ -51,13 +51,8 @@
 - (void) getAlarmTime {
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"yyyy-MM-dd"];
-    NSString *tempTimeString = @"";
-    
-    if (self.timeTextField.text.length == 4) {
-        tempTimeString = [NSString stringWithFormat:@"0%@", self.timeTextField.text];
-    } else {
-        tempTimeString = self.timeTextField.text;
-    }
+    NSString *tempTimeString = self.timeTextField.text;    
+
     tempTimeString = [tempTimeString stringByReplacingOccurrencesOfString:_timeSeparator withString:@":"];
         
     NSString *tempDateString = [formatter stringFromDate:[NSDate date]];
@@ -65,7 +60,7 @@
     
     tempDateString = [NSString stringWithFormat:@"%@T%@", tempDateString, tempTimeString];
     [self.appDelegate.alarmClock setAlarmTime:[formatter dateFromString:tempDateString] save:YES];
-    if(!_is24h) {
+    if(![self.appDelegate.alarmClock is24h]) {
         if ([[self.appDelegate.alarmClock alarmTime] earlierDate:[NSDate date]]==[self.appDelegate.alarmClock alarmTime]) {
             [self.appDelegate.alarmClock setAlarmTime:[[self.appDelegate.alarmClock alarmTime] dateByAddingTimeInterval:43200] save:NO];
 
@@ -73,7 +68,8 @@
                 [self.appDelegate.alarmClock setAlarmTime:[[self.appDelegate.alarmClock alarmTime] dateByAddingTimeInterval:43200] save:NO];
             }
         }
-    } else if (_is24h) {
+    } else if ([self.appDelegate.alarmClock is24h]) {
+        NSLog(@"Is 24 Hours");
         if ([[self.appDelegate.alarmClock alarmTime] earlierDate:[NSDate date]]==[self.appDelegate.alarmClock alarmTime]) {
             [self.appDelegate.alarmClock setAlarmTime:[[self.appDelegate.alarmClock alarmTime] dateByAddingTimeInterval:86400] save:NO];
             if ([[self.appDelegate.alarmClock alarmTime] earlierDate:[NSDate date]]==[self.appDelegate.alarmClock alarmTime]) {
@@ -122,9 +118,9 @@
     
     NSString *alarmTimeText;
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    if (!_is24h) {
+    if (![self.appDelegate.alarmClock is24h]) {
         [formatter setDateFormat:@"h:mm a"];
-    } else if (_is24h) {
+    } else if ([self.appDelegate.alarmClock is24h]) {
         [formatter setDateFormat:@"H:mm"];
         //NSLog(@"this is 24 hour clock");
     }
@@ -182,20 +178,24 @@
     [alarmTimeLabel setNumberOfLines:0];
     
     [self getAlarmTime];
-    NSString *alarmTimeAMPM = [[alarmTimeText componentsSeparatedByString:@" "] objectAtIndex:1];
-    UILabel *sleepAMPM = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 62, 12, 75, 50)];
-    if ([alarmTimeAMPM isEqualToString:@"PM"]) {
-        [sleepAMPM setFrame:CGRectMake(self.view.frame.size.width - 62, 53, 75, 50)];
-    }
-    [sleepAMPM setBackgroundColor:[UIColor clearColor]];
-    [sleepAMPM setLineBreakMode:NSLineBreakByWordWrapping];
-    [sleepAMPM setText:[NSString stringWithFormat:@"%@", [alarmTimeAMPM lowercaseString]]];
-    [sleepAMPM setTextColor:self.darkTextColor];
-    [sleepAMPM setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:35.0]];
     
-    alarmTimeText = [alarmTimeText stringByReplacingOccurrencesOfString:@" PM" withString:@""];
-    alarmTimeText = [alarmTimeText stringByReplacingOccurrencesOfString:@" AM" withString:@""];
-
+    if(![self.appDelegate.alarmClock is24h]) {
+        NSString *alarmTimeAMPM = [[alarmTimeText componentsSeparatedByString:@" "] objectAtIndex:1];
+        UILabel *sleepAMPM = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 62, 12, 75, 50)];
+        if ([alarmTimeAMPM isEqualToString:@"PM"]) {
+            [sleepAMPM setFrame:CGRectMake(self.view.frame.size.width - 62, 53, 75, 50)];
+        }
+        [sleepAMPM setBackgroundColor:[UIColor clearColor]];
+        [sleepAMPM setLineBreakMode:NSLineBreakByWordWrapping];
+        [sleepAMPM setText:[NSString stringWithFormat:@"%@", [alarmTimeAMPM lowercaseString]]];
+        [sleepAMPM setTextColor:self.darkTextColor];
+        [sleepAMPM setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:35.0]];
+        [sleepView addSubview:sleepAMPM];
+        
+        alarmTimeText = [alarmTimeText stringByReplacingOccurrencesOfString:@" PM" withString:@""];
+        alarmTimeText = [alarmTimeText stringByReplacingOccurrencesOfString:@" AM" withString:@""];
+    }
+    
     if([alarmTimeText length] == 4) {
         alarmTimeText = [NSString stringWithFormat:@"0%@", alarmTimeText];
     }
@@ -204,7 +204,6 @@
     //[_alarmLabel setAdjustsFontSizeToFitWidth:YES];
     [sleepView addSubview:_alarmLabel];
     [sleepView addSubview:alarmTimeLabel];
-    [sleepView addSubview:sleepAMPM];
     
     _chargingLabel = [[UILabel alloc] initWithFrame:chargingLabelRect];
     //[_chargingLabel setText:NSLocalizedString(@"PLUG ME IN", nil)];
@@ -660,28 +659,14 @@
     } else if([_language isEqualToString:@"de"] || [_language isEqualToString:@"da"] || [_language isEqualToString:@"fi"]) {
         _timeSeparator = @".";
     }
-    //NSLog(@"%@", _language);
-    
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setLocale:[NSLocale currentLocale]];
-    [formatter setDateStyle:NSDateFormatterNoStyle];
-    [formatter setTimeStyle:NSDateFormatterShortStyle];
-    NSString *dateString = [formatter stringFromDate:[NSDate date]];
-    NSRange amRange = [dateString rangeOfString:[formatter AMSymbol]];
-    NSRange pmRange = [dateString rangeOfString:[formatter PMSymbol]];
-    _is24h = (amRange.location == NSNotFound && pmRange.location == NSNotFound);
-    //NSLog(@"%@\n",(_is24h ? @"YES" : @"NO"));
     
     _lastLength = 0;
     [self.navigationItem setHidesBackButton:true];
     [self.view setBounds:[[UIScreen mainScreen] bounds]];
-    //[self.view setBackgroundColor:[UIColor whiteColor]];
     
-    //CGRect fullScreen = [[UIScreen mainScreen] bounds];
     CGRect fullScreen = [self.navigationController view].frame;
     
     UIView *settingsView = [[UIView alloc] initWithFrame:fullScreen];
-    //UIColor *backgroundColor = [[UIColor alloc] initWithPatternImage:[UIImage imageNamed:@"550L_cloth.jpg"]];
     [settingsView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"settings-darkbg"]]];
     
     CGRect frameBtnSignOut = CGRectMake((self.view.frame.size.width - 78) / 2, self.view.frame.size.height - 125, 78, 28);
@@ -998,7 +983,7 @@
      [setAlarmView addSubview:remindMe]; */
     
     UILabel *toolbarAutoAMPM = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, 235, 30)];
-    if(!_is24h) {
+    if(![self.appDelegate.alarmClock is24h]) {
         [toolbarAutoAMPM setText:[NSLocalizedString(@"AUTOSET AM PM", nil) lowercaseString]];
     }
     [toolbarAutoAMPM setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:15]];
@@ -1036,6 +1021,7 @@
     self.timeTextField.inputAccessoryView = numberToolbar;
     [self.timeTextField setKeyboardAppearance:UIKeyboardAppearanceAlert];
     NSString *timeTextString = [NSString stringWithFormat:@"%@",[self.appDelegate.alarmClock getAlarmTimeString] ];
+    NSLog(@"Time text string: %@", timeTextString);
     if (timeTextString == nil) {
         timeTextString = [NSString stringWithFormat:@""];
     } else {
@@ -1152,10 +1138,10 @@
         [self getAlarmTime];
         NSString *alarmTimeText;
         NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-        if(!_is24h) {
-            [formatter setDateFormat:@"h:mm a"];
+        if(![self.appDelegate.alarmClock is24h]) {
+            [formatter setDateFormat:@"hh:mm a"];
         } else {
-            [formatter setDateFormat:[NSString stringWithFormat:@"H:mm"]];
+            [formatter setDateFormat:[NSString stringWithFormat:@"HH:mm"]];
         }
         alarmTimeText = [formatter stringFromDate:[self.appDelegate.alarmClock alarmTime]];
         alarmTimeText = [alarmTimeText stringByReplacingOccurrencesOfString:@":" withString:_timeSeparator];
@@ -1188,19 +1174,22 @@
         [alarmTimeLabel setBackgroundColor:[UIColor clearColor]];
         [alarmTimeLabel setNumberOfLines:0];
         
-        NSString *alarmTimeAMPM = [[alarmTimeText componentsSeparatedByString:@" "] objectAtIndex:1];
-        UILabel *sleepAMPM = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 62, 12, 75, 50)];
-        if ([alarmTimeAMPM isEqualToString:@"PM"]) {
-            [sleepAMPM setFrame:CGRectMake(self.view.frame.size.width - 62, 53, 75, 50)];
+        if (![self.appDelegate.alarmClock is24h]) {
+            NSString *alarmTimeAMPM = [[alarmTimeText componentsSeparatedByString:@" "] objectAtIndex:1];
+            UILabel *sleepAMPM = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 62, 12, 75, 50)];
+            if ([alarmTimeAMPM isEqualToString:@"PM"]) {
+                [sleepAMPM setFrame:CGRectMake(self.view.frame.size.width - 62, 53, 75, 50)];
+            }
+            [sleepAMPM setBackgroundColor:[UIColor clearColor]];
+            [sleepAMPM setLineBreakMode:NSLineBreakByWordWrapping];
+            [sleepAMPM setText:[NSString stringWithFormat:@"%@", [alarmTimeAMPM lowercaseString]]];
+            [sleepAMPM setTextColor:self.darkTextColor];
+            [sleepAMPM setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:35.0]];
+            [autoStartAlarmView addSubview:sleepAMPM];
+            alarmTimeText = [alarmTimeText stringByReplacingOccurrencesOfString:@" PM" withString:@""];
+            alarmTimeText = [alarmTimeText stringByReplacingOccurrencesOfString:@" AM" withString:@""];
         }
-        [sleepAMPM setBackgroundColor:[UIColor clearColor]];
-        [sleepAMPM setLineBreakMode:NSLineBreakByWordWrapping];
-        [sleepAMPM setText:[NSString stringWithFormat:@"%@", [alarmTimeAMPM lowercaseString]]];
-        [sleepAMPM setTextColor:self.darkTextColor];
-        [sleepAMPM setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:35.0]];
         
-        alarmTimeText = [alarmTimeText stringByReplacingOccurrencesOfString:@" PM" withString:@""];
-        alarmTimeText = [alarmTimeText stringByReplacingOccurrencesOfString:@" AM" withString:@""];
         
         if([alarmTimeText length] == 4) {
             alarmTimeText = [NSString stringWithFormat:@"0%@", alarmTimeText];
@@ -1220,7 +1209,6 @@
         [lblAutoSetPlaylistName setContentMode:UIViewContentModeTop];
         [autoStartAlarmView addSubview:lblAutoSetPlaylistName];
         [autoStartAlarmView addSubview:alarmTimeLabel];
-        [autoStartAlarmView addSubview:sleepAMPM];
 
         UILabel *lblTapToCancel = [[UILabel alloc] initWithFrame:CGRectMake(10, [[UIScreen mainScreen] bounds].size.height - 220, [[UIScreen mainScreen] bounds].size.width - 20, 200)];
         [lblTapToCancel setText:[[NSString stringWithFormat:@"tap to cancel"] lowercaseString]];
@@ -1277,7 +1265,7 @@
     [_lblAMPM setText:[NSString stringWithFormat:@"%@", [sAMPM lowercaseString]]];
     [_lblAMPM setTextColor:self.darkTextColor];
     [_lblAMPM setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:35.0]];
-    if (sAMPM.length > 0 && !_is24h) {
+    if (sAMPM.length > 0 && ![self.appDelegate.alarmClock is24h]) {
         [setAlarmView addSubview:_lblAMPM];
     }
 }
@@ -1528,7 +1516,7 @@
         fifthChar = [textField.text substringWithRange:fifthCharRange];
     }
     
-    if(!_is24h) {
+    if(![self.appDelegate.alarmClock is24h]) {
         if ([firstChar isEqualToString: @"0"] && _lastLength <= textField.text.length) {
             if([secondChar isEqualToString:@"0"]) {
                 textField.Text = [NSString stringWithFormat:@"0"];
@@ -1566,7 +1554,7 @@
                 textField.Text = [NSString stringWithFormat:@"%@", firstChar];
             }
         }
-    } else if (_is24h) {
+    } else if ([self.appDelegate.alarmClock is24h]) {
         if ([firstChar isEqualToString: @"0"] && _lastLength <= textField.text.length) {
             if([secondChar isEqualToString:@"0"]) {
                 textField.Text = [NSString stringWithFormat:@"0"];

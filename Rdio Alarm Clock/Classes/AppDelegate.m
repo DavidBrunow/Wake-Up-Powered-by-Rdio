@@ -61,6 +61,7 @@
     }
     
     self.alarmClock = [[DHBAlarmClock alloc] init];
+    
     NSLog(@"here");
     mainNav = [[AlarmNavController alloc] init];
 

@@ -14,7 +14,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+
 }
 
 - (void) viewWillAppear:(BOOL)animated 
@@ -26,42 +26,23 @@
 {
     AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     [[AppDelegate rdioInstance] setDelegate:self];
-    alarmVC = [[MainViewController alloc] init];
-    logIn = [[UIBarButtonItem alloc] initWithTitle:@"Sign In" style:UIBarButtonItemStylePlain target:self action:@selector(loginClicked)];
-    //[self setNavigationBarHidden:YES];
-    //self.navigationBar.tintColor = [UIColor colorWithRed:68.0/255 green:11.0/255 blue:104.0/255 alpha:1.0];
-    //alarmVC.title = @"Wake Up";
     
-    //UIImage *navBarLogo = [UIImage imageNamed:@"navbarclockicon"];
-    //UIImageView *navBarLogoView = [[UIImageView alloc] initWithImage:navBarLogo];
-    //[navBarLogoView setFrame:CGRectMake(140.0, 0.0, 40.0, 40.0)];
-    //[self.navigationBar addSubview:navBarLogoView];
-    
-    [self pushViewController:alarmVC animated:true];
-    [[alarmVC navigationItem] setHidesBackButton:TRUE];
     if (!appDelegate.loggedIn) {
         [[alarmVC navigationItem] setLeftBarButtonItem:logIn animated:YES];
         [self loginClicked];
     }
     
+    alarmVC = [[MainViewController alloc] init];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginClicked) name:@"logOutNotification" object:nil];
-	// Do any additional setup after loading the view.
-    
+    [self pushViewController:alarmVC animated:NO];
+        
     NSString *accessToken = [SFHFKeychainUtils getPasswordForUsername:@"rdioUser" andServiceName:@"rdioAlarm" error:nil];
     
     //NSLog(@"access token: %@", accessToken);
     
     if(accessToken != nil) {
         [[AppDelegate rdioInstance] authorizeUsingAccessToken:accessToken fromController:self];
-        //[logIn setTitle:@"Sign Out"];
-        //appDelegate.loggedIn = YES;
-    } else if(appDelegate.loggedIn) {
-        //[logIn setTitle:@"Sign Out"];
-    } else {
-        //[logIn setTitle:@"Sign In"];
-        //appDelegate.loggedIn = NO;
-    } 
+    }
 }
 
 - (void) loginClicked {
