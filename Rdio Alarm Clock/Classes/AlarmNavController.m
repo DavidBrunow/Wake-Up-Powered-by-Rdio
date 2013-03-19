@@ -28,7 +28,7 @@
     [[AppDelegate rdioInstance] setDelegate:self];
     alarmVC = [[MainViewController alloc] init];
     logIn = [[UIBarButtonItem alloc] initWithTitle:@"Sign In" style:UIBarButtonItemStylePlain target:self action:@selector(loginClicked)];
-    [self setNavigationBarHidden:YES];
+    //[self setNavigationBarHidden:YES];
     //self.navigationBar.tintColor = [UIColor colorWithRed:68.0/255 green:11.0/255 blue:104.0/255 alpha:1.0];
     //alarmVC.title = @"Wake Up";
     
