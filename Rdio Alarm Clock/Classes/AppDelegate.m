@@ -113,7 +113,7 @@
         //[[UIApplication sharedApplication] scheduleLocalNotification:backupAlarm];
         
     } else if (!alarmIsPlaying) {
-        [self.window setRootViewController:nil];
+        //[self.window setRootViewController:nil];
     }
     [application setIdleTimerDisabled:NO];
 }
