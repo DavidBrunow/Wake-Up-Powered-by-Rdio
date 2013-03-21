@@ -1071,6 +1071,7 @@
     [self.lblPlaylist setTextColor:self.lightTextColor];
     [self.lblPlaylist setAttributedText:[[NSAttributedString alloc] initWithString:[[NSString stringWithFormat:@"%@", [self.appDelegate.alarmClock playlistName]] lowercaseString] attributes:ats]];
     //[self.lblPlaylist sizeToFit];
+
     if (self.view.frame.size.height > 480) {
         [self.lblPlaylist setNumberOfLines:4];
     } else {
@@ -1324,18 +1325,21 @@
     paragraphStyle.minimumLineHeight = 50.0f;
 
     NSDictionary *ats = @{
-    NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Bold" size:50.0],
-    NSParagraphStyleAttributeName : paragraphStyle
+                          NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Bold" size:50.0],
+                          NSParagraphStyleAttributeName : paragraphStyle
     };
     
     if([self.appDelegate.alarmClock playlistName]) {
-        [self.lblPlaylist setAttributedText:[[NSAttributedString alloc] initWithString:[[self.appDelegate.alarmClock playlistName] lowercaseString] attributes:ats]];
+        [self.lblPlaylist setAttributedText:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\n\n\n", [[self.appDelegate.alarmClock playlistName] lowercaseString]] attributes:ats]];
     } else {
         [self.lblPlaylist setAttributedText:[[NSAttributedString alloc] initWithString:@"choose playlist..." attributes:ats]];
     }
     //[self.lblPlaylist setText:[appDelegate.selectedPlaylist lowercaseString]];
-    [self.lblPlaylist setFrame:CGRectMake(10, 154.0, 300.0, 200.0)];
+    CGRect frame = CGRectMake(10, 154.0, 300.0, 200.0);
+    [self.lblPlaylist setFrame:frame];
     [self.lblPlaylist sizeToFit];
+    frame.size.height = self.lblPlaylist.frame.size.height;
+    [self.lblPlaylist setFrame:frame];
         
     if (self.appDelegate.loggedIn) {
         [_chooseMusic reloadData];
