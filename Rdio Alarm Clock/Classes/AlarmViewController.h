@@ -16,8 +16,9 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "AppDelegate.h"
 #import "DHBTextField.h"
+#import <MessageUI/MFMailComposeViewController.h>
 
-@interface MainViewController : UIViewController <RDPlayerDelegate, RDAPIRequestDelegate, UITextFieldDelegate, UIAlertViewDelegate, UITableViewDelegate, UITableViewDataSource, UIWebViewDelegate>
+@interface MainViewController : UIViewController <RDPlayerDelegate, RDAPIRequestDelegate, UITextFieldDelegate, UIAlertViewDelegate, UITableViewDelegate, UITableViewDataSource, UIWebViewDelegate, MFMailComposeViewControllerDelegate>
 {
     UIButton *setAlarmButton;
     bool paused;
@@ -76,6 +77,9 @@
 @property (nonatomic) DHBTextField *timeTextField;
 @property (nonatomic) UIColor *lightTextColor;
 @property (nonatomic) UIColor *darkTextColor;
+@property (nonatomic) MFMailComposeViewController *emailCompose;
+@property (nonatomic) UIView *alarmTimeView;
+@property (nonatomic) UIView *currentTimeView;
 
 - (void) setAlarmClicked;
 - (void) alarmSounding;

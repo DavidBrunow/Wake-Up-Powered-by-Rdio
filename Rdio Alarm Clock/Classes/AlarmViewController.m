@@ -115,7 +115,6 @@
     CGRect alarmLabelRect = CGRectMake(10.0, 10.0, [[UIScreen mainScreen] bounds].size.width, 30.0);
     CGRect chargingLabelRect = CGRectMake(10.0, 260.0, 280.0, 200.0);
     
-    
     NSString *alarmTimeText;
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     if (![self.appDelegate.alarmClock is24h]) {
@@ -176,8 +175,9 @@
     [alarmTimeLabel setTextColor:self.darkTextColor];
     [alarmTimeLabel setBackgroundColor:[UIColor clearColor]];
     [alarmTimeLabel setNumberOfLines:0];
-    
-    [self getAlarmTime];
+    self.alarmTimeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 150.0)];
+
+    //[self getAlarmTime];
     
     if(![self.appDelegate.alarmClock is24h]) {
         NSString *alarmTimeAMPM = [[alarmTimeText componentsSeparatedByString:@" "] objectAtIndex:1];
@@ -190,7 +190,7 @@
         [sleepAMPM setText:[NSString stringWithFormat:@"%@", [alarmTimeAMPM lowercaseString]]];
         [sleepAMPM setTextColor:self.darkTextColor];
         [sleepAMPM setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:35.0]];
-        [sleepView addSubview:sleepAMPM];
+        [self.alarmTimeView addSubview:sleepAMPM];
         
         alarmTimeText = [alarmTimeText stringByReplacingOccurrencesOfString:@" PM" withString:@""];
         alarmTimeText = [alarmTimeText stringByReplacingOccurrencesOfString:@" AM" withString:@""];
@@ -202,8 +202,19 @@
     [alarmTimeLabel setAttributedText:[[NSAttributedString alloc] initWithString:[[NSString stringWithFormat:@"%@", alarmTimeText] lowercaseString] attributes:atsBig]];
 
     //[_alarmLabel setAdjustsFontSizeToFitWidth:YES];
-    [sleepView addSubview:_alarmLabel];
-    [sleepView addSubview:alarmTimeLabel];
+    [self.alarmTimeView addSubview:_alarmLabel];
+    [self.alarmTimeView addSubview:alarmTimeLabel];
+    [sleepView addSubview:self.alarmTimeView];
+    
+    ///////////////
+    [self setupCurrentTimeView];
+    [self.currentTimeView setHidden:YES];
+
+    [sleepView addSubview:self.currentTimeView];
+    
+    
+    ////////////////
+    
     
     _chargingLabel = [[UILabel alloc] initWithFrame:chargingLabelRect];
     //[_chargingLabel setText:NSLocalizedString(@"PLUG ME IN", nil)];
@@ -231,8 +242,10 @@
     [cancelButton addGestureRecognizer:slideViewGesture];
     [cancelButton addTarget:self action:@selector(bounceView) forControlEvents:UIControlEventTouchUpInside];
     
-    [sleepView addSubview:cancelButton]; 
-    
+    [sleepView addSubview:cancelButton];
+    UITapGestureRecognizer *cycleSleepView = [[UITapGestureRecognizer alloc] init];
+    [cycleSleepView addTarget:self action:@selector(cycleSleepView)];
+    [sleepView addGestureRecognizer:cycleSleepView];
     [self.view addSubview:sleepView]; 
     
     [fader invalidate];
@@ -253,6 +266,101 @@
     }
     
     self.appDelegate.originalVolume = self.music.volume;
+}
+
+- (void) setupCurrentTimeView
+{
+    //#TODO: Fix bug where time doesn't update on first minute change
+    if (self.currentTimeView == nil) {
+        self.currentTimeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 150.0)];
+    } else {
+        NSLog(@"%d",[self.currentTimeView.subviews count]);
+        for(int x = 0; x < [self.currentTimeView.subviews count]; x++) {
+            [[self.currentTimeView.subviews objectAtIndex:x] removeFromSuperview];
+        }
+    }
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    if (![self.appDelegate.alarmClock is24h]) {
+        [formatter setDateFormat:@"h:mm a"];
+    } else if ([self.appDelegate.alarmClock is24h]) {
+        [formatter setDateFormat:@"H:mm"];
+    }
+    
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.lineHeightMultiple = 50.0f;
+    paragraphStyle.maximumLineHeight = 50.0;
+    paragraphStyle.minimumLineHeight = 50.0f;
+    
+    NSDictionary *atsBig = @{
+                             NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Bold" size:92.0],
+                             NSParagraphStyleAttributeName : paragraphStyle
+                             };
+    
+    NSDictionary *atsSmall = @{
+                               NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Bold" size:19.0],
+                               NSParagraphStyleAttributeName : paragraphStyle
+                               };
+    
+    UILabel *currentLabel = [[UILabel alloc] initWithFrame:CGRectMake(10.0, 10.0, [[UIScreen mainScreen] bounds].size.width, 30.0)];
+    [currentLabel setTextColor:self.darkTextColor];
+    [currentLabel setBackgroundColor:[UIColor clearColor]];
+    [currentLabel setNumberOfLines:1];
+    [currentLabel setAttributedText:[[NSAttributedString alloc] initWithString:[[NSString stringWithFormat:NSLocalizedString(@"CURRENT TIME IS", nil)] uppercaseString] attributes:atsSmall]];
+    
+    UILabel *currentTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(10.0, 30.0, [[UIScreen mainScreen] bounds].size.width, 120.0)];
+    [currentTimeLabel setTextColor:self.darkTextColor];
+    [currentTimeLabel setBackgroundColor:[UIColor clearColor]];
+    [currentTimeLabel setNumberOfLines:0];
+    
+    NSString *currentTimeText = [formatter stringFromDate:[NSDate date]];
+
+    currentTimeText = [currentTimeText stringByReplacingOccurrencesOfString:@":" withString:_timeSeparator];
+    
+    if(![self.appDelegate.alarmClock is24h]) {
+        NSString *currentAMPM = [[currentTimeText componentsSeparatedByString:@" "] objectAtIndex:1];
+        UILabel *lblCurrentAMPM = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 62, 12, 75, 50)];
+        if ([currentAMPM isEqualToString:@"PM"]) {
+            [lblCurrentAMPM setFrame:CGRectMake(self.view.frame.size.width - 62, 53, 75, 50)];
+        }
+        [lblCurrentAMPM setBackgroundColor:[UIColor clearColor]];
+        [lblCurrentAMPM setLineBreakMode:NSLineBreakByWordWrapping];
+        [lblCurrentAMPM setText:[NSString stringWithFormat:@"%@", [currentAMPM lowercaseString]]];
+        [lblCurrentAMPM setTextColor:self.darkTextColor];
+        [lblCurrentAMPM setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:35.0]];
+        [self.currentTimeView addSubview:lblCurrentAMPM];
+        
+        currentTimeText = [currentTimeText stringByReplacingOccurrencesOfString:@" PM" withString:@""];
+        currentTimeText = [currentTimeText stringByReplacingOccurrencesOfString:@" AM" withString:@""];
+    }
+    
+    if([currentTimeText length] == 4) {
+        currentTimeText = [NSString stringWithFormat:@"0%@", currentTimeText];
+    }
+
+    [currentTimeLabel setAttributedText:[[NSAttributedString alloc] initWithString:[[NSString stringWithFormat:@"%@", currentTimeText] lowercaseString] attributes:atsBig]];
+        
+    [self.currentTimeView addSubview:currentLabel];
+    [self.currentTimeView addSubview:currentTimeLabel];
+}
+
+- (void) cycleSleepView {
+    
+    if ([self.currentTimeView isHidden] && [self.alarmTimeView isHidden]) {
+        [self.currentTimeView setHidden:NO];
+        [self.alarmTimeView setHidden:YES];
+        NSLog(@"1");
+    } else if([self.currentTimeView isHidden] && ![self.alarmTimeView isHidden]) {
+        [self.alarmTimeView setHidden:YES];
+        NSLog(@"2");
+    } else if(![self.currentTimeView isHidden] && [self.alarmTimeView isHidden]) {
+        [self.alarmTimeView setHidden:NO];
+        [self.currentTimeView setHidden:YES];
+        NSLog(@"3");
+    } else {
+        [self.currentTimeView setHidden:YES];
+        [self.alarmTimeView setHidden:YES];
+    }
 }
 
 - (void) handlePanGesture:(UIPanGestureRecognizer *)sender {
@@ -291,7 +399,7 @@
             [[[AppDelegate rdioInstance] player] togglePause];
         }
         self.appDelegate.appBrightness = 0.0;
-        [_alarmLabel removeFromSuperview];
+        [self.alarmTimeView setHidden:YES];
         [_chargingLabel removeFromSuperview];
     } else {
         float increment = (self.appDelegate.originalBrightness - 0.0)/(sleepTimeSeconds);
@@ -643,6 +751,8 @@
 
     [self.navigationController setNavigationBarHidden:YES];
     self.appDelegate = [[UIApplication sharedApplication] delegate];
+    self.emailCompose = [[MFMailComposeViewController alloc] init];
+
     [UIDevice currentDevice].batteryMonitoringEnabled = YES;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeBatteryLabel) name:@"UIDeviceBatteryStateDidChangeNotification" object:nil];
     
@@ -669,9 +779,9 @@
     UIView *settingsView = [[UIView alloc] initWithFrame:fullScreen];
     [settingsView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"settings-darkbg"]]];
     
-    CGRect frameBtnSignOut = CGRectMake((self.view.frame.size.width - 78) / 2, self.view.frame.size.height - 125, 78, 28);
+    CGRect frameBtnSignOut = CGRectMake((self.view.frame.size.width - 78) / 4, self.view.frame.size.height - 125, 78, 28);
     if([[UIScreen mainScreen] bounds].size.height <= 480) {
-        frameBtnSignOut = CGRectMake((self.view.frame.size.width - 78) / 2, self.view.frame.size.height - 40, 78, 28);
+        frameBtnSignOut = CGRectMake((self.view.frame.size.width - 78) / 4, self.view.frame.size.height - 40, 78, 28);
     }
     UIButton *btnSignOut = [UIButton buttonWithType:UIButtonTypeCustom];
     [btnSignOut setFrame:frameBtnSignOut];
@@ -684,6 +794,24 @@
     [btnSignOut setBackgroundImage:[UIImage imageNamed:@"settings-btn-signout-pressed"] forState:UIControlStateHighlighted];
 
     [btnSignOut addTarget:self action:@selector(loginClicked) forControlEvents:UIControlEventTouchUpInside];
+    
+    
+    CGRect frameBtnContactUs = CGRectMake(((self.view.frame.size.width - 78) * 3) / 4, self.view.frame.size.height - 125, 78, 28);
+    if([[UIScreen mainScreen] bounds].size.height <= 480) {
+        frameBtnContactUs = CGRectMake(((self.view.frame.size.width - 78) * 3) / 4, self.view.frame.size.height - 40, 78, 28);
+    }
+    UIButton *btnContactUs = [UIButton buttonWithType:UIButtonTypeCustom];
+    [btnContactUs setFrame:frameBtnContactUs];
+    [btnContactUs setTitle:[NSString stringWithFormat:NSLocalizedString(@"CONTACT US", nil)] forState:UIControlStateNormal];
+    [btnContactUs.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12.0]];
+    
+    [btnContactUs.titleLabel setAdjustsFontSizeToFitWidth:YES];
+    [btnContactUs setTitleColor:self.lightTextColor forState:UIControlStateNormal];
+    [btnContactUs setBackgroundImage:[UIImage imageNamed:@"settings-btn-signout"] forState:UIControlStateNormal];
+    [btnContactUs setBackgroundImage:[UIImage imageNamed:@"settings-btn-signout-pressed"] forState:UIControlStateHighlighted];
+    
+    [btnContactUs addTarget:self action:@selector(sendEmail) forControlEvents:UIControlEventTouchUpInside];
+    
     
     _sliderSnooze = [[UISlider alloc] initWithFrame:CGRectMake((self.view.frame.size.width - 270) / 2, 130, 270, 50)];
     [_sliderSnooze setMinimumValue:1.0];
@@ -921,6 +1049,10 @@
     
     [settingsView addSubview:self.lblShuffle];
     
+    //if(self.emailCompose.canSendMail) {
+    //    [settingsView addSubview:btnContactUs];
+    //}
+
     UIImageView *imgFourthSettingsSeparator = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"settings-div"]];
     [imgFourthSettingsSeparator setFrame:CGRectMake(0.0, 417, [[UIScreen mainScreen] bounds].size.width, 1.0)];
     [settingsView addSubview:imgFourthSettingsSeparator];
@@ -1136,7 +1268,7 @@
     [self setAMPMLabel];
     
     if ([self.appDelegate.alarmClock isAutoStart] && ![timeTextString isEqualToString:@""]) {
-        [self getAlarmTime];
+        //[self getAlarmTime];
         NSString *alarmTimeText;
         NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
         if(![self.appDelegate.alarmClock is24h]) {
@@ -1228,6 +1360,11 @@
     }
 }
 
+-(void) sendEmail
+{
+    //#TODO: Send email with information about device model, OS, app version
+}
+
 -(void) hideVolumeView
 {
     NSLog(@"Here");
@@ -1251,7 +1388,7 @@
 -(void) setAMPMLabel
 {
     [_lblAMPM removeFromSuperview];
-    [self getAlarmTime];
+    //[self getAlarmTime];
     NSString *sAMPM;
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"a"];
@@ -1666,7 +1803,14 @@
 - (void) tick
 {
     NSLog(@"current time: %@ & alarm time: %@", [NSDate date], [self.appDelegate.alarmClock alarmTime]);
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     
+    [formatter setDateFormat:@"ss"];
+
+    if ([[formatter stringFromDate:[NSDate date]] isEqualToString:@"00"]) {
+        [self setupCurrentTimeView];
+    }
+    NSLog(@"%@", [formatter stringFromDate:[NSDate date]]);
     NSDate *now = [NSDate date];
     
     if([[self.appDelegate.alarmClock alarmTime] isEqualToDate:([[self.appDelegate.alarmClock alarmTime] earlierDate:now])] && !playing)
