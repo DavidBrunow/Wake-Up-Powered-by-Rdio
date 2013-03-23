@@ -37,6 +37,7 @@
 		11F872441526371C00EFE7E9 /* orangex@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11F872431526371C00EFE7E9 /* orangex@2x.png */; };
 		11F8724615263B5100EFE7E9 /* x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11F8724515263B5100EFE7E9 /* x.png */; };
 		11F8724815263B6200EFE7E9 /* orangex.png in Resources */ = {isa = PBXBuildFile; fileRef = 11F8724715263B6200EFE7E9 /* orangex.png */; };
+		23278FD616FB3F1A00C64EC3 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23278FD516FB3F1A00C64EC3 /* MessageUI.framework */; };
 		234A618616F4F80A00E9EC4A /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 234A618216F4F80A00E9EC4A /* libTestFlight.a */; };
 		234A618716F4F80A00E9EC4A /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 234A618316F4F80A00E9EC4A /* README.md */; };
 		234A618816F4F80A00E9EC4A /* release_notes.md in Resources */ = {isa = PBXBuildFile; fileRef = 234A618416F4F80A00E9EC4A /* release_notes.md */; };
@@ -155,6 +156,7 @@
 		11F872431526371C00EFE7E9 /* orangex@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "orangex@2x.png"; sourceTree = "<group>"; };
 		11F8724515263B5100EFE7E9 /* x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = x.png; sourceTree = "<group>"; };
 		11F8724715263B6200EFE7E9 /* orangex.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = orangex.png; sourceTree = "<group>"; };
+		23278FD516FB3F1A00C64EC3 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		233E446316A90DEA00AA86CE /* Credentials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Credentials.h; sourceTree = "<group>"; };
 		23404E991653DFD2002E872B /* en */ = {isa = PBXFileReference; explicitFileType = text.plist.strings; fileEncoding = 10; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		23404E9B1653DFDC002E872B /* fr */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -229,6 +231,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				23278FD616FB3F1A00C64EC3 /* MessageUI.framework in Frameworks */,
 				234A618A16F4F85200E9EC4A /* libz.dylib in Frameworks */,
 				23BE595716DFA23A00E4C8F8 /* Rdio.framework in Frameworks */,
 				239B2AF815F299290001EA36 /* QuartzCore.framework in Frameworks */,
@@ -367,6 +370,7 @@
 		11A0F0D414BFB57A0055390F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				23278FD516FB3F1A00C64EC3 /* MessageUI.framework */,
 				234A618916F4F85200E9EC4A /* libz.dylib */,
 				23BE595616DFA23A00E4C8F8 /* Rdio.framework */,
 				239B2AF715F299290001EA36 /* QuartzCore.framework */,
