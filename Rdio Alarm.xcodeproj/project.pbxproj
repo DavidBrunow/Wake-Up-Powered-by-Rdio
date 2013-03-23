@@ -715,6 +715,8 @@
 		11A0F0FF14BFB57B0055390F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer: David Brunow (M2JB2FZF76)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: David Brunow (M2JB2FZF76)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Rdio Alarm Clock/External Frameworks\"",
@@ -729,6 +731,8 @@
 				);
 				OTHER_LDFLAGS = "-all_load";
 				PRODUCT_NAME = "Rdio Alarm";
+				PROVISIONING_PROFILE = "DFEBB396-998A-4DC1-89AB-9830DBD278AD";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "DFEBB396-998A-4DC1-89AB-9830DBD278AD";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;

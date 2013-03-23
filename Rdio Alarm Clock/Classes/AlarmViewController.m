@@ -751,7 +751,6 @@
 
     [self.navigationController setNavigationBarHidden:YES];
     self.appDelegate = [[UIApplication sharedApplication] delegate];
-    self.emailCompose = [[MFMailComposeViewController alloc] init];
 
     [UIDevice currentDevice].batteryMonitoringEnabled = YES;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeBatteryLabel) name:@"UIDeviceBatteryStateDidChangeNotification" object:nil];
@@ -812,6 +811,15 @@
     
     [btnContactUs addTarget:self action:@selector(sendEmail) forControlEvents:UIControlEventTouchUpInside];
     
+    if([MFMailComposeViewController canSendMail]) {
+        [settingsView addSubview:btnContactUs];
+    } else {
+        frameBtnSignOut = CGRectMake((self.view.frame.size.width - 78) / 2, self.view.frame.size.height - 125, 78, 28);
+        if([[UIScreen mainScreen] bounds].size.height <= 480) {
+            frameBtnSignOut = CGRectMake((self.view.frame.size.width - 78) / 2, self.view.frame.size.height - 40, 78, 28);
+        }
+        [btnSignOut setFrame:frameBtnSignOut];
+    }
     
     _sliderSnooze = [[UISlider alloc] initWithFrame:CGRectMake((self.view.frame.size.width - 270) / 2, 130, 270, 50)];
     [_sliderSnooze setMinimumValue:1.0];
@@ -947,10 +955,7 @@
     
     [self.sliderAutoStart setMinimumTrackImage:[[UIImage imageNamed:@"settings-onoff-bg"] resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 15.0, 0.0, 15.0)] forState:UIControlStateNormal];
     [self.sliderAutoStart setMaximumTrackImage:[[UIImage imageNamed:@"settings-onoff-bg"] resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 15.0, 0.0, 15.0)] forState:UIControlStateNormal];
-    [self.sliderAutoStart addTarget:self action:@selector(updateAutoStart) forControlEvents:UIControlEventTouchDown];
-    //[self.sliderAutoStart addTarget:self action:@selector(updateAutoStart) forControlEvents:UIControlEventAllTouchEvents];
-    //[self.sliderAutoStart addTarget:self action:@selector(updateAutoStart) forControlEvents:UIControlEventTouchDragInside];
-    //[self.sliderAutoStart addTarget:self action:@selector(updateAutoStart) forControlEvents:UIControlEventTouchDragOutside];
+    [self.sliderAutoStart addTarget:self action:@selector(updateAutoStart) forControlEvents:UIControlEventTouchCancel | UIControlEventValueChanged];
     [self.sliderAutoStart setContinuous:NO];
 
     [settingsView addSubview:self.sliderAutoStart];
@@ -958,7 +963,7 @@
     self.lblAutoStartNO = [[UILabel alloc] initWithFrame:CGRectMake(38,0,30,28)];
     [self.lblAutoStartNO setText:[NSString stringWithFormat:NSLocalizedString(@"LBLSLIDERNO", nil)]];
     [self.lblAutoStartNO setBackgroundColor:[UIColor clearColor]];
-    [self.lblAutoStartNO setTextColor:self.lightTextColor];
+    [self.lblAutoStartNO setTextColor:self.darkTextColor];
     [self.lblAutoStartNO setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12.0]];
 
     self.lblAutoStartYES = [[UILabel alloc] initWithFrame:CGRectMake(18,0,30,28)];
@@ -1003,9 +1008,8 @@
     
     [self.sliderShuffle setMinimumTrackImage:[[UIImage imageNamed:@"settings-onoff-bg"] resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 15.0, 0.0, 15.0)] forState:UIControlStateNormal];
     [self.sliderShuffle setMaximumTrackImage:[[UIImage imageNamed:@"settings-onoff-bg"] resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 15.0, 0.0, 15.0)] forState:UIControlStateNormal];
-    [self.sliderShuffle addTarget:self action:@selector(updateShuffle) forControlEvents:UIControlEventTouchDown];
-    [self.sliderShuffle addTarget:self action:@selector(updateShuffle) forControlEvents:UIControlEventTouchDragInside];
-    [self.sliderShuffle addTarget:self action:@selector(updateShuffle) forControlEvents:UIControlEventTouchDragOutside];
+    [self.sliderShuffle sendActionsForControlEvents:UIControlEventValueChanged];
+    [self.sliderShuffle addTarget:self action:@selector(updateShuffle) forControlEvents:UIControlEventTouchCancel | UIControlEventValueChanged];
     [self.sliderShuffle setContinuous:NO];
     
     [settingsView addSubview:self.sliderShuffle];
@@ -1013,7 +1017,7 @@
     self.lblShuffleNO = [[UILabel alloc] initWithFrame:CGRectMake(38,0,30,28)];
     [self.lblShuffleNO setText:[NSString stringWithFormat:NSLocalizedString(@"LBLSLIDERNO", nil)]];
     [self.lblShuffleNO setBackgroundColor:[UIColor clearColor]];
-    [self.lblShuffleNO setTextColor:self.lightTextColor];
+    [self.lblShuffleNO setTextColor:self.darkTextColor];
     [self.lblShuffleNO setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12.0]];
     
     self.lblShuffleYES = [[UILabel alloc] initWithFrame:CGRectMake(18,0,30,28)];
@@ -1048,10 +1052,6 @@
     [self.lblShuffle setAdjustsFontSizeToFitWidth:YES];
     
     [settingsView addSubview:self.lblShuffle];
-    
-    //if(self.emailCompose.canSendMail) {
-    //    [settingsView addSubview:btnContactUs];
-    //}
 
     UIImageView *imgFourthSettingsSeparator = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"settings-div"]];
     [imgFourthSettingsSeparator setFrame:CGRectMake(0.0, 417, [[UIScreen mainScreen] bounds].size.width, 1.0)];
@@ -1160,9 +1160,7 @@
         timeTextString = [timeTextString stringByReplacingOccurrencesOfString:@"h" withString:_timeSeparator];
     }
     [self.timeTextField setText:timeTextString];
-    
-    //TODO: Make sure that the default time of 06:00 will work with 24 hour clocks
-    
+        
     UITapGestureRecognizer *dismissTap = [[UITapGestureRecognizer alloc] init];
     [dismissTap addTarget:self action:@selector(doneWithNumberPad)];
     
@@ -1191,24 +1189,30 @@
     [setAlarmView addSubview:self.lblWakeUpTo];
 
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] init];
-    self.lblPlaylist = [[UILabel alloc] initWithFrame:CGRectMake(10, 154.0, self.view.frame.size.width, 200.0)];
-    if (self.appDelegate.loggedIn) {
-        [self.lblPlaylist setText:[NSString stringWithFormat:NSLocalizedString(@"CHOOSE PLAYLIST", nil)]];
-        [tap addTarget:self action:@selector(showPlaylists)];
-    } else {
-        [self.lblPlaylist setText:[NSString stringWithFormat:NSLocalizedString(@"NOT SIGNED IN LABEL", nil)]];
-        [tap addTarget:self action:@selector(RdioSignUp)];
-    }
-    [self.lblPlaylist setBackgroundColor:[UIColor clearColor]];
-    [self.lblPlaylist setTextColor:self.lightTextColor];
-    [self.lblPlaylist setAttributedText:[[NSAttributedString alloc] initWithString:[[NSString stringWithFormat:@"%@", [self.appDelegate.alarmClock playlistName]] lowercaseString] attributes:ats]];
-    //[self.lblPlaylist sizeToFit];
-
+    self.lblPlaylist = [[UILabel alloc] initWithFrame:CGRectMake(10, 154.0, 300, 200.0)];
     if (self.view.frame.size.height > 480) {
         [self.lblPlaylist setNumberOfLines:4];
     } else {
         [self.lblPlaylist setNumberOfLines:3];
     }
+    //if (self.appDelegate.loggedIn) {
+        [self.lblPlaylist setAttributedText:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\n\n\n", [NSLocalizedString(@"CHOOSE PLAYLIST", nil) lowercaseString]] attributes:ats]];
+        CGRect frame = CGRectMake(10, 154.0, 300.0, 200.0);
+        [self.lblPlaylist setFrame:frame];
+        [self.lblPlaylist sizeToFit];
+        frame.size.height = self.lblPlaylist.frame.size.height;
+        [self.lblPlaylist setFrame:frame];
+        [tap addTarget:self action:@selector(showPlaylists)];
+    //} else {
+    //    [self.lblPlaylist setText:[NSString stringWithFormat:NSLocalizedString(@"NOT SIGNED IN LABEL", nil)]];
+    //    [tap addTarget:self action:@selector(RdioSignUp)];
+    //}
+    [self.lblPlaylist setBackgroundColor:[UIColor clearColor]];
+    [self.lblPlaylist setTextColor:self.lightTextColor];
+    //[self.lblPlaylist setAttributedText:[[NSAttributedString alloc] initWithString:[[NSString stringWithFormat:@"%@", [self.appDelegate.alarmClock playlistName]] lowercaseString] attributes:ats]];
+    //[self.lblPlaylist sizeToFit];
+
+    
     //[self.lblPlaylist setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:50.0]];
     [self.lblPlaylist setUserInteractionEnabled:YES];
     [self.lblPlaylist addGestureRecognizer:tap];
@@ -1323,7 +1327,6 @@
             alarmTimeText = [alarmTimeText stringByReplacingOccurrencesOfString:@" AM" withString:@""];
         }
         
-        
         if([alarmTimeText length] == 4) {
             alarmTimeText = [NSString stringWithFormat:@"0%@", alarmTimeText];
         }
@@ -1362,7 +1365,19 @@
 
 -(void) sendEmail
 {
-    //#TODO: Send email with information about device model, OS, app version
+    self.emailCompose = [[MFMailComposeViewController alloc] init];
+
+    [self.emailCompose setMailComposeDelegate:self];
+    [self.emailCompose setToRecipients:[[NSArray alloc] initWithObjects:@"helloDavid@brunow.org", nil]];
+    [self.emailCompose setSubject:@"Howdy!"];
+    [self.emailCompose setMessageBody:[NSString stringWithFormat:@"<br /><br /><br /><br />Troubleshooting Information<br />---<br />App Name: %@<br />App Version: %@<br />iOS Device: %@<br />iOS Version: %@<br />", [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"], [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"], [UIDevice currentDevice].model, [[UIDevice currentDevice] systemVersion]] isHTML:YES];
+    
+    [self presentViewController:self.emailCompose animated:YES completion:nil];
+}
+
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
+{
+    [controller dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void) hideVolumeView
@@ -1469,7 +1484,7 @@
     if([self.appDelegate.alarmClock playlistName]) {
         [self.lblPlaylist setAttributedText:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\n\n\n", [[self.appDelegate.alarmClock playlistName] lowercaseString]] attributes:ats]];
     } else {
-        [self.lblPlaylist setAttributedText:[[NSAttributedString alloc] initWithString:@"choose playlist..." attributes:ats]];
+        [self.lblPlaylist setAttributedText:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\n\n\n", [NSLocalizedString(@"CHOOSE PLAYLIST", nil) lowercaseString]] attributes:ats]];
     }
     //[self.lblPlaylist setText:[appDelegate.selectedPlaylist lowercaseString]];
     CGRect frame = CGRectMake(10, 154.0, 300.0, 200.0);
@@ -1617,8 +1632,6 @@
 
 - (void) textFieldValueChange:(UITextField *) textField
 {
-    //TODO: Make this work with the new leading 0 format
-
     int currentLength = textField.text.length;
         
     if (_lastLength == 0) {
@@ -1802,7 +1815,7 @@
 
 - (void) tick
 {
-    NSLog(@"current time: %@ & alarm time: %@", [NSDate date], [self.appDelegate.alarmClock alarmTime]);
+    NSLog(@"current time: %@\nalarm time: %@", [NSDate date], [self.appDelegate.alarmClock alarmTime]);
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     
     [formatter setDateFormat:@"ss"];
@@ -1810,7 +1823,7 @@
     if ([[formatter stringFromDate:[NSDate date]] isEqualToString:@"00"]) {
         [self setupCurrentTimeView];
     }
-    NSLog(@"%@", [formatter stringFromDate:[NSDate date]]);
+
     NSDate *now = [NSDate date];
     
     if([[self.appDelegate.alarmClock alarmTime] isEqualToDate:([[self.appDelegate.alarmClock alarmTime] earlierDate:now])] && !playing)
