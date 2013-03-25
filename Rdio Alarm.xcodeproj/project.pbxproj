@@ -11,7 +11,6 @@
 		111F3B74152F40350075047F /* navbarclockicon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 111F3B73152F40350075047F /* navbarclockicon@2x.png */; };
 		111F3B76152F424A0075047F /* navbarclockicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 111F3B75152F424A0075047F /* navbarclockicon.png */; };
 		1128DA9D14F1E3D300230CCB /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 1128DA9C14F1E3D300230CCB /* Reachability.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		112B4EA71522BE4300438D4B /* x@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 112B4EA61522BE4300438D4B /* x@2x.png */; };
 		112B4EA91522C88400438D4B /* timeSetRoundedRect@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 112B4EA81522C88400438D4B /* timeSetRoundedRect@2x.png */; };
 		115302FB151B69EB00B75800 /* AlarmNavController.m in Sources */ = {isa = PBXBuildFile; fileRef = 115302FA151B69EB00B75800 /* AlarmNavController.m */; };
 		115D9C701537B57100BCCF4B /* clockicon@57.png in Resources */ = {isa = PBXBuildFile; fileRef = 111F3B77152F43CC0075047F /* clockicon@57.png */; };
@@ -45,7 +44,6 @@
 		234A619116F5146100E9EC4A /* DHBAlarmClock.m in Sources */ = {isa = PBXBuildFile; fileRef = 234A618C16F5146000E9EC4A /* DHBAlarmClock.m */; };
 		234A619216F5146100E9EC4A /* DHBPlaylist.m in Sources */ = {isa = PBXBuildFile; fileRef = 234A618E16F5146100E9EC4A /* DHBPlaylist.m */; };
 		234A619316F5146100E9EC4A /* DHBTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 234A619016F5146100E9EC4A /* DHBTextField.m */; };
-		234A619616F5149100E9EC4A /* x.png in Resources */ = {isa = PBXBuildFile; fileRef = 234A619416F5149100E9EC4A /* x.png */; };
 		234A619716F5149100E9EC4A /* x@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 234A619516F5149100E9EC4A /* x@2x.png */; };
 		234A61BA16F515B300E9EC4A /* btn-setalarm.png in Resources */ = {isa = PBXBuildFile; fileRef = 234A619816F515B200E9EC4A /* btn-setalarm.png */; };
 		234A61BB16F515B300E9EC4A /* btn-setalarm@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 234A619916F515B200E9EC4A /* btn-setalarm@2x.png */; };
@@ -74,8 +72,6 @@
 		234A61D216F515B300E9EC4A /* settings-timebubble@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 234A61B016F515B300E9EC4A /* settings-timebubble@2x.png */; };
 		234A61D316F515B300E9EC4A /* settings-topshadow.png in Resources */ = {isa = PBXBuildFile; fileRef = 234A61B116F515B300E9EC4A /* settings-topshadow.png */; };
 		234A61D416F515B300E9EC4A /* settings-topshadow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 234A61B216F515B300E9EC4A /* settings-topshadow@2x.png */; };
-		234A61D516F515B300E9EC4A /* sleepmode-grippy.png in Resources */ = {isa = PBXBuildFile; fileRef = 234A61B316F515B300E9EC4A /* sleepmode-grippy.png */; };
-		234A61D616F515B300E9EC4A /* sleepmode-grippy@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 234A61B416F515B300E9EC4A /* sleepmode-grippy@2x.png */; };
 		234A61D716F515B300E9EC4A /* sleepmodebg-568h@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 234A61B516F515B300E9EC4A /* sleepmodebg-568h@2x~iphone.png */; };
 		234A61D816F515B300E9EC4A /* sleepmodebg@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 234A61B616F515B300E9EC4A /* sleepmodebg@2x~iphone.png */; };
 		234A61D916F515B300E9EC4A /* sleepmodebg~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 234A61B716F515B300E9EC4A /* sleepmodebg~iphone.png */; };
@@ -85,6 +81,8 @@
 		234A61E916F5168200E9EC4A /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 234A61E816F5168200E9EC4A /* Default@2x.png */; };
 		234A61EB16F5168A00E9EC4A /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 234A61EA16F5168A00E9EC4A /* Default.png */; };
 		23523EA8165BC42700F70F14 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 23404E9A1653DFD2002E872B /* Localizable.strings */; };
+		2372C70B16FFAC4000D79C80 /* sleepmode-grippy.png in Resources */ = {isa = PBXBuildFile; fileRef = 2372C70916FFAC4000D79C80 /* sleepmode-grippy.png */; };
+		2372C70C16FFAC4000D79C80 /* sleepmode-grippy@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2372C70A16FFAC4000D79C80 /* sleepmode-grippy@2x.png */; };
 		239B2AF815F299290001EA36 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 239B2AF715F299290001EA36 /* QuartzCore.framework */; };
 		239B2AFB15F2A4BD0001EA36 /* 550L_cloth.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 239B2AFA15F2A4BD0001EA36 /* 550L_cloth.jpg */; };
 		239B2AFD15F2A79A0001EA36 /* preferences@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 239B2AFC15F2A79A0001EA36 /* preferences@2x.png */; };
@@ -207,8 +205,6 @@
 		234A61B016F515B300E9EC4A /* settings-timebubble@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings-timebubble@2x.png"; sourceTree = "<group>"; };
 		234A61B116F515B300E9EC4A /* settings-topshadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings-topshadow.png"; sourceTree = "<group>"; };
 		234A61B216F515B300E9EC4A /* settings-topshadow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings-topshadow@2x.png"; sourceTree = "<group>"; };
-		234A61B316F515B300E9EC4A /* sleepmode-grippy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sleepmode-grippy.png"; sourceTree = "<group>"; };
-		234A61B416F515B300E9EC4A /* sleepmode-grippy@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sleepmode-grippy@2x.png"; sourceTree = "<group>"; };
 		234A61B516F515B300E9EC4A /* sleepmodebg-568h@2x~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sleepmodebg-568h@2x~iphone.png"; sourceTree = "<group>"; };
 		234A61B616F515B300E9EC4A /* sleepmodebg@2x~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sleepmodebg@2x~iphone.png"; sourceTree = "<group>"; };
 		234A61B716F515B300E9EC4A /* sleepmodebg~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sleepmodebg~iphone.png"; sourceTree = "<group>"; };
@@ -218,6 +214,13 @@
 		234A61E816F5168200E9EC4A /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "../../Default@2x.png"; sourceTree = "<group>"; };
 		234A61EA16F5168A00E9EC4A /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = ../../Default.png; sourceTree = "<group>"; };
 		235D52221654980800EBCA68 /* Rdio Alarm-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Rdio Alarm-Info.plist"; path = "Supporting Files/Rdio Alarm-Info.plist"; sourceTree = "<group>"; };
+		2372C70416FE767A00D79C80 /* is */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = is; path = is.lproj/Localizable.strings; sourceTree = "<group>"; };
+		2372C70516FE769300D79C80 /* et */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = et; path = et.lproj/Localizable.strings; sourceTree = "<group>"; };
+		2372C70616FE769D00D79C80 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
+		2372C70716FE76AC00D79C80 /* lv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = lv; path = lv.lproj/Localizable.strings; sourceTree = "<group>"; };
+		2372C70816FE76ED00D79C80 /* lt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = lt; path = lt.lproj/Localizable.strings; sourceTree = "<group>"; };
+		2372C70916FFAC4000D79C80 /* sleepmode-grippy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sleepmode-grippy.png"; sourceTree = "<group>"; };
+		2372C70A16FFAC4000D79C80 /* sleepmode-grippy@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sleepmode-grippy@2x.png"; sourceTree = "<group>"; };
 		239B2AF715F299290001EA36 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		239B2AFA15F2A4BD0001EA36 /* 550L_cloth.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 550L_cloth.jpg; sourceTree = "<group>"; };
 		239B2AFC15F2A79A0001EA36 /* preferences@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "preferences@2x.png"; sourceTree = "<group>"; };
@@ -293,6 +296,8 @@
 		115302F8151B696A00B75800 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				2372C70916FFAC4000D79C80 /* sleepmode-grippy.png */,
+				2372C70A16FFAC4000D79C80 /* sleepmode-grippy@2x.png */,
 				234A61EA16F5168A00E9EC4A /* Default.png */,
 				234A61E816F5168200E9EC4A /* Default@2x.png */,
 				234A61E616F5166900E9EC4A /* Default-568h@2x.png */,
@@ -323,8 +328,6 @@
 				234A61B016F515B300E9EC4A /* settings-timebubble@2x.png */,
 				234A61B116F515B300E9EC4A /* settings-topshadow.png */,
 				234A61B216F515B300E9EC4A /* settings-topshadow@2x.png */,
-				234A61B316F515B300E9EC4A /* sleepmode-grippy.png */,
-				234A61B416F515B300E9EC4A /* sleepmode-grippy@2x.png */,
 				234A61B516F515B300E9EC4A /* sleepmodebg-568h@2x~iphone.png */,
 				234A61B616F515B300E9EC4A /* sleepmodebg@2x~iphone.png */,
 				234A61B716F515B300E9EC4A /* sleepmodebg~iphone.png */,
@@ -501,6 +504,11 @@
 				sv,
 				fi,
 				nb,
+				is,
+				et,
+				it,
+				lv,
+				lt,
 			);
 			mainGroup = 11A0F0C614BFB5790055390F;
 			productRefGroup = 11A0F0D214BFB57A0055390F /* Products */;
@@ -519,7 +527,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				23523EA8165BC42700F70F14 /* Localizable.strings in Resources */,
-				112B4EA71522BE4300438D4B /* x@2x.png in Resources */,
 				112B4EA91522C88400438D4B /* timeSetRoundedRect@2x.png in Resources */,
 				11F872441526371C00EFE7E9 /* orangex@2x.png in Resources */,
 				11F8724615263B5100EFE7E9 /* x.png in Resources */,
@@ -534,7 +541,6 @@
 				239B2B0315F3124E0001EA36 /* Settings.plist in Resources */,
 				234A618716F4F80A00E9EC4A /* README.md in Resources */,
 				234A618816F4F80A00E9EC4A /* release_notes.md in Resources */,
-				234A619616F5149100E9EC4A /* x.png in Resources */,
 				234A619716F5149100E9EC4A /* x@2x.png in Resources */,
 				234A61BA16F515B300E9EC4A /* btn-setalarm.png in Resources */,
 				234A61BB16F515B300E9EC4A /* btn-setalarm@2x.png in Resources */,
@@ -563,8 +569,6 @@
 				234A61D216F515B300E9EC4A /* settings-timebubble@2x.png in Resources */,
 				234A61D316F515B300E9EC4A /* settings-topshadow.png in Resources */,
 				234A61D416F515B300E9EC4A /* settings-topshadow@2x.png in Resources */,
-				234A61D516F515B300E9EC4A /* sleepmode-grippy.png in Resources */,
-				234A61D616F515B300E9EC4A /* sleepmode-grippy@2x.png in Resources */,
 				234A61D716F515B300E9EC4A /* sleepmodebg-568h@2x~iphone.png in Resources */,
 				234A61D816F515B300E9EC4A /* sleepmodebg@2x~iphone.png in Resources */,
 				234A61D916F515B300E9EC4A /* sleepmodebg~iphone.png in Resources */,
@@ -573,6 +577,8 @@
 				234A61E716F5166900E9EC4A /* Default-568h@2x.png in Resources */,
 				234A61E916F5168200E9EC4A /* Default@2x.png in Resources */,
 				234A61EB16F5168A00E9EC4A /* Default.png in Resources */,
+				2372C70B16FFAC4000D79C80 /* sleepmode-grippy.png in Resources */,
+				2372C70C16FFAC4000D79C80 /* sleepmode-grippy@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -651,6 +657,11 @@
 				23404EA01653DFE4002E872B /* sv */,
 				23404EA11653DFE7002E872B /* fi */,
 				23404EA21653DFE8002E872B /* nb */,
+				2372C70416FE767A00D79C80 /* is */,
+				2372C70516FE769300D79C80 /* et */,
+				2372C70616FE769D00D79C80 /* it */,
+				2372C70716FE76AC00D79C80 /* lv */,
+				2372C70816FE76ED00D79C80 /* lt */,
 			);
 			name = Localizable.strings;
 			path = "Supporting Files";
@@ -740,6 +751,7 @@
 		11A0F10014BFB57B0055390F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Distribution: David Brunow";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: David Brunow";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -755,7 +767,8 @@
 				);
 				OTHER_LDFLAGS = "-all_load";
 				PRODUCT_NAME = "Rdio Alarm";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "E37026F2-0E02-45A8-A6A8-D9613DCFE5EB";
+				PROVISIONING_PROFILE = "4ADFC517-68D4-453C-9DFA-7294077A07DF";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "4ADFC517-68D4-453C-9DFA-7294077A07DF";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

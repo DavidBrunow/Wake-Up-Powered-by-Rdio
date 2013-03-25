@@ -53,6 +53,8 @@
         [logIn setTitle:@"Sign In"];
         appDelegate.loggedIn = NO;
         bool success = [SFHFKeychainUtils deleteItemForUsername:@"rdioUser" andServiceName:@"rdioAlarm" error:nil];
+        NSLog(@"Success: %d", success);
+        
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Logout Successful" message:@"You have been logged out of your Rdio account." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
         [alert show];
         

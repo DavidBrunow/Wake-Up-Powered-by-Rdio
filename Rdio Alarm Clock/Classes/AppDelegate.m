@@ -43,8 +43,8 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkNetworkStatus:) name:kReachabilityChangedNotification object:nil];
     
-    internetReachable = [Reachability reachabilityForInternetConnection];
-    [internetReachable startNotifier];
+    //internetReachable = [Reachability reachabilityForInternetConnection];
+    //[internetReachable startNotifier];
     
     // check if a pathway to a random host exists
     hostReachable = [Reachability reachabilityWithHostname: @"www.rdio.com"];
