@@ -20,6 +20,7 @@
 @property (nonatomic, retain) NSString *playlistName;
 @property (nonatomic, retain) NSIndexPath *playlistPath;
 @property (nonatomic, retain) NSDate *alarmTime;
+@property (nonatomic) NSString *timeSeparator;
 
 -(NSString *) getAlarmTimeString;
 -(void) setAlarmTime:(NSDate *)alarmTime save:(bool)needToSave;

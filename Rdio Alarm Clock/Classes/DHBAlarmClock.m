@@ -36,6 +36,18 @@
     
     [self setIs24h:(amRange.location == NSNotFound && pmRange.location == NSNotFound)];
     
+    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+    
+    self.timeSeparator = @":";
+    
+    if([language isEqualToString:@"en"]) {
+        self.timeSeparator = @":";
+    } else if([language isEqualToString:@"fr"] || [language isEqualToString:@"pt-PT"]) {
+        self.timeSeparator = @"h";
+    } else if([language isEqualToString:@"de"] || [language isEqualToString:@"da"] || [language isEqualToString:@"fi"]) {
+        self.timeSeparator = @".";
+    }
+    
     self.sleepTime = [[self.settings valueForKey:@"Sleep Time"] integerValue];
     self.snoozeTime = [[self.settings valueForKey:@"Snooze Time"] integerValue];
     self.isAutoStart = [[self.settings valueForKey:@"Auto Start Alarm"] boolValue];
