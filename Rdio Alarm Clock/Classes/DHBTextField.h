@@ -10,4 +10,6 @@
 
 @interface DHBTextField : UITextField
 
+@property (nonatomic) UIView *cursor;
+
 @end
