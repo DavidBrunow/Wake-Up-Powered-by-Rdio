@@ -30,8 +30,6 @@
     }
     
     self.chooseMusic = [[UITableView alloc] initWithFrame:chooseMusicFrame style:UITableViewStylePlain];
-    //[chooseMusic setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Default-568h"]]];
-    //[self setTitle:@"Playlists"];
     
     [self.chooseMusic setBackgroundColor:[UIColor clearColor]];
     [self.chooseMusic setSeparatorColor:[UIColor colorWithRed:.09 green:.06 blue:.117 alpha:1.0]];
@@ -51,31 +49,33 @@
 {
     AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     NSString *cellLabel = @"";
-    
+
     if (indexPath.section == 0) {
-        cellLabel = [[appDelegate.playlistsInfo objectAtIndex:(indexPath.row)+appDelegate.numberOfPlaylistsCollab] lowercaseString];
+        cellLabel = [[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row + [[self.numberOfRows objectAtIndex:0] integerValue]] playlistName];
     } else if (indexPath.section == 1) {
-        cellLabel = [[appDelegate.playlistsInfo objectAtIndex:(indexPath.row)+appDelegate.numberOfPlaylistsCollab+appDelegate.numberOfPlaylistsOwned] lowercaseString];
+        cellLabel = [[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row + [[self.numberOfRows objectAtIndex:0] integerValue] + [[self.numberOfRows objectAtIndex:1] integerValue]] playlistName];
     } else {
-        cellLabel = [[appDelegate.playlistsInfo objectAtIndex:(indexPath.row)] lowercaseString];
+        cellLabel = [[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row] playlistName];
     }
     
     return [cellLabel sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:19.0] constrainedToSize:CGSizeMake(self.view.frame.size.width - 20, 100) lineBreakMode:NSLineBreakByWordWrapping].height + 20;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+{    
+    int selectedSection = 0;
+    
+    if(section == 0) {
+        selectedSection = 1;
+    } else if(section == 1) {
+        selectedSection = 2;
+    } else if(section == 2) {
+        selectedSection = 0;
+    }
     
     int numberOfRows = 0;
     
-    if (section == 0) {
-        numberOfRows = appDelegate.numberOfPlaylistsOwned;
-    } else if (section == 1) {
-        numberOfRows = appDelegate.numberOfPlaylistsSubscr;
-    } else {
-        numberOfRows = appDelegate.numberOfPlaylistsCollab;
-    }
+    numberOfRows = [[self.numberOfRows objectAtIndex:selectedSection] integerValue];
     
     return numberOfRows;
 }
@@ -83,17 +83,30 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    self.numberOfRows = [[NSMutableArray alloc] init];
     
     int numberOfSections = 0;
-    if (appDelegate.numberOfPlaylistsCollab > 0) {
+    int numberOfRows = 0;
+    NSString *lastPlaylistCategory = @"";
+    
+    for(int x = 0; x < appDelegate.musicLibrary.playlists.count; x++) {
+        if([lastPlaylistCategory isEqualToString:@""]) {
+            lastPlaylistCategory = [[appDelegate.musicLibrary.playlists objectAtIndex:x] playlistCategory];
+        }
+        if(![lastPlaylistCategory isEqualToString:[[appDelegate.musicLibrary.playlists objectAtIndex:x] playlistCategory]]) {
+            numberOfSections++;
+            [self.numberOfRows addObject:[NSNumber numberWithInt:numberOfRows]];
+            numberOfRows = 0;
+        }
+        numberOfRows++;
+        lastPlaylistCategory = [[appDelegate.musicLibrary.playlists objectAtIndex:x] playlistCategory];
+    }
+    
+    if(appDelegate.musicLibrary.playlists.count > 0) {
+        [self.numberOfRows addObject:[NSNumber numberWithInt:numberOfRows]];
         numberOfSections++;
     }
-    if (appDelegate.numberOfPlaylistsOwned > 0) {
-        numberOfSections++;
-    }
-    if (appDelegate.numberOfPlaylistsSubscr > 0) {
-        numberOfSections++;
-    }
+    
     return numberOfSections;
 }
 
@@ -110,15 +123,15 @@
     AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     
     if (indexPath.section == 0) {
-        cellLabel = [[appDelegate.playlistsInfo objectAtIndex:(indexPath.row)+appDelegate.numberOfPlaylistsCollab] lowercaseString];
+        cellLabel = [[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row + [[self.numberOfRows objectAtIndex:0] integerValue]] playlistName];
     } else if (indexPath.section == 1) {
-        cellLabel = [[appDelegate.playlistsInfo objectAtIndex:(indexPath.row)+appDelegate.numberOfPlaylistsCollab+appDelegate.numberOfPlaylistsOwned] lowercaseString];
+        cellLabel = [[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row + [[self.numberOfRows objectAtIndex:0] integerValue] + [[self.numberOfRows objectAtIndex:1] integerValue]] playlistName];
     } else {
-        cellLabel = [[appDelegate.playlistsInfo objectAtIndex:(indexPath.row)] lowercaseString];
+        cellLabel = [[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row] playlistName];
     }
     
     cell.textLabel.textColor = [UIColor colorWithRed:0.48 green:0.37 blue:0.58 alpha:1.0];
-    cell.textLabel.text = cellLabel;
+    cell.textLabel.text = [cellLabel lowercaseString];
     [cell.textLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:19.0]];
     [cell.textLabel setLineBreakMode:NSLineBreakByWordWrapping];
     [cell.textLabel setNumberOfLines:0];
@@ -126,9 +139,6 @@
     UIView *bgColorView = [[UIView alloc] init];
     [bgColorView setBackgroundColor:[UIColor colorWithRed:.09 green:.06 blue:.117 alpha:1.0]];
     [cell setSelectedBackgroundView:bgColorView];
-    
-    
-    //[cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
     
     return cell;
 }
@@ -171,11 +181,10 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-    //UIViewController *listsViewController = [[ListsViewController alloc] init];
     [[tableView cellForRowAtIndexPath:indexPath] setSelected:NO animated:YES];
-    //[[tableView cellForRowAtIndexPath:indexPath] setAccessoryType:UITableViewCellAccessoryCheckmark];
+
     int selectedSection = 0;
-    //[self.navigationController pushViewController:listsViewController animated:YES];
+
     if(indexPath.section == 0) {
         selectedSection = 1;
     } else if(indexPath.section == 1) {
@@ -184,6 +193,14 @@
         selectedSection = 0;
     }
     [appDelegate.alarmClock setPlaylistPath:[NSIndexPath indexPathForItem:indexPath.row inSection:selectedSection]];
+    
+    if (indexPath.section == 0) {
+        [appDelegate setSelectedPlaylist:[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row + [[self.numberOfRows objectAtIndex:0] integerValue]]];
+    } else if (indexPath.section == 1) {
+        [appDelegate setSelectedPlaylist:[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row + [[self.numberOfRows objectAtIndex:0] integerValue] + [[self.numberOfRows objectAtIndex:1] integerValue]]];
+    } else {
+        [appDelegate setSelectedPlaylist:[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row]];
+    }
     
     NSLog(@"section selected: %d, row selected: %d", indexPath.section, indexPath.row);
     [appDelegate.alarmClock setPlaylistName:[tableView cellForRowAtIndexPath:indexPath].textLabel.text];

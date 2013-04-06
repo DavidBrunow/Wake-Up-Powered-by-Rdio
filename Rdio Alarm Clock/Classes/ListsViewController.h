@@ -29,5 +29,6 @@
 @property (nonatomic) NSIndexPath *selectedPlaylistPath;
 @property (nonatomic) NSString *selectedPlaylist;
 @property (nonatomic) UITableView *chooseMusic;
+@property (nonatomic, retain) NSMutableArray *numberOfRows;
 
 @end
