@@ -7,7 +7,15 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <Rdio/Rdio.h>
 
-@interface DHBPlaylist : NSObject
+@interface DHBPlaylist : NSObject <RDAPIRequestDelegate>
+
+@property (nonatomic) NSString *playlistName;
+@property (nonatomic) NSString *playlistKey;
+@property (nonatomic) NSString *playlistCategory;
+@property (nonatomic) NSMutableArray *trackKeys;
+
+- (void)setTrackKeys:(NSMutableArray *)trackKeys clean:(bool) isClean;
 
 @end
