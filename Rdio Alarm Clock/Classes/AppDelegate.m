@@ -12,8 +12,6 @@
 
 @implementation AppDelegate
 
-@synthesize window, rdio, loggedIn, mainNav, appBrightness, originalBrightness, alarmIsSet, alarmIsPlaying, alarmTime, originalVolume, appVolume, selectedPlaylist, selectedPlaylistPath, numberOfPlaylistsOwned, numberOfPlaylistsCollab, numberOfPlaylistsSubscr, playlistsInfo, tracksInfo;
-
 +(Rdio *)rdioInstance
 {
     return [(id)[[UIApplication sharedApplication] delegate] rdio];
@@ -25,20 +23,20 @@
     
     [application setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
         
-    alarmIsSet = NO;
-    alarmIsPlaying = NO;
-    originalBrightness = [UIScreen mainScreen].brightness;
-    appBrightness = originalBrightness;
+    self.alarmIsSet = NO;
+    self.alarmIsPlaying = NO;
+    self.originalBrightness = [UIScreen mainScreen].brightness;
+    self.appBrightness = self.originalBrightness;
     MPMusicPlayerController *music = [[MPMusicPlayerController alloc] init];
 
-    originalVolume = music.volume;
-    appVolume = originalVolume;
+    self.originalVolume = music.volume;
+    self.appVolume = self.originalVolume;
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
 
     [self.window setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Default-568h"]]];
     
-    rdio = [[Rdio alloc] initWithConsumerKey:CONSUMER_KEY andSecret:CONSUMER_SECRET delegate:nil];
+    self.rdio = [[Rdio alloc] initWithConsumerKey:CONSUMER_KEY andSecret:CONSUMER_SECRET delegate:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkNetworkStatus:) name:kReachabilityChangedNotification object:nil];
     
@@ -65,8 +63,6 @@
     self.selectedPlaylist = [[DHBPlaylist alloc] init];
     
     [self.window makeKeyAndVisible];
-    
-
 
     return YES;
 }
@@ -80,37 +76,37 @@
     MPMusicPlayerController *music = [[MPMusicPlayerController alloc] init];
 
     float currentVolume = music.volume;
-    if (currentVolume < originalVolume) {
-        [music setVolume:originalVolume];
+    if (currentVolume < self.originalVolume) {
+        [music setVolume:self.originalVolume];
     }
     
-    if (alarmIsSet) {
+    if (self.alarmIsSet) {
         
-        mustBeInApp = [[UILocalNotification alloc] init];
+        self.mustBeInApp = [[UILocalNotification alloc] init];
         
-        mustBeInApp.fireDate = [NSDate dateWithTimeIntervalSinceNow:5];
-        NSLog(@"alarm will go off: %@", mustBeInApp.fireDate);
-        mustBeInApp.timeZone = [NSTimeZone systemTimeZone];
+        self.mustBeInApp.fireDate = [NSDate dateWithTimeIntervalSinceNow:5];
+        NSLog(@"alarm will go off: %@", self.mustBeInApp.fireDate);
+        self.mustBeInApp.timeZone = [NSTimeZone systemTimeZone];
         
-        mustBeInApp.alertBody = [NSString stringWithFormat:NSLocalizedString(@"APP MUST BE OPEN REMINDER", nil)];
-        mustBeInApp.alertAction = [NSString stringWithFormat:NSLocalizedString(@"TURN ALARM BACK ON", nil)];
-        mustBeInApp.soundName = UILocalNotificationDefaultSoundName;
+        self.mustBeInApp.alertBody = [NSString stringWithFormat:NSLocalizedString(@"APP MUST BE OPEN REMINDER", nil)];
+        self.mustBeInApp.alertAction = [NSString stringWithFormat:NSLocalizedString(@"TURN ALARM BACK ON", nil)];
+        self.mustBeInApp.soundName = UILocalNotificationDefaultSoundName;
         
-        [[UIApplication sharedApplication] scheduleLocalNotification:mustBeInApp];
+        [[UIApplication sharedApplication] scheduleLocalNotification:self.mustBeInApp];
         
-        backupAlarm = [[UILocalNotification alloc] init];
+        self.backupAlarm = [[UILocalNotification alloc] init];
         
-        backupAlarm.fireDate = alarmTime;
-        NSLog(@"alarm will go off: %@", backupAlarm.fireDate);
-        backupAlarm.timeZone = [NSTimeZone systemTimeZone];
+        self.backupAlarm.fireDate = [self.alarmClock alarmTime];
+        NSLog(@"alarm will go off: %@", self.backupAlarm.fireDate);
+        self.backupAlarm.timeZone = [NSTimeZone systemTimeZone];
         
-        backupAlarm.alertBody = @"Good morning, time to wake up.";
-        backupAlarm.alertAction = @"Show me";
-        backupAlarm.soundName = UILocalNotificationDefaultSoundName;
+        self.backupAlarm.alertBody = @"Good morning, time to wake up.";
+        self.backupAlarm.alertAction = @"Show me";
+        self.backupAlarm.soundName = UILocalNotificationDefaultSoundName;
         
         //[[UIApplication sharedApplication] scheduleLocalNotification:backupAlarm];
         
-    } else if (!alarmIsPlaying) {
+    } else if (!self.alarmIsPlaying) {
         //[self.window setRootViewController:nil];
     }
     [application setIdleTimerDisabled:NO];
@@ -124,7 +120,7 @@
      */
     //[[UIScreen mainScreen] setBrightness:originalBrightness];
     [application setIdleTimerDisabled:NO];
-    if (!alarmIsSet && !alarmIsPlaying) {
+    if (!self.alarmIsSet && !self.alarmIsPlaying) {
         [self.window setRootViewController:nil];
     }
 }
@@ -138,21 +134,21 @@
     //[UIScreen mainScreen].brightness = appBrightness;
     
     
-    if (alarmIsSet) {
+    if (self.alarmIsSet) {
         MPMusicPlayerController *music = [[MPMusicPlayerController alloc] init];
         [music setVolume:0.0];
         [[UIScreen mainScreen] setBrightness:0.0];
-        [[UIApplication sharedApplication] cancelLocalNotification:mustBeInApp];
-        [[UIApplication sharedApplication] cancelLocalNotification:backupAlarm];
+        [[UIApplication sharedApplication] cancelLocalNotification:self.mustBeInApp];
+        [[UIApplication sharedApplication] cancelLocalNotification:self.backupAlarm];
         [application setIdleTimerDisabled:YES];
-    } else if (!alarmIsPlaying) {
-        [self.window setRootViewController:mainNav];
+    } else if (!self.alarmIsPlaying) {
+        [self.window setRootViewController:self.mainNav];
     }
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-    if (alarmIsSet || alarmIsPlaying) {
+    if (self.alarmIsSet || self.alarmIsPlaying) {
         [application setIdleTimerDisabled:YES];
     }
     /*
@@ -249,7 +245,7 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
         // Application was in the background when notification
         // was delivered.
     }
-    if (alarmIsSet || alarmIsPlaying) {
+    if (self.alarmIsSet || self.alarmIsPlaying) {
         [application setIdleTimerDisabled:YES];
     }
 }
@@ -263,7 +259,7 @@ didReceiveRemoteNotification:(NSDictionary *)notification {
         // Application was in the background when notification
         // was delivered.
     }
-    if (alarmIsSet || alarmIsPlaying) {
+    if (self.alarmIsSet || self.alarmIsPlaying) {
         [application setIdleTimerDisabled:YES];
     }
 }

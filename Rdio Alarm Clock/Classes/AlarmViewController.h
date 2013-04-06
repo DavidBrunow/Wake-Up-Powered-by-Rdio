@@ -18,13 +18,11 @@
 #import "DHBTextField.h"
 #import <MessageUI/MFMailComposeViewController.h>
 
-@interface AlarmViewController : UIViewController <RDPlayerDelegate, UITextFieldDelegate, UIAlertViewDelegate, UITableViewDelegate, UITableViewDataSource, UIWebViewDelegate, MFMailComposeViewControllerDelegate>
+@interface AlarmViewController : UIViewController <RDPlayerDelegate, UITextFieldDelegate, UIAlertViewDelegate, MFMailComposeViewControllerDelegate>
 {
     UIButton *setAlarmButton;
     bool paused;
     bool playing;
-    NSMutableArray *playlists;
-    NSMutableArray *songsToPlay;
     NSDate  *alarmTime;
     NSTimer *t;
     NSTimer *fader;
@@ -46,10 +44,6 @@
     UISlider *_sliderSnooze;
     UIView *_loadingView;
     NSMutableArray *_canBeStreamed;
-    bool autoStartAlarm;
-    bool _is24h;    
-    NSDictionary *_settings;
-    NSString *_settingsPath;
     NSString *_timeSeparator;
     NSString *_language;
 }
@@ -62,7 +56,6 @@
 @property (nonatomic, retain) UILabel *lblWakeUpTo;
 @property (nonatomic, retain) UILabel *lblPlaylist;
 @property (nonatomic) ListsViewController *listsViewController;
-@property (nonatomic) UITableView *chooseMusic;
 @property (nonatomic) UILabel *lblSleepAmount;
 @property (nonatomic) UILabel *lblSnoozeAmount;
 @property (nonatomic) AppDelegate *appDelegate;

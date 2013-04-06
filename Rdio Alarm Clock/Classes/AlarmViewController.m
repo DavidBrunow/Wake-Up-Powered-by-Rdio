@@ -1161,14 +1161,6 @@
     [self.timeTextField setPlaceholder:_timeSeparator];
     [setAlarmView addSubview:self.timeTextField];
     
-    CGRect chooseMusicFrame = CGRectMake(30.0, 300, 260.0, 100.0);
-    _chooseMusic = [[UITableView alloc] initWithFrame:chooseMusicFrame style:UITableViewStyleGrouped];
-    [_chooseMusic setScrollEnabled:NO];
-    [_chooseMusic setBackgroundColor:[UIColor clearColor]];
-    [_chooseMusic setBackgroundView:nil];
-    [_chooseMusic setDelegate:self];
-    [_chooseMusic setDataSource:self];
-    
     self.lblWakeUpTo = [[UILabel alloc] initWithFrame:CGRectMake(10, 131.0, 300.0, 40.0)];
     [self.lblWakeUpTo setText:[NSString stringWithFormat:@"%@", [NSLocalizedString(@"WAKE UP TO", nil) uppercaseString]]];
     [self.lblWakeUpTo setBackgroundColor:[UIColor clearColor]];
@@ -1211,8 +1203,7 @@
     
     [setAlarmView addSubview:self.lblPlaylist];
     
-    if (self.appDelegate.loggedIn) {
-        //[setAlarmView addSubview:_chooseMusic];
+    if ([self.appDelegate.rdioUser isLoggedIn]) {
     } else {
         
         CGRect notLoggedInLabelFrame = CGRectMake(40.0, -5.0, 240.0, 100.0);
@@ -1228,7 +1219,7 @@
         [notLoggedInButton.titleLabel setAdjustsFontSizeToFitWidth:YES];
         [notLoggedInButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue" size:14.0]];
         [notLoggedInButton.titleLabel setTextAlignment:NSTextAlignmentCenter];
-        [notLoggedInButton addTarget:self action:@selector(RdioSignUp) forControlEvents:UIControlEventTouchUpInside];
+        //[notLoggedInButton addTarget:self action:@selector(RdioSignUp) forControlEvents:UIControlEventTouchUpInside];
 
         //[setAlarmView addSubview:notLoggedInButton];
         
@@ -1487,14 +1478,6 @@
     [self.lblPlaylist sizeToFit];
     frame.size.height = self.lblPlaylist.frame.size.height;
     [self.lblPlaylist setFrame:frame];
-        
-    if ([self.appDelegate.rdioUser isLoggedIn]) {
-        [_chooseMusic reloadData];
-    }
-    
-    if ([self.appDelegate.alarmClock playlistPath] != nil && playlists != nil) {
-        //[self loadSongs];
-    }
     
     [self testToEnableAlarmButton];
 }
@@ -1502,27 +1485,10 @@
 - (void) testToEnableAlarmButton
 {    
     if (self.appDelegate.selectedPlaylist.trackKeys != nil && self.timeTextField.text.length == 5) {
-            [setAlarmButton setEnabled:YES];
+        [setAlarmButton setEnabled:YES];
     } else {
-            [setAlarmButton setEnabled:NO];
+        [setAlarmButton setEnabled:NO];
     }
-}
-
-- (void) RdioSignUp 
-{
-    UIViewController *signUpViewController = [[UIViewController alloc] init];
-
-    CGRect webViewRect = [[UIScreen mainScreen] bounds];
-    UIWebView *signUpView = [[UIWebView alloc] initWithFrame:webViewRect];
-    //[signUpView setDelegate:signUpViewController];
-    NSURL *RdioAffiliateURL = [NSURL URLWithString:@"http://click.linksynergy.com/fs-bin/click?id=TWsTggfYv7c&offerid=221756.10000002&type=3&subid=0"];
-    NSURLRequest *RdioAffiliateRequest = [NSURLRequest requestWithURL:RdioAffiliateURL];
-    [signUpView loadRequest:RdioAffiliateRequest];
-    //[signUpViewController setTitle:@"Learn More"];
-    [signUpViewController.view addSubview:signUpView];
-    
-    //[self.view addSubview:signUpView];
-    [self.navigationController pushViewController:signUpViewController animated:YES];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section

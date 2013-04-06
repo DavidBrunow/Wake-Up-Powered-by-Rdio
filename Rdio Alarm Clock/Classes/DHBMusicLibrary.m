@@ -88,7 +88,6 @@
         //}
         
         if([appDelegate.alarmClock playlistPath]) {
-            [self loadSongs];
             //#TODO: Send a message to do these things
             //[self testToEnableAlarmButton];
             //[[self.listsViewController chooseMusic] reloadData];
@@ -96,20 +95,6 @@
         
     } 
 }
-
-- (void) loadSongs
-{
-    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-    /*
-    if ([self.selectedPlaylist playlistIndexPath] != nil && self.playlists != nil) {
-        self.selectedPlaylist.trackKeys = [[NSMutableArray alloc] initWithArray:[[[self.playlists objectAtIndex:[appDelegate.alarmClock playlistPath].section] objectAtIndex:[appDelegate.alarmClock playlistPath].row] objectForKey:@"trackKeys"]];
-        self.selectedPlaylist.trackKeys = [[[self.playlists objectAtIndex:[self.selectedPlaylist playlistIndexPath].section] objectAtIndex:[self.selectedPlaylist playlistIndexPath].row] objectForKey:@"trackKeys"];
-    }
-    */
-    //[self.selectedPlaylist determineStreamableSongs];
-}
-
-
 
 - (void)rdioRequest:(RDAPIRequest *)request didFailWithError:(NSError*)error {
     
