@@ -12,7 +12,7 @@
 #import <Rdio/Rdio.h>
 #import <QuartzCore/QuartzCore.h>
 
-@implementation MainViewController
+@implementation AlarmViewController
 
 -(RDPlayer*)getPlayer
 {
@@ -255,10 +255,10 @@
             [[[AppDelegate rdioInstance] player] togglePause];
         } else {
             if([self.appDelegate.alarmClock isShuffle]) {
-                songsToPlay = [self shuffle:songsToPlay];
+                self.appDelegate.selectedPlaylist.trackKeys = [self shuffle:self.appDelegate.selectedPlaylist.trackKeys];
             }
-            songsToPlay = [self getEnough:songsToPlay];
-            [[[AppDelegate rdioInstance] player] playSources:songsToPlay];
+            self.appDelegate.selectedPlaylist.trackKeys = [self getEnough:self.appDelegate.selectedPlaylist.trackKeys];
+            [[[AppDelegate rdioInstance] player] playSources:self.appDelegate.selectedPlaylist.trackKeys];
         }
         fader = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(fadeScreenOut) userInfo:nil repeats:YES];
     } else {
@@ -349,14 +349,11 @@
     if ([self.currentTimeView isHidden] && [self.alarmTimeView isHidden]) {
         [self.currentTimeView setHidden:NO];
         [self.alarmTimeView setHidden:YES];
-        NSLog(@"1");
     } else if([self.currentTimeView isHidden] && ![self.alarmTimeView isHidden]) {
         [self.alarmTimeView setHidden:YES];
-        NSLog(@"2");
     } else if(![self.currentTimeView isHidden] && [self.alarmTimeView isHidden]) {
         [self.alarmTimeView setHidden:NO];
         [self.currentTimeView setHidden:YES];
-        NSLog(@"3");
     } else {
         [self.currentTimeView setHidden:YES];
         [self.alarmTimeView setHidden:YES];
@@ -458,9 +455,9 @@
         [[[AppDelegate rdioInstance] player] togglePause];
     } else {
         if ([self.appDelegate.alarmClock isShuffle]) {
-            songsToPlay = [self shuffle:songsToPlay];
+            self.appDelegate.selectedPlaylist.trackKeys = [self shuffle:self.appDelegate.selectedPlaylist.trackKeys];
         }
-        [[[AppDelegate rdioInstance] player] playSources:songsToPlay];
+        [[[AppDelegate rdioInstance] player] playSources:self.appDelegate.selectedPlaylist.trackKeys];
     }
     
     wakeView = [[UIView alloc] initWithFrame:screenRect];
@@ -584,7 +581,7 @@
     self.navigationController.navigationBarHidden = YES;
 
     [[[AppDelegate rdioInstance] player] stop];
-    [self determineStreamableSongs];
+    //[self determineStreamableSongs];
     [[UIApplication sharedApplication] setIdleTimerDisabled:true];
     //[wakeView removeFromSuperview];
     //[self.view addSubview:setAlarmView];
@@ -608,8 +605,8 @@
 }
 */
 
-- (void) loginClicked {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"logOutNotification" object:nil];
+- (void) logoutClicked {
+    [self.appDelegate.rdioUser logout];
 }
 
 - (void) updateSnoozeLabel {
@@ -793,7 +790,7 @@
     [btnSignOut setBackgroundImage:[UIImage imageNamed:@"settings-btn-signout"] forState:UIControlStateNormal];
     [btnSignOut setBackgroundImage:[UIImage imageNamed:@"settings-btn-signout-pressed"] forState:UIControlStateHighlighted];
 
-    [btnSignOut addTarget:self action:@selector(loginClicked) forControlEvents:UIControlEventTouchUpInside];
+    [btnSignOut addTarget:self action:@selector(logoutClicked) forControlEvents:UIControlEventTouchUpInside];
     
     
     CGRect frameBtnContactUs = CGRectMake(((self.view.frame.size.width - 78) * 3) / 4, self.view.frame.size.height - 125, 78, 28);
@@ -1047,7 +1044,7 @@
     [imgFourthSettingsSeparator setFrame:CGRectMake(0.0, 417, [[UIScreen mainScreen] bounds].size.width, 1.0)];
     [settingsView addSubview:imgFourthSettingsSeparator];
 
-    if (self.appDelegate.loggedIn) {
+    if ([self.appDelegate.rdioUser isLoggedIn]) {
         [settingsView addSubview:btnSignOut];
         [settingsView addSubview:_lblSleep];
         [settingsView addSubview:_sliderSleep];
@@ -1491,84 +1488,24 @@
     frame.size.height = self.lblPlaylist.frame.size.height;
     [self.lblPlaylist setFrame:frame];
         
-    if (self.appDelegate.loggedIn) {
+    if ([self.appDelegate.rdioUser isLoggedIn]) {
         [_chooseMusic reloadData];
     }
     
     if ([self.appDelegate.alarmClock playlistPath] != nil && playlists != nil) {
-        [self loadSongs];
-    }
-    
-    if(playlists == nil) {
-        if(self.appDelegate.loggedIn) {
-            NSDictionary *trackInfo = [[NSDictionary alloc] initWithObjectsAndKeys:@"trackKeys", @"extras", nil];
-            [[AppDelegate rdioInstance] callAPIMethod:@"getPlaylists" withParameters:trackInfo delegate:self];
-            _loadingView = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds] ];
-            [_loadingView setBackgroundColor:[UIColor blackColor]];
-            [_loadingView setAlpha:0.9];
-            UIActivityIndicatorView *aiView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-            [aiView setCenter:CGPointMake(160, 200)];
-            [aiView startAnimating];
-            UILabel *loadingLabel = [[UILabel alloc] initWithFrame:CGRectMake(100.0, 200.0, 120.0, 100.0)];
-            [loadingLabel setText:[NSString stringWithFormat:NSLocalizedString(@"LOADING", nil)]];
-            [loadingLabel setBackgroundColor:[UIColor clearColor]];
-            [loadingLabel setTextColor:[UIColor whiteColor]];
-            [loadingLabel setFont:[UIFont fontWithName:@"HelveticaNeue" size:24.0]];
-            [loadingLabel setTextAlignment:NSTextAlignmentCenter];
-            
-            [loadingLabel setAdjustsFontSizeToFitWidth:YES];
-            [_loadingView addSubview:loadingLabel];
-            [_loadingView addSubview:aiView];
-            
-        } else {
-            //choose songs from top songs chart
-            NSDictionary *trackInfo = [[NSDictionary alloc] initWithObjectsAndKeys:@"Track", @"type", nil];
-            [[AppDelegate rdioInstance] callAPIMethod:@"getTopCharts" withParameters:trackInfo delegate:self];
-        }
+        //[self loadSongs];
     }
     
     [self testToEnableAlarmButton];
-    
-    //[self determineStreamableSongs];
-    
-    
-
-    //songsToPlay = [self shuffle:songsToPlay];
 }
 
 - (void) testToEnableAlarmButton
 {    
-    if (songsToPlay != nil && self.timeTextField.text.length == 5) {
+    if (self.appDelegate.selectedPlaylist.trackKeys != nil && self.timeTextField.text.length == 5) {
             [setAlarmButton setEnabled:YES];
     } else {
             [setAlarmButton setEnabled:NO];
     }
-}
-
-- (void) determineStreamableSongs
-{
-    songsToPlay = [self removeDuplicatesInPlaylist:songsToPlay];
-    _canBeStreamed = [[NSMutableArray alloc] initWithCapacity:songsToPlay.count];
-    NSString *songsToPlayString = [songsToPlay objectAtIndex:0];
-    for (int x = 1; x < songsToPlay.count; x++) {
-        songsToPlayString = [NSString stringWithFormat:@"%@, %@", songsToPlayString, [songsToPlay objectAtIndex:x]];
-    }
-    
-    NSDictionary *trackInfo = [[NSDictionary alloc] initWithObjectsAndKeys:songsToPlayString, @"keys", @"canStream", @"extras", nil];
-    [[AppDelegate rdioInstance] callAPIMethod:@"get" withParameters:trackInfo delegate:self];
-}
-
-- (NSMutableArray *) removeDuplicatesInPlaylist: (NSMutableArray *) playlist
-{    
-    for (int x = 0; x < playlist.count; x++) {
-        for (int y = x+1; y < playlist.count; y++) {
-            if ([[playlist objectAtIndex:x] isEqual:[playlist objectAtIndex:y]]) {
-                [playlist removeObjectAtIndex:y];
-            }
-        }
-    }
-    
-    return playlist;
 }
 
 - (void) RdioSignUp 
@@ -1873,111 +1810,6 @@
     return NO;
 }
 
-#pragma mark -
-#pragma mark RDAPIRequestDelegate
-/**
- * Our API call has returned successfully.
- * the data parameter can be an NSDictionary, NSArray, or NSData 
- * depending on the call we made.
- *
- * Here we will inspect the parameters property of the returned RDAPIRequest
- * to see what method has returned.
- */
-- (void)rdioRequest:(RDAPIRequest *)request didLoadData:(id)data {
-    NSString *method = [request.parameters objectForKey:@"method"];
 
-    if([method isEqualToString:@"getTopCharts"]) {
-        if(playlists != nil) {
-            playlists = nil;
-        }
-        playlists = [[NSMutableArray alloc] initWithArray:data];
-        playlists = data;
-        songsToPlay = [[NSMutableArray alloc] initWithCapacity:playlists.count];
-        //listsViewController.tableInfo = [[NSMutableArray alloc] initWithCapacity:playlists.count];
-        for (int x = 0; x < playlists.count; x++) {
-            [songsToPlay addObject:[[playlists objectAtIndex:x] objectForKey:@"key"]];
-        }
-        [self determineStreamableSongs];
-    } else if([method isEqualToString:@"getPlaylists"]) {
-        // we are returned a dictionary but it will be easier to work with an array
-        // for our needs
-
-        playlists = [[NSMutableArray alloc] initWithCapacity:[data count]];
-        self.appDelegate.typesInfo = [[NSMutableArray alloc] init];
-        self.appDelegate.playlistsInfo = [[NSMutableArray alloc] init];
-        self.appDelegate.tracksInfo = [[NSMutableArray alloc] init];
-        
-        int x = 0;
-        for(NSString *key in [data allKeys]) {
-            [playlists addObject:[data objectForKey:key]];
-            //NSLog(@"playlist added: %@", [data objectForKey:key]);
-            for (int xy = 0; xy < [[playlists objectAtIndex:x] count]; xy++) {
-                [self.appDelegate.playlistsInfo addObject:[[[playlists objectAtIndex:x] objectAtIndex:xy] objectForKey:@"name"]];
-                if (x == 0) {
-                    self.appDelegate.numberOfPlaylistsCollab = [[playlists objectAtIndex:x] count];
-                } else if (x == 1) {
-                    self.appDelegate.numberOfPlaylistsOwned = [[playlists objectAtIndex:x] count];
-                } else {
-                    self.appDelegate.numberOfPlaylistsSubscr = [[playlists objectAtIndex:x] count];
-                }
-            }
-            for (int y = 0; y < [[playlists objectAtIndex:x] count]; y++) {
-                //[listsViewController.playlistsInfo addObject:[[[playlists objectAtIndex:x] objectAtIndex:y] objectForKey:@"name"]];
-                for (int z = 0; z < [[[[playlists objectAtIndex:x] objectAtIndex:y] objectForKey:@"trackKeys"] count]; z++) {
-                    [self.appDelegate.tracksInfo addObject:[[[playlists objectAtIndex:x] objectAtIndex:y] objectForKey:@"trackKeys"]];
-                }
-            }
-            x++;
-        }
-        [self.appDelegate.alarmClock setPlaylistPath:nil];
-        for (int i = 0; i < [playlists count]; i++) {
-            for(int j = 0; j < [[playlists objectAtIndex:i] count]; j++) {
-                if ([[[[playlists objectAtIndex:i] objectAtIndex:j] objectForKey:@"name"] isEqualToString:[self.appDelegate.alarmClock playlistName]]) {
-                    [self.appDelegate.alarmClock setPlaylistPath:[NSIndexPath indexPathForRow:j inSection:i]];
-                    [self.appDelegate.alarmClock setPlaylistName:[[[playlists objectAtIndex:i] objectAtIndex:j] objectForKey:@"name"]];
-                }
-            }
-        }
-        
-        if(([self.appDelegate.alarmClock playlistPath] == nil && [self.appDelegate.alarmClock playlistName] != nil) || [self.appDelegate.alarmClock alarmTime] == nil) {
-            //alert the user that the playlist could not be found
-            [self cancelAutoStart];
-            [self.appDelegate.alarmClock setPlaylistName:nil];
-            
-        }
-        
-        if([self.appDelegate.alarmClock playlistPath]) {
-            [self loadSongs];
-            [self testToEnableAlarmButton];
-            [[self.listsViewController chooseMusic] reloadData];
-        }
-        //[_loadingView removeFromSuperview];
-        
-    } else if ([method isEqualToString:@"get"]) {
-        for(NSString *key in [data allKeys]) {
-            //[_canBeStreamed addObject:[[data objectForKey:key] objectForKey:@"canStream"]];
-            if ([[[data objectForKey:key] objectForKey:@"canStream"] isEqual:[NSNumber numberWithBool:YES]]) {
-                [_canBeStreamed addObject:@"YES"];
-            } else {
-                [_canBeStreamed addObject:@"NO"];
-            }
-        }
-        
-    }
-}
-
-- (void) loadSongs 
-{    
-    if ([self.appDelegate.alarmClock playlistPath] != nil && playlists != nil) {
-        songsToPlay = [[NSMutableArray alloc] initWithArray:[[[playlists objectAtIndex:[self.appDelegate.alarmClock playlistPath].section] objectAtIndex:[self.appDelegate.alarmClock playlistPath].row] objectForKey:@"trackKeys"]];
-        songsToPlay = [[[playlists objectAtIndex:[self.appDelegate.alarmClock playlistPath].section] objectAtIndex:[self.appDelegate.alarmClock playlistPath].row] objectForKey:@"trackKeys"];
-    }
-    
-    [self determineStreamableSongs];
-}
-
-- (void)rdioRequest:(RDAPIRequest *)request didFailWithError:(NSError*)error {
-    
-}
 
 @end

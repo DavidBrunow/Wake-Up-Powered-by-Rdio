@@ -1,5 +1,5 @@
 //
-//  MainViewController.h
+//  AlarmViewController.h
 //  Rdio Alarm
 //
 //  Created by David Brunow on 1/29/12.
@@ -18,7 +18,7 @@
 #import "DHBTextField.h"
 #import <MessageUI/MFMailComposeViewController.h>
 
-@interface MainViewController : UIViewController <RDPlayerDelegate, RDAPIRequestDelegate, UITextFieldDelegate, UIAlertViewDelegate, UITableViewDelegate, UITableViewDataSource, UIWebViewDelegate, MFMailComposeViewControllerDelegate>
+@interface AlarmViewController : UIViewController <RDPlayerDelegate, UITextFieldDelegate, UIAlertViewDelegate, UITableViewDelegate, UITableViewDataSource, UIWebViewDelegate, MFMailComposeViewControllerDelegate>
 {
     UIButton *setAlarmButton;
     bool paused;
