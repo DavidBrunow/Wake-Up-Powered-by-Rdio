@@ -7,15 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "AppDelegate.h"
+@class AlarmViewController;
 
-@interface AlarmNavController : UINavigationController <RdioDelegate>
-{
-    UIBarButtonItem *logIn;
-    UIViewController *alarmVC;
-    
-}
+@interface AlarmNavController : UINavigationController
 
-- (void) loginClicked;
+@property (nonatomic, retain) AlarmViewController *alarmVC;
 
 @end
