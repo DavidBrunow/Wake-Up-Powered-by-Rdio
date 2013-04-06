@@ -7,13 +7,12 @@
 //
 
 #import "AppDelegate.h"
-#import "AlarmViewController.h"
 #import "AlarmNavController.h"
 #import "Credentials.h"
 
 @implementation AppDelegate
 
-@synthesize window, rdio, loggedIn, mainNav, appBrightness, originalBrightness, alarmIsSet, alarmIsPlaying, alarmTime, originalVolume, appVolume, selectedPlaylist, selectedPlaylistPath, numberOfPlaylistsOwned, numberOfPlaylistsCollab, numberOfPlaylistsSubscr, playlistsInfo, typesInfo, tracksInfo;
+@synthesize window, rdio, loggedIn, mainNav, appBrightness, originalBrightness, alarmIsSet, alarmIsPlaying, alarmTime, originalVolume, appVolume, selectedPlaylist, selectedPlaylistPath, numberOfPlaylistsOwned, numberOfPlaylistsCollab, numberOfPlaylistsSubscr, playlistsInfo, tracksInfo;
 
 +(Rdio *)rdioInstance
 {
@@ -25,7 +24,7 @@
     [TestFlight takeOff:@"397a28383f7de900ab3c235f67199d7d_Nzk2MTU4MjAxMi0xMi0xOSAyMjo1OTowOS42MDk1MzM"];
     
     [application setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
-    
+        
     alarmIsSet = NO;
     alarmIsPlaying = NO;
     originalBrightness = [UIScreen mainScreen].brightness;
@@ -36,7 +35,7 @@
     appVolume = originalVolume;
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
-    //self.window.backgroundColor = [UIColor colorWithRed:68.0/255 green:11.0/255 blue:104.0/255 alpha:1.0];
+
     [self.window setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Default-568h"]]];
     
     rdio = [[Rdio alloc] initWithConsumerKey:CONSUMER_KEY andSecret:CONSUMER_SECRET delegate:nil];
@@ -51,24 +50,23 @@
     [hostReachable startNotifier];
     
     // now patiently wait for the notification
-    
-    NSString *accessToken = [SFHFKeychainUtils getPasswordForUsername:USER_NAME andServiceName:SERVICE_NAME error:nil];
-    
-    if(accessToken != nil) {
-        self.loggedIn = YES;
-    } else {
-        self.loggedIn = NO;
-    }
-    
+        
     self.alarmClock = [[DHBAlarmClock alloc] init];
     
-    NSLog(@"here");
-    mainNav = [[AlarmNavController alloc] init];
+    self.mainNav = [[AlarmNavController alloc] init];
 
-    [mainNav setNavigationBarHidden:YES];
-    [self.window setRootViewController:mainNav];
+    [self.mainNav setNavigationBarHidden:YES];
+    [self.window setRootViewController:self.mainNav];
+    
+    self.rdioUser = [[RdioUser alloc] init];
+    
+    self.musicLibrary = [[DHBMusicLibrary alloc] init];
+    
+    self.selectedPlaylist = [[DHBPlaylist alloc] init];
     
     [self.window makeKeyAndVisible];
+    
+
 
     return YES;
 }

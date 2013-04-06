@@ -11,9 +11,11 @@
 #import "Reachability.h"
 #import "AlarmNavController.h"
 #import "SimpleKeychain.h"
-#import "AuthViewController.h"
 #import <MediaPlayer/MPMusicPlayerController.h>
 #import "DHBAlarmClock.h"
+#import "DHBMusicLibrary.h"
+#import "DHBPlaylist.h"
+#import "RdioUser.h"
 
 @interface AppDelegate : NSObject <UIApplicationDelegate>
 {
@@ -28,7 +30,6 @@
     float originalVolume;
     float appVolume;
     float appBrightness;
-    UINavigationController *mainNav;
     NSDate  *alarmTime;
     UILocalNotification *backupAlarm;
     UILocalNotification *mustBeInApp;
@@ -43,17 +44,18 @@
 @property (nonatomic) float originalBrightness;
 @property (nonatomic) float originalVolume;
 @property (nonatomic) float appVolume;
-@property (strong, nonatomic) UINavigationController *mainNav;
 @property (strong, nonatomic) NSDate *alarmTime;
 @property (nonatomic) NSIndexPath *selectedPlaylistPath;
-@property (nonatomic) NSString *selectedPlaylist;
 @property (nonatomic) int numberOfPlaylistsOwned;
 @property (nonatomic) int numberOfPlaylistsCollab;
 @property (nonatomic) int numberOfPlaylistsSubscr;
-@property (nonatomic, retain) NSMutableArray *typesInfo;
 @property (nonatomic, retain) NSMutableArray *playlistsInfo;
 @property (nonatomic, retain) NSMutableArray *tracksInfo;
 @property (nonatomic, retain) DHBAlarmClock *alarmClock;
+@property (nonatomic, retain) AlarmNavController *mainNav;
+@property (nonatomic, retain) RdioUser *rdioUser;
+@property (nonatomic, retain) DHBMusicLibrary *musicLibrary;
+@property (nonatomic, retain) DHBPlaylist *selectedPlaylist;
 
 
 +(Rdio *)rdioInstance;
