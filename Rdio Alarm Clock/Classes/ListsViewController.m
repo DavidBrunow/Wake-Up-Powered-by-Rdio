@@ -15,8 +15,6 @@
 
 @implementation ListsViewController
 
-@synthesize typesInfo = _typesInfo, playlistsInfo = _playlistsInfo, tracksInfo = _tracksInfo, numberOfPlaylistsOwned = _numberOfPlaylistsOwned, numberOfPlaylistsCollab = _numberOfPlaylistsCollab, numberOfPlaylistsSubscr = _numberOfPlaylistsSubscr, selectedPlaylistPath = _selectedPlaylistPath, selectedPlaylist = _selectedPlaylist;
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
