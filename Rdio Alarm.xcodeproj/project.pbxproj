@@ -29,7 +29,6 @@
 		11A0F0F014BFB57B0055390F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11A0F0D714BFB57A0055390F /* Foundation.framework */; };
 		11A0F0FB14BFB57B0055390F /* Rdio_Alarm_ClockTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A0F0FA14BFB57B0055390F /* Rdio_Alarm_ClockTests.m */; };
 		11DD79891524B0CE0076D6CB /* ListsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DD79881524B0CE0076D6CB /* ListsViewController.m */; };
-		11DD798D1524F2BA0076D6CB /* AuthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DD798C1524F2BA0076D6CB /* AuthViewController.m */; };
 		11E2331214F2DBBA00E2159F /* SimpleKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 11E2331114F2DBB900E2159F /* SimpleKeychain.m */; };
 		11E2331914F5F06700E2159F /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11E2331814F5F06700E2159F /* AVFoundation.framework */; };
 		11E339E3151E24BB00760DAC /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11E339E2151E24BA00760DAC /* MediaPlayer.framework */; };
@@ -88,7 +87,9 @@
 		239B2AFD15F2A79A0001EA36 /* preferences@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 239B2AFC15F2A79A0001EA36 /* preferences@2x.png */; };
 		239B2AFF15F2A7BC0001EA36 /* preferences.png in Resources */ = {isa = PBXBuildFile; fileRef = 239B2AFE15F2A7BC0001EA36 /* preferences.png */; };
 		239B2B0315F3124E0001EA36 /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 239B2B0215F3124E0001EA36 /* Settings.plist */; };
+		23A625BD170FCE1D004EBA42 /* RdioUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 23A625BC170FCE1D004EBA42 /* RdioUser.m */; };
 		23BE595716DFA23A00E4C8F8 /* Rdio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23BE595616DFA23A00E4C8F8 /* Rdio.framework */; };
+		23C5E05A170EEF0B005CD52D /* DHBMusicLibrary.m in Sources */ = {isa = PBXBuildFile; fileRef = 23C5E059170EEF0B005CD52D /* DHBMusicLibrary.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -145,8 +146,6 @@
 		11A0F0FA14BFB57B0055390F /* Rdio_Alarm_ClockTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Rdio_Alarm_ClockTests.m; sourceTree = "<group>"; };
 		11DD79871524B0CE0076D6CB /* ListsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListsViewController.h; sourceTree = "<group>"; };
 		11DD79881524B0CE0076D6CB /* ListsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListsViewController.m; sourceTree = "<group>"; };
-		11DD798B1524F2BA0076D6CB /* AuthViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthViewController.h; sourceTree = "<group>"; };
-		11DD798C1524F2BA0076D6CB /* AuthViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthViewController.m; sourceTree = "<group>"; };
 		11E2331014F2DBB900E2159F /* SimpleKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleKeychain.h; sourceTree = "<group>"; };
 		11E2331114F2DBB900E2159F /* SimpleKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimpleKeychain.m; sourceTree = "<group>"; };
 		11E2331814F5F06700E2159F /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -226,7 +225,11 @@
 		239B2AFC15F2A79A0001EA36 /* preferences@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "preferences@2x.png"; sourceTree = "<group>"; };
 		239B2AFE15F2A7BC0001EA36 /* preferences.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = preferences.png; sourceTree = "<group>"; };
 		239B2B0215F3124E0001EA36 /* Settings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Settings.plist; path = "Supporting Files/Settings.plist"; sourceTree = "<group>"; };
+		23A625BB170FCE1D004EBA42 /* RdioUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RdioUser.h; sourceTree = "<group>"; };
+		23A625BC170FCE1D004EBA42 /* RdioUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RdioUser.m; sourceTree = "<group>"; };
 		23BE595616DFA23A00E4C8F8 /* Rdio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rdio.framework; path = "Rdio Alarm Clock/External Frameworks/Rdio.framework"; sourceTree = "<group>"; };
+		23C5E058170EEF0B005CD52D /* DHBMusicLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHBMusicLibrary.h; sourceTree = "<group>"; };
+		23C5E059170EEF0B005CD52D /* DHBMusicLibrary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHBMusicLibrary.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -267,28 +270,30 @@
 		115302F7151B692F00B75800 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				234A618116F4F80A00E9EC4A /* TestFlightSDK1 */,
 				234A618B16F5146000E9EC4A /* DHBAlarmClock.h */,
 				234A618C16F5146000E9EC4A /* DHBAlarmClock.m */,
+				23A625BB170FCE1D004EBA42 /* RdioUser.h */,
+				23A625BC170FCE1D004EBA42 /* RdioUser.m */,
+				23C5E058170EEF0B005CD52D /* DHBMusicLibrary.h */,
+				23C5E059170EEF0B005CD52D /* DHBMusicLibrary.m */,
 				234A618D16F5146100E9EC4A /* DHBPlaylist.h */,
 				234A618E16F5146100E9EC4A /* DHBPlaylist.m */,
 				234A618F16F5146100E9EC4A /* DHBTextField.h */,
 				234A619016F5146100E9EC4A /* DHBTextField.m */,
-				234A618116F4F80A00E9EC4A /* TestFlightSDK1 */,
 				233E446316A90DEA00AA86CE /* Credentials.h */,
 				1128DA9B14F1E3D300230CCB /* Reachability.h */,
 				1128DA9C14F1E3D300230CCB /* Reachability.m */,
-				11A0F0E414BFB57A0055390F /* AppDelegate.h */,
-				11A0F0E514BFB57A0055390F /* AppDelegate.m */,
-				117E7D4D14D5F12B00F986DD /* AlarmViewController.h */,
-				117E7D4E14D5F12B00F986DD /* AlarmViewController.m */,
 				11E2331014F2DBB900E2159F /* SimpleKeychain.h */,
 				11E2331114F2DBB900E2159F /* SimpleKeychain.m */,
+				11A0F0E414BFB57A0055390F /* AppDelegate.h */,
+				11A0F0E514BFB57A0055390F /* AppDelegate.m */,
 				115302F9151B69EB00B75800 /* AlarmNavController.h */,
 				115302FA151B69EB00B75800 /* AlarmNavController.m */,
+				117E7D4D14D5F12B00F986DD /* AlarmViewController.h */,
+				117E7D4E14D5F12B00F986DD /* AlarmViewController.m */,
 				11DD79871524B0CE0076D6CB /* ListsViewController.h */,
 				11DD79881524B0CE0076D6CB /* ListsViewController.m */,
-				11DD798B1524F2BA0076D6CB /* AuthViewController.h */,
-				11DD798C1524F2BA0076D6CB /* AuthViewController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -619,10 +624,11 @@
 				11E2331214F2DBBA00E2159F /* SimpleKeychain.m in Sources */,
 				115302FB151B69EB00B75800 /* AlarmNavController.m in Sources */,
 				11DD79891524B0CE0076D6CB /* ListsViewController.m in Sources */,
-				11DD798D1524F2BA0076D6CB /* AuthViewController.m in Sources */,
 				234A619116F5146100E9EC4A /* DHBAlarmClock.m in Sources */,
 				234A619216F5146100E9EC4A /* DHBPlaylist.m in Sources */,
 				234A619316F5146100E9EC4A /* DHBTextField.m in Sources */,
+				23C5E05A170EEF0B005CD52D /* DHBMusicLibrary.m in Sources */,
+				23A625BD170FCE1D004EBA42 /* RdioUser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
