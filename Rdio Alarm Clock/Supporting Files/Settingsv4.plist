@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Shuffle</key>
+	<false/>
+	<key>Auto Start Alarm</key>
+	<false/>
+	<key>Playlist Key</key>
+	<string>-1</string>
+	<key>Snooze Time</key>
+	<integer>15</integer>
+	<key>Sleep Time</key>
+	<integer>0</integer>
+	<key>Alarm Time</key>
+	<string>06:00</string>
+</dict>
+</plist>
