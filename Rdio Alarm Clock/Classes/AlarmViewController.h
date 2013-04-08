@@ -16,9 +16,8 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "AppDelegate.h"
 #import "DHBTextField.h"
-#import <MessageUI/MFMailComposeViewController.h>
 
-@interface AlarmViewController : UIViewController <RDPlayerDelegate, UITextFieldDelegate, UIAlertViewDelegate, MFMailComposeViewControllerDelegate>
+@interface AlarmViewController : UIViewController <RDPlayerDelegate, UITextFieldDelegate, UIAlertViewDelegate>
 {
     UIButton *setAlarmButton;
     bool paused;
@@ -36,12 +35,7 @@
     UILocalNotification *nightlyReminder;
     UILabel *_alarmLabel;
     UILabel *_chargingLabel;
-    UILabel *_lblSnooze;
-    UILabel *_lblSleep;
-    UILabel *_lblAutoStart;
     UILabel *_lblAMPM;
-    UISlider *_sliderSleep;
-    UISlider *_sliderSnooze;
     UIView *_loadingView;
     NSMutableArray *_canBeStreamed;
     NSString *_timeSeparator;
@@ -49,28 +43,16 @@
 }
 
 @property (retain) RDPlayer *player;
-@property (nonatomic, retain) UIButton *playButton;
-@property (nonatomic, retain) UISwitch *switchShuffle;
 @property (nonatomic, retain) MPMusicPlayerController *music;
 @property (nonatomic, retain) MPVolumeView *hideVolume;
 @property (nonatomic, retain) UILabel *lblWakeUpTo;
 @property (nonatomic, retain) UILabel *lblPlaylist;
 @property (nonatomic) ListsViewController *listsViewController;
-@property (nonatomic) UILabel *lblSleepAmount;
-@property (nonatomic) UILabel *lblSnoozeAmount;
 @property (nonatomic) AppDelegate *appDelegate;
-@property (nonatomic) UISlider *sliderAutoStart;
-@property (nonatomic) UILabel *lblAutoStartYES;
-@property (nonatomic) UILabel *lblAutoStartNO;
-@property (nonatomic) UISlider *sliderShuffle;
-@property (nonatomic) UILabel *lblShuffle;
-@property (nonatomic) UILabel *lblShuffleYES;
-@property (nonatomic) UILabel *lblShuffleNO;
 @property (nonatomic) bool settingsOpen;
 @property (nonatomic) DHBTextField *timeTextField;
 @property (nonatomic) UIColor *lightTextColor;
 @property (nonatomic) UIColor *darkTextColor;
-@property (nonatomic) MFMailComposeViewController *emailCompose;
 @property (nonatomic) UIView *alarmTimeView;
 @property (nonatomic) UIView *currentTimeView;
 
@@ -79,5 +61,7 @@
 - (void) fadeScreenIn;
 - (void) fadeScreenOut;
 - (void) textFieldValueChange:(UITextField *) textField;
+- (void) loadPlaylistName;
+
 
 @end
