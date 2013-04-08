@@ -88,6 +88,12 @@
 		239B2AFF15F2A7BC0001EA36 /* preferences.png in Resources */ = {isa = PBXBuildFile; fileRef = 239B2AFE15F2A7BC0001EA36 /* preferences.png */; };
 		239B2B0315F3124E0001EA36 /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 239B2B0215F3124E0001EA36 /* Settings.plist */; };
 		23A625BD170FCE1D004EBA42 /* RdioUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 23A625BC170FCE1D004EBA42 /* RdioUser.m */; };
+		23A625C01710D7B5004EBA42 /* DHBAlarmSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 23A625BF1710D7B5004EBA42 /* DHBAlarmSettingsView.m */; };
+		23A625C21710F5A9004EBA42 /* Settingsv4.plist in Resources */ = {isa = PBXBuildFile; fileRef = 23A625C11710F5A9004EBA42 /* Settingsv4.plist */; };
+		23A625C717123A9E004EBA42 /* ic-airplay-dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 23A625C317123A9E004EBA42 /* ic-airplay-dark.png */; };
+		23A625C817123A9E004EBA42 /* ic-airplay-dark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 23A625C417123A9E004EBA42 /* ic-airplay-dark@2x.png */; };
+		23A625C917123A9E004EBA42 /* ic-airplay-light.png in Resources */ = {isa = PBXBuildFile; fileRef = 23A625C517123A9E004EBA42 /* ic-airplay-light.png */; };
+		23A625CA17123A9E004EBA42 /* ic-airplay-light@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 23A625C617123A9E004EBA42 /* ic-airplay-light@2x.png */; };
 		23BE595716DFA23A00E4C8F8 /* Rdio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23BE595616DFA23A00E4C8F8 /* Rdio.framework */; };
 		23C5E05A170EEF0B005CD52D /* DHBMusicLibrary.m in Sources */ = {isa = PBXBuildFile; fileRef = 23C5E059170EEF0B005CD52D /* DHBMusicLibrary.m */; };
 /* End PBXBuildFile section */
@@ -227,6 +233,13 @@
 		239B2B0215F3124E0001EA36 /* Settings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Settings.plist; path = "Supporting Files/Settings.plist"; sourceTree = "<group>"; };
 		23A625BB170FCE1D004EBA42 /* RdioUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RdioUser.h; sourceTree = "<group>"; };
 		23A625BC170FCE1D004EBA42 /* RdioUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RdioUser.m; sourceTree = "<group>"; };
+		23A625BE1710D7B5004EBA42 /* DHBAlarmSettingsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHBAlarmSettingsView.h; sourceTree = "<group>"; };
+		23A625BF1710D7B5004EBA42 /* DHBAlarmSettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHBAlarmSettingsView.m; sourceTree = "<group>"; };
+		23A625C11710F5A9004EBA42 /* Settingsv4.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Settingsv4.plist; path = "Supporting Files/Settingsv4.plist"; sourceTree = "<group>"; };
+		23A625C317123A9E004EBA42 /* ic-airplay-dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic-airplay-dark.png"; sourceTree = "<group>"; };
+		23A625C417123A9E004EBA42 /* ic-airplay-dark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic-airplay-dark@2x.png"; sourceTree = "<group>"; };
+		23A625C517123A9E004EBA42 /* ic-airplay-light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic-airplay-light.png"; sourceTree = "<group>"; };
+		23A625C617123A9E004EBA42 /* ic-airplay-light@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic-airplay-light@2x.png"; sourceTree = "<group>"; };
 		23BE595616DFA23A00E4C8F8 /* Rdio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rdio.framework; path = "Rdio Alarm Clock/External Frameworks/Rdio.framework"; sourceTree = "<group>"; };
 		23C5E058170EEF0B005CD52D /* DHBMusicLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHBMusicLibrary.h; sourceTree = "<group>"; };
 		23C5E059170EEF0B005CD52D /* DHBMusicLibrary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHBMusicLibrary.m; sourceTree = "<group>"; };
@@ -292,6 +305,8 @@
 				115302FA151B69EB00B75800 /* AlarmNavController.m */,
 				117E7D4D14D5F12B00F986DD /* AlarmViewController.h */,
 				117E7D4E14D5F12B00F986DD /* AlarmViewController.m */,
+				23A625BE1710D7B5004EBA42 /* DHBAlarmSettingsView.h */,
+				23A625BF1710D7B5004EBA42 /* DHBAlarmSettingsView.m */,
 				11DD79871524B0CE0076D6CB /* ListsViewController.h */,
 				11DD79881524B0CE0076D6CB /* ListsViewController.m */,
 			);
@@ -301,6 +316,10 @@
 		115302F8151B696A00B75800 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				23A625C317123A9E004EBA42 /* ic-airplay-dark.png */,
+				23A625C417123A9E004EBA42 /* ic-airplay-dark@2x.png */,
+				23A625C517123A9E004EBA42 /* ic-airplay-light.png */,
+				23A625C617123A9E004EBA42 /* ic-airplay-light@2x.png */,
 				2372C70916FFAC4000D79C80 /* sleepmode-grippy.png */,
 				2372C70A16FFAC4000D79C80 /* sleepmode-grippy@2x.png */,
 				234A61EA16F5168A00E9EC4A /* Default.png */,
@@ -409,6 +428,7 @@
 		11A0F0DC14BFB57A0055390F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				23A625C11710F5A9004EBA42 /* Settingsv4.plist */,
 				23404E9A1653DFD2002E872B /* Localizable.strings */,
 				235D52221654980800EBCA68 /* Rdio Alarm-Info.plist */,
 				11A0F0E114BFB57A0055390F /* main.m */,
@@ -584,6 +604,11 @@
 				234A61EB16F5168A00E9EC4A /* Default.png in Resources */,
 				2372C70B16FFAC4000D79C80 /* sleepmode-grippy.png in Resources */,
 				2372C70C16FFAC4000D79C80 /* sleepmode-grippy@2x.png in Resources */,
+				23A625C21710F5A9004EBA42 /* Settingsv4.plist in Resources */,
+				23A625C717123A9E004EBA42 /* ic-airplay-dark.png in Resources */,
+				23A625C817123A9E004EBA42 /* ic-airplay-dark@2x.png in Resources */,
+				23A625C917123A9E004EBA42 /* ic-airplay-light.png in Resources */,
+				23A625CA17123A9E004EBA42 /* ic-airplay-light@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -629,6 +654,7 @@
 				234A619316F5146100E9EC4A /* DHBTextField.m in Sources */,
 				23C5E05A170EEF0B005CD52D /* DHBMusicLibrary.m in Sources */,
 				23A625BD170FCE1D004EBA42 /* RdioUser.m in Sources */,
+				23A625C01710D7B5004EBA42 /* DHBAlarmSettingsView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
