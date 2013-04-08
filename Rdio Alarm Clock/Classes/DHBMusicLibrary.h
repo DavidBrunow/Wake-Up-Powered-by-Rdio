@@ -14,5 +14,8 @@
 
 @property (nonatomic, retain) NSMutableArray *playlists;
 @property (nonatomic) DHBPlaylist *selectedPlaylist;
+@property (nonatomic) bool hasNoPlaylists;
+
+- (DHBPlaylist *) getPlaylistFromKey:(id) key;
 
 @end

@@ -69,6 +69,15 @@
                 playlist = [[DHBPlaylist alloc] init];
             }
         }
+        
+        if(self.playlists.count == 0) {
+            [self setHasNoPlaylists:YES];
+        }
+        
+        appDelegate.selectedPlaylist = [self getPlaylistFromKey:appDelegate.alarmClock.playlistKey];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"Playlist Found" object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"Reload Playlists" object:nil];
+        
         /*[appDelegate.alarmClock setPlaylistPath:nil];
         for (int i = 0; i < [self.playlists count]; i++) {
             for(int j = 0; j < [[self.playlists objectAtIndex:i] count]; j++) {
@@ -87,17 +96,30 @@
             
         //}
         
-        if([appDelegate.alarmClock playlistPath]) {
+        //if([appDelegate.alarmClock playlistPath]) {
             //#TODO: Send a message to do these things
             //[self testToEnableAlarmButton];
             //[[self.listsViewController chooseMusic] reloadData];
-        }
+        //}
         
     } 
 }
 
-- (void)rdioRequest:(RDAPIRequest *)request didFailWithError:(NSError*)error {
+- (DHBPlaylist *) getPlaylistFromKey:(id) key
+{
+    DHBPlaylist *playlist = [[DHBPlaylist alloc] init];
     
+    for(int x = 0; x < self.playlists.count; x++) {
+        if([[[self.playlists objectAtIndex:x] playlistKey] isEqualToString:key]) {
+            playlist = [self.playlists objectAtIndex:x];
+        }
+    }
+    
+    return playlist;
+}
+
+- (void)rdioRequest:(RDAPIRequest *)request didFailWithError:(NSError*)error {
+    [[AppDelegate rdioInstance] callAPIMethod:@"getPlaylists" withParameters:request.parameters delegate:self];
 }
 
 
