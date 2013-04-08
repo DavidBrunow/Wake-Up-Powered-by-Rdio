@@ -48,19 +48,18 @@
     [hostReachable startNotifier];
     
     // now patiently wait for the notification
-        
-    self.alarmClock = [[DHBAlarmClock alloc] init];
-    
+            
     self.mainNav = [[AlarmNavController alloc] init];
 
     [self.mainNav setNavigationBarHidden:YES];
     [self.window setRootViewController:self.mainNav];
     
     self.rdioUser = [[RdioUser alloc] init];
-    
-    self.musicLibrary = [[DHBMusicLibrary alloc] init];
-    
     self.selectedPlaylist = [[DHBPlaylist alloc] init];
+
+    self.musicLibrary = [[DHBMusicLibrary alloc] init];
+        
+    self.alarmClock = [[DHBAlarmClock alloc] init];
     
     [self.window makeKeyAndVisible];
 
@@ -143,6 +142,22 @@
         [application setIdleTimerDisabled:YES];
     } else if (!self.alarmIsPlaying) {
         [self.window setRootViewController:self.mainNav];
+        
+        if(self.rdioUser == nil) {
+            self.rdioUser = [[RdioUser alloc] init];
+        }
+        
+        if(self.selectedPlaylist == nil) {
+            self.selectedPlaylist = [[DHBPlaylist alloc] init];
+        }
+        
+        if(self.musicLibrary == nil) {
+            self.musicLibrary = [[DHBMusicLibrary alloc] init];
+        }
+        
+        if(self.alarmClock == nil) {
+            self.alarmClock = [[DHBAlarmClock alloc] init];
+        }
     }
 }
 
