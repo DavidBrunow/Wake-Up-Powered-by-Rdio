@@ -52,16 +52,8 @@
     self.snoozeTime = [[self.settings valueForKey:@"Snooze Time"] integerValue];
     self.isAutoStart = [[self.settings valueForKey:@"Auto Start Alarm"] boolValue];
     self.isShuffle = [[self.settings valueForKey:@"Shuffle"] boolValue];
+    self.playlistKey = [self.settings valueForKey:@"Playlist Key"];
     [self setAlarmTimeFromString:[self.settings valueForKey:@"Alarm Time"]];
-
-    NSIndexPath *ipPlaylistPath = [NSIndexPath indexPathForRow:[[self.settings valueForKey:@"Playlist Number"] intValue] inSection:[[self.settings valueForKey:@"Playlist Section"] intValue]] ;
-    
-    if(ipPlaylistPath.section != -1 && self.playlistPath == nil) {
-        self.playlistPath = ipPlaylistPath;
-        self.playlistName = [self.settings valueForKey:@"Playlist Name"];
-        NSLog(@"Playlist Name1: %@", self.playlistName);
-    }
-    
     
     return self;
 }
@@ -116,24 +108,12 @@
     }
 }
 
--(void)setPlaylistName:(NSString *)playlistName
+-(void)setPlaylistKey:(NSString *)playlistKey
 {
-    if(playlistName) {
-        _playlistName = playlistName;
+    if(playlistKey) {
+        _playlistKey = playlistKey;
     
-        [self.settings setValue:playlistName forKey:@"Playlist Name"];
-        [self writeSettings];
-    }
-}
-
--(void)setPlaylistPath:(NSIndexPath *)playlistPath
-{
-    if (playlistPath) {
-        _playlistPath = playlistPath;
-    
-        [self.settings setValue:[NSString stringWithFormat:@"%d", playlistPath.section] forKey:@"Playlist Section"];
-        [self.settings setValue:[NSString stringWithFormat:@"%d", playlistPath.row] forKey:@"Playlist Number"];
-
+        [self.settings setValue:playlistKey forKey:@"Playlist Key"];
         [self writeSettings];
     }
 }
@@ -194,6 +174,7 @@
     self.settingsPath = [self currentSettingsPath];
     NSString *_v1SettingsPath = [self v1SettingsPath];
     NSString *_v2SettingsPath = [self v2SettingsPath];
+    NSString *_v3SettingsPath = [self v3SettingsPath];
 
     /* check to see if there is already a file saved at the favoritesPath
      * if not, copy the default FavoriteUsers.plist to the favoritesPath
@@ -201,10 +182,10 @@
     NSFileManager *fileManager = [NSFileManager defaultManager];
     if(![fileManager fileExistsAtPath:self.settingsPath])
     {
-        if(![fileManager fileExistsAtPath:_v1SettingsPath] && ![fileManager fileExistsAtPath:_v2SettingsPath]) {
+        if(![fileManager fileExistsAtPath:_v1SettingsPath] && ![fileManager fileExistsAtPath:_v2SettingsPath] && ![fileManager fileExistsAtPath:_v3SettingsPath]) {
             //if there are no other settings files - so this is a clean installation
 
-            NSString *path = [[NSBundle mainBundle] pathForResource:@"Settings" ofType:@"plist"];
+            NSString *path = [[NSBundle mainBundle] pathForResource:@"Settingsv4" ofType:@"plist"];
             //NSArray *settingsArray = [NSArray arrayWithContentsOfFile:path];
             [[NSFileManager defaultManager]copyItemAtPath:path toPath:self.settingsPath error:nil];
             //[settingsArray writeToFile:self.settingsPath atomically:YES];
@@ -231,13 +212,43 @@
             //in that case, this would be the right place to take each value in the old file and put it in the new one
             //[[NSFileManager defaultManager]moveItemAtPath:_oldSettingsPath toPath:self.settingsPath error:nil];
             
-            NSString *path = [[NSBundle mainBundle] pathForResource:@"Settings" ofType:@"plist"];
+            NSString *path = [[NSBundle mainBundle] pathForResource:@"Settingsv4" ofType:@"plist"];
             //NSArray *settingsArray = [NSArray arrayWithContentsOfFile:path];
             [[NSFileManager defaultManager]copyItemAtPath:path toPath:self.settingsPath error:nil];
             
             [self.settings setValue:sleepTimeString forKey:@"Sleep Time"];
             [self.settings setValue:snoozeTimeString forKey:@"Snooze Time"];
             [self.settings setValue:alarmTimeString forKey:@"Alarm Time"];
+            [self writeSettings];
+        } else if(![fileManager fileExistsAtPath:_v2SettingsPath]) {
+            //update from the latest settings file
+            
+            NSPropertyListFormat format;
+            NSString *errorDesc = nil;
+            NSData *plistXML = [[NSFileManager defaultManager] contentsAtPath:_v2SettingsPath];
+            
+            self.settings = (NSDictionary *)[NSPropertyListSerialization
+                                             propertyListFromData:plistXML
+                                             mutabilityOption:NSPropertyListMutableContainersAndLeaves
+                                             format:&format
+                                             errorDescription:&errorDesc];
+            if (!self.settings) {
+                NSLog(@"Error reading plist: %@, format: %d", errorDesc, format);
+            }
+            NSString *sleepTimeString = [self.settings valueForKey:@"Sleep Time"];
+            NSString *snoozeTimeString = [self.settings valueForKey:@"Snooze Time"];
+            NSString *alarmTimeString = [self.settings valueForKey:@"Alarm Time"];
+            NSString *autoStartAlarmString = [self.settings valueForKey:@"Auto Start Alarm"];
+            
+            
+            NSString *path = [[NSBundle mainBundle] pathForResource:@"Settingsv4" ofType:@"plist"];
+            [[NSFileManager defaultManager]copyItemAtPath:path toPath:self.settingsPath error:nil];
+            
+            [self.settings setValue:sleepTimeString forKey:@"Sleep Time"];
+            [self.settings setValue:snoozeTimeString forKey:@"Snooze Time"];
+            [self.settings setValue:alarmTimeString forKey:@"Alarm Time"];
+            [self.settings setValue:autoStartAlarmString forKey:@"Auto Start Alarm"];
+            
             [self writeSettings];
         } else {
             //update from the latest settings file
@@ -258,28 +269,34 @@
             NSString *snoozeTimeString = [self.settings valueForKey:@"Snooze Time"];
             NSString *alarmTimeString = [self.settings valueForKey:@"Alarm Time"];
             NSString *autoStartAlarmString = [self.settings valueForKey:@"Auto Start Alarm"];
-            NSString *playlistNumberString = [self.settings valueForKey:@"Playlist Number"];
-            NSString *playlistNameString = [self.settings valueForKey:@"Playlist Name"];
-            NSString *playlistSectionString = [self.settings valueForKey:@"Playlist Section"];
-
+            NSString *isShuffleString = [self.settings valueForKey:@"Shuffle"];
             
-            NSString *path = [[NSBundle mainBundle] pathForResource:@"Settings" ofType:@"plist"];
+            NSString *path = [[NSBundle mainBundle] pathForResource:@"Settingsv4" ofType:@"plist"];
             [[NSFileManager defaultManager]copyItemAtPath:path toPath:self.settingsPath error:nil];
             
             [self.settings setValue:sleepTimeString forKey:@"Sleep Time"];
             [self.settings setValue:snoozeTimeString forKey:@"Snooze Time"];
             [self.settings setValue:alarmTimeString forKey:@"Alarm Time"];
             [self.settings setValue:autoStartAlarmString forKey:@"Auto Start Alarm"];
-            [self.settings setValue:playlistNumberString forKey:@"Playlist Number"];
-            [self.settings setValue:playlistNameString forKey:@"Playlist Name"];
-            [self.settings setValue:playlistSectionString forKey:@"Playlist Section"];
-
+            [self.settings setValue:isShuffleString forKey:@"Shuffle"];
             [self writeSettings];
         }
     }
 }
 
 - (NSString *)currentSettingsPath
+{
+    /* get the path for the Documents directory */
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsPath = [paths objectAtIndex:0];
+    
+    /* append the path component for the FavoriteUsers.plist */
+    NSString *settingsPath = [documentsPath stringByAppendingPathComponent:@"WakeUpRdioSettingsv4.plist"];
+    
+    return settingsPath;
+}
+
+- (NSString *)v3SettingsPath
 {
     /* get the path for the Documents directory */
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);

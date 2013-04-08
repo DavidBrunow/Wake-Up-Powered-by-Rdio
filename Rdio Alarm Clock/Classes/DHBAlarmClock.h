@@ -18,7 +18,7 @@
 @property (nonatomic) NSDictionary *settings;
 @property (nonatomic) NSString *settingsPath;
 @property (nonatomic, retain) NSString *playlistName;
-@property (nonatomic, retain) NSIndexPath *playlistPath;
+@property (nonatomic, retain) NSString *playlistKey;
 @property (nonatomic, retain) NSDate *alarmTime;
 @property (nonatomic) NSString *timeSeparator;
 
