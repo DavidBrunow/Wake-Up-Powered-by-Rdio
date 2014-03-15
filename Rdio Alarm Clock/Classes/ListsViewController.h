@@ -13,5 +13,8 @@
 
 @property (nonatomic) UITableView *chooseMusic;
 @property (nonatomic, retain) NSMutableArray *numberOfRows;
+@property (nonatomic, retain) NSString *playlistType;
+@property (nonatomic) UIColor *lightTextColor;
+@property (nonatomic) UIColor *darkTextColor;
 
 @end

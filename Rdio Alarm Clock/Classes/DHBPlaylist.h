@@ -15,7 +15,9 @@
 @property (nonatomic) NSString *playlistKey;
 @property (nonatomic) NSString *playlistCategory;
 @property (nonatomic) NSMutableArray *trackKeys;
+@property (nonatomic) bool isSelected;
 
 - (void)setTrackKeys:(NSMutableArray *)trackKeys clean:(bool) isClean;
+- (NSMutableArray *)getShuffledTrackKeys;
 
 @end

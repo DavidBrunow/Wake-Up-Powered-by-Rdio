@@ -53,9 +53,16 @@
     self.isAutoStart = [[self.settings valueForKey:@"Auto Start Alarm"] boolValue];
     self.isShuffle = [[self.settings valueForKey:@"Shuffle"] boolValue];
     self.playlistKey = [self.settings valueForKey:@"Playlist Key"];
+    self.sleepPlaylistKey = [self.settings valueForKey:@"Sleep Playlist Key"];
+
     [self setAlarmTimeFromString:[self.settings valueForKey:@"Alarm Time"]];
     
     return self;
+}
+
+-(void) refreshAlarmTime
+{
+    [self setAlarmTimeFromString:[self.settings valueForKey:@"Alarm Time"]];
 }
 
 -(NSString *) getAlarmTimeString
@@ -67,7 +74,7 @@
         [dateFormatter setDateFormat:@"hh:mm"];
     }
 
-    NSString *alarmTimeString = [dateFormatter stringFromDate:self.alarmTime];
+    NSString *alarmTimeString = [dateFormatter stringFromDate:_alarmTime];
     
     return alarmTimeString;
 }
@@ -105,6 +112,16 @@
             [self.settings setValue:alarmTimeString forKey:@"Alarm Time"];
             [self writeSettings];
         }
+    }
+}
+
+-(void)setSleepPlaylistKey:(NSString *)sleepPlaylistKey
+{
+    if(sleepPlaylistKey) {
+        _sleepPlaylistKey = sleepPlaylistKey;
+        
+        [self.settings setValue:sleepPlaylistKey forKey:@"Sleep Playlist Key"];
+        [self writeSettings];
     }
 }
 
@@ -182,14 +199,68 @@
     NSFileManager *fileManager = [NSFileManager defaultManager];
     if(![fileManager fileExistsAtPath:self.settingsPath])
     {
-        if(![fileManager fileExistsAtPath:_v1SettingsPath] && ![fileManager fileExistsAtPath:_v2SettingsPath] && ![fileManager fileExistsAtPath:_v3SettingsPath]) {
-            //if there are no other settings files - so this is a clean installation
-
+        if([fileManager fileExistsAtPath:_v3SettingsPath]) {
+            //update from the latest settings file
+            
+            NSPropertyListFormat format;
+            NSString *errorDesc = nil;
+            NSData *plistXML = [[NSFileManager defaultManager] contentsAtPath:_v3SettingsPath];
+            
+            self.settings = (NSDictionary *)[NSPropertyListSerialization
+                                             propertyListFromData:plistXML
+                                             mutabilityOption:NSPropertyListMutableContainersAndLeaves
+                                             format:&format
+                                             errorDescription:&errorDesc];
+            if (!self.settings) {
+                NSLog(@"Error reading plist: %@, format: %d", errorDesc, format);
+            }
+            NSString *sleepTimeString = [self.settings valueForKey:@"Sleep Time"];
+            NSString *snoozeTimeString = [self.settings valueForKey:@"Snooze Time"];
+            NSString *alarmTimeString = [self.settings valueForKey:@"Alarm Time"];
+            NSString *autoStartAlarmString = [self.settings valueForKey:@"Auto Start Alarm"];
+            NSString *isShuffleString = [self.settings valueForKey:@"Shuffle"];
+            self.playlistName = [self.settings valueForKey:@"Playlist Name"];
+            
             NSString *path = [[NSBundle mainBundle] pathForResource:@"Settingsv4" ofType:@"plist"];
-            //NSArray *settingsArray = [NSArray arrayWithContentsOfFile:path];
             [[NSFileManager defaultManager]copyItemAtPath:path toPath:self.settingsPath error:nil];
-            //[settingsArray writeToFile:self.settingsPath atomically:YES];
-        } else if(![fileManager fileExistsAtPath:_v2SettingsPath]) {
+            
+            [self.settings setValue:sleepTimeString forKey:@"Sleep Time"];
+            [self.settings setValue:snoozeTimeString forKey:@"Snooze Time"];
+            [self.settings setValue:alarmTimeString forKey:@"Alarm Time"];
+            [self.settings setValue:autoStartAlarmString forKey:@"Auto Start Alarm"];
+            [self.settings setValue:isShuffleString forKey:@"Shuffle"];
+            [self writeSettings];
+        } else if([fileManager fileExistsAtPath:_v2SettingsPath]) {
+            
+            NSPropertyListFormat format;
+            NSString *errorDesc = nil;
+            NSData *plistXML = [[NSFileManager defaultManager] contentsAtPath:_v2SettingsPath];
+            
+            self.settings = (NSDictionary *)[NSPropertyListSerialization
+                                             propertyListFromData:plistXML
+                                             mutabilityOption:NSPropertyListMutableContainersAndLeaves
+                                             format:&format
+                                             errorDescription:&errorDesc];
+            if (!self.settings) {
+                NSLog(@"Error reading plist: %@, format: %d", errorDesc, format);
+            }
+            NSString *sleepTimeString = [self.settings valueForKey:@"Sleep Time"];
+            NSString *snoozeTimeString = [self.settings valueForKey:@"Snooze Time"];
+            NSString *alarmTimeString = [self.settings valueForKey:@"Alarm Time"];
+            NSString *autoStartAlarmString = [self.settings valueForKey:@"Auto Start Alarm"];
+            self.playlistName = [self.settings valueForKey:@"Playlist Name"];
+            
+            
+            NSString *path = [[NSBundle mainBundle] pathForResource:@"Settingsv4" ofType:@"plist"];
+            [[NSFileManager defaultManager]copyItemAtPath:path toPath:self.settingsPath error:nil];
+            
+            [self.settings setValue:sleepTimeString forKey:@"Sleep Time"];
+            [self.settings setValue:snoozeTimeString forKey:@"Snooze Time"];
+            [self.settings setValue:alarmTimeString forKey:@"Alarm Time"];
+            [self.settings setValue:autoStartAlarmString forKey:@"Auto Start Alarm"];
+            
+            [self writeSettings];
+        } else if([fileManager fileExistsAtPath:_v1SettingsPath]) {
             //if there is only the original settings file - so the user never upgraded from the original version
             
             NSPropertyListFormat format;
@@ -220,66 +291,14 @@
             [self.settings setValue:snoozeTimeString forKey:@"Snooze Time"];
             [self.settings setValue:alarmTimeString forKey:@"Alarm Time"];
             [self writeSettings];
-        } else if(![fileManager fileExistsAtPath:_v2SettingsPath]) {
-            //update from the latest settings file
-            
-            NSPropertyListFormat format;
-            NSString *errorDesc = nil;
-            NSData *plistXML = [[NSFileManager defaultManager] contentsAtPath:_v2SettingsPath];
-            
-            self.settings = (NSDictionary *)[NSPropertyListSerialization
-                                             propertyListFromData:plistXML
-                                             mutabilityOption:NSPropertyListMutableContainersAndLeaves
-                                             format:&format
-                                             errorDescription:&errorDesc];
-            if (!self.settings) {
-                NSLog(@"Error reading plist: %@, format: %d", errorDesc, format);
-            }
-            NSString *sleepTimeString = [self.settings valueForKey:@"Sleep Time"];
-            NSString *snoozeTimeString = [self.settings valueForKey:@"Snooze Time"];
-            NSString *alarmTimeString = [self.settings valueForKey:@"Alarm Time"];
-            NSString *autoStartAlarmString = [self.settings valueForKey:@"Auto Start Alarm"];
-            
-            
-            NSString *path = [[NSBundle mainBundle] pathForResource:@"Settingsv4" ofType:@"plist"];
-            [[NSFileManager defaultManager]copyItemAtPath:path toPath:self.settingsPath error:nil];
-            
-            [self.settings setValue:sleepTimeString forKey:@"Sleep Time"];
-            [self.settings setValue:snoozeTimeString forKey:@"Snooze Time"];
-            [self.settings setValue:alarmTimeString forKey:@"Alarm Time"];
-            [self.settings setValue:autoStartAlarmString forKey:@"Auto Start Alarm"];
-            
-            [self writeSettings];
+        
         } else {
-            //update from the latest settings file
-            
-            NSPropertyListFormat format;
-            NSString *errorDesc = nil;
-            NSData *plistXML = [[NSFileManager defaultManager] contentsAtPath:_v2SettingsPath];
-            
-            self.settings = (NSDictionary *)[NSPropertyListSerialization
-                                             propertyListFromData:plistXML
-                                             mutabilityOption:NSPropertyListMutableContainersAndLeaves
-                                             format:&format
-                                             errorDescription:&errorDesc];
-            if (!self.settings) {
-                NSLog(@"Error reading plist: %@, format: %d", errorDesc, format);
-            }
-            NSString *sleepTimeString = [self.settings valueForKey:@"Sleep Time"];
-            NSString *snoozeTimeString = [self.settings valueForKey:@"Snooze Time"];
-            NSString *alarmTimeString = [self.settings valueForKey:@"Alarm Time"];
-            NSString *autoStartAlarmString = [self.settings valueForKey:@"Auto Start Alarm"];
-            NSString *isShuffleString = [self.settings valueForKey:@"Shuffle"];
+            //if there are no other settings files - so this is a clean installation
             
             NSString *path = [[NSBundle mainBundle] pathForResource:@"Settingsv4" ofType:@"plist"];
+            //NSArray *settingsArray = [NSArray arrayWithContentsOfFile:path];
             [[NSFileManager defaultManager]copyItemAtPath:path toPath:self.settingsPath error:nil];
-            
-            [self.settings setValue:sleepTimeString forKey:@"Sleep Time"];
-            [self.settings setValue:snoozeTimeString forKey:@"Snooze Time"];
-            [self.settings setValue:alarmTimeString forKey:@"Alarm Time"];
-            [self.settings setValue:autoStartAlarmString forKey:@"Auto Start Alarm"];
-            [self.settings setValue:isShuffleString forKey:@"Shuffle"];
-            [self writeSettings];
+            //[settingsArray writeToFile:self.settingsPath atomically:YES];
         }
     }
 }

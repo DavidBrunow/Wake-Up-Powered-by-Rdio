@@ -34,8 +34,21 @@
 ////////////////////////////////////////////////////
 // Base Class Overrides
 ////////////////////////////////////////////////////
+- (BOOL)textFieldShouldBeginEditing:(UITextView *)textView{
+    [textView becomeFirstResponder];
+    return YES;
+}
+
+- (BOOL)textFieldShouldEndEditing:(UITextView *)textView{
+    //resign for exapmple
+    return YES;
+}
+
+
 
 -(BOOL)becomeFirstResponder {
+    bool success = [super becomeFirstResponder];
+    
     self.cursor.alpha = 1.0f;
     
     [UIView animateWithDuration:0.5f
@@ -46,7 +59,10 @@
                      }
                      completion:^(BOOL finished){}];
     
-    return [super becomeFirstResponder];
+    //[super becomeFirstResponder];
+    
+    
+    return success;
 }
 
 - (CGRect)textRectForBounds:(CGRect)bounds {

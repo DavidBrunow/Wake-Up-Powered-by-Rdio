@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 #import <MessageUI/MFMailComposeViewController.h>
 #import "AppDelegate.h"
+#import "ListsViewController.h"
 
-@interface DHBAlarmSettingsView : UIView <MFMailComposeViewControllerDelegate>
+@interface DHBAlarmSettingsView : UIView <MFMailComposeViewControllerDelegate, UIActionSheetDelegate>
 
 @property (nonatomic) AppDelegate *appDelegate;
 @property (nonatomic) MFMailComposeViewController *emailCompose;
@@ -31,5 +32,6 @@
 @property (nonatomic) UILabel *lblShuffleYES;
 @property (nonatomic) UILabel *lblShuffleNO;
 @property (nonatomic, retain) UIViewController *myViewController;
+@property (nonatomic) ListsViewController *listsViewController;
 
 @end

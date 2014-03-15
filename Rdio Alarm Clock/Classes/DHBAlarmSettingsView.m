@@ -19,6 +19,30 @@
     return self;
 }
 
+- (void) logoutClicked {
+    UIActionSheet *confirmLogout = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"CONFIRM SIGN OUT", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:NSLocalizedString(@"Sign Out", nil) otherButtonTitles:nil];
+    
+    [confirmLogout showInView:self];
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    if(buttonIndex == actionSheet.destructiveButtonIndex) {
+        [self.appDelegate.rdioUser logout];
+
+        self.appDelegate.musicLibrary = nil;
+        self.appDelegate.selectedPlaylist = nil;
+        self.appDelegate.sleepPlaylist = nil;
+        
+        [self.myViewController.navigationController popToRootViewControllerAnimated:YES];
+    }
+}
+
 - (void) updateSnoozeLabel {
     if ((int)_sliderSnooze.value == 1) {
         [self.lblSnoozeAmount setText:[NSString stringWithFormat:NSLocalizedString(@"INNER TIME BUBBLE TEXT", nil), (int)_sliderSnooze.value]];
@@ -28,7 +52,6 @@
             [self.lblSnoozeAmount setFrame:CGRectMake((self.frame.size.width - 106) / 2, self.lblSnoozeAmount.frame.origin.y, 126, 43)];
         } else {
             [self.lblSnoozeAmount setFrame:CGRectMake((self.frame.size.width - 126) / 2, self.lblSnoozeAmount.frame.origin.y, 126, 43)];
-            
         }
         [self.lblSnoozeAmount setText:[NSString stringWithFormat:NSLocalizedString(@"INNER TIME BUBBLE TEXT PLURAL", nil), (int)_sliderSnooze.value]];
     }
@@ -69,9 +92,11 @@
         [_sliderSleep setValue:sleepTimeValue];
         [self.lblSleepAmount setText:[NSString stringWithFormat:NSLocalizedString(@"INNER TIME BUBBLE TEXT PLURAL", nil), (int)sleepTimeValue]];
     }
+    [_sliderSleep setAccessibilityValue:self.lblSnoozeAmount.text];
     [_sliderSleep setAccessibilityLabel:self.lblSnoozeAmount.text];
     
     [self.appDelegate.alarmClock setSleepTime:(int)_sliderSleep.value];
+
 }
 
 - (void) updateAutoStart {
@@ -79,7 +104,11 @@
         [self.lblAutoStartNO setHidden:NO];
         [self.lblAutoStartYES setHidden:YES];
         [self.sliderAutoStart setValue:0.05 animated:YES];
-        [self.sliderAutoStart setThumbImage:[UIImage imageNamed:@"settings-onoff-knoboff"] forState:UIControlStateNormal];
+        if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+            [self.sliderAutoStart setThumbImage:[UIImage imageNamed:@"settings-onoff-knoboff"] forState:UIControlStateNormal];
+        } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+            [self.sliderAutoStart setThumbImage:[UIImage imageNamed:@"settings-onoff-knoboffblue"] forState:UIControlStateNormal];
+        }
         [self.appDelegate.alarmClock setIsAutoStart:NO];
         [self.sliderAutoStart setAccessibilityLabel:[NSString stringWithFormat:@"%@", [NSLocalizedString(@"LBLSLIDERNO", nil) uppercaseString]]];
     } else {
@@ -87,7 +116,11 @@
         [self.lblAutoStartYES setHidden:NO];
         [self.sliderAutoStart bringSubviewToFront:self.inputView];
         [self.sliderAutoStart setValue:0.95 animated:YES];
-        [self.sliderAutoStart setThumbImage:[UIImage imageNamed:@"settings-onoff-knobon"] forState:UIControlStateNormal];
+        if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+            [self.sliderAutoStart setThumbImage:[UIImage imageNamed:@"settings-onoff-knobon"] forState:UIControlStateNormal];
+        } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+            [self.sliderAutoStart setThumbImage:[UIImage imageNamed:@"settings-onoff-knobonblue"] forState:UIControlStateNormal];
+        }
         [self.appDelegate.alarmClock setIsAutoStart:YES];
         [self.sliderAutoStart setAccessibilityLabel:[NSString stringWithFormat:@"%@", [NSLocalizedString(@"LBLSLIDERYES", nil) uppercaseString]]];
     }
@@ -98,14 +131,22 @@
         [self.lblShuffleNO setHidden:NO];
         [self.lblShuffleYES setHidden:YES];
         [self.sliderShuffle setValue:0.05 animated:YES];
-        [self.sliderShuffle setThumbImage:[UIImage imageNamed:@"settings-onoff-knoboff"] forState:UIControlStateNormal];
+        if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+            [self.sliderShuffle setThumbImage:[UIImage imageNamed:@"settings-onoff-knoboff"] forState:UIControlStateNormal];
+        } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+            [self.sliderShuffle setThumbImage:[UIImage imageNamed:@"settings-onoff-knoboffblue"] forState:UIControlStateNormal];
+        }
         [self.sliderShuffle setAccessibilityLabel:[NSString stringWithFormat:@"%@", [NSLocalizedString(@"LBLSLIDERNO", nil) uppercaseString]]];
         [self.appDelegate.alarmClock setIsShuffle:NO];
     } else {
         [self.lblShuffleNO setHidden:YES];
         [self.lblShuffleYES setHidden:NO];
         [self.sliderShuffle setValue:0.95 animated:YES];
-        [self.sliderShuffle setThumbImage:[UIImage imageNamed:@"settings-onoff-knobon"] forState:UIControlStateNormal];
+        if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+            [self.sliderShuffle setThumbImage:[UIImage imageNamed:@"settings-onoff-knobon"] forState:UIControlStateNormal];
+        } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+            [self.sliderShuffle setThumbImage:[UIImage imageNamed:@"settings-onoff-knobonblue"] forState:UIControlStateNormal];
+        }
         [self.appDelegate.alarmClock setIsShuffle:YES];
         [self.sliderShuffle setAccessibilityLabel:[NSString stringWithFormat:@"%@", [NSLocalizedString(@"LBLSLIDERYES", nil) uppercaseString]]];
     }
@@ -128,11 +169,38 @@
     [controller dismissViewControllerAnimated:YES completion:nil];
 }
 
+-(void) showPlaylists
+{
+    if(self.appDelegate.sleepPlaylist.playlistName == nil && self.sliderSleep.value != 0) {
+
+        self.listsViewController = [[ListsViewController alloc] init];
+        [self.listsViewController setLightTextColor:self.lightTextColor];
+        [self.listsViewController setDarkTextColor:self.darkTextColor];
+        [self.listsViewController setPlaylistType:@"Sleep"];
+    
+        [self.myViewController.navigationController pushViewController:self.listsViewController animated:YES];
+    }
+}
+
+-(void) showPlaylistsOnTap
+{
+    self.listsViewController = [[ListsViewController alloc] init];
+    [self.listsViewController setLightTextColor:self.lightTextColor];
+    [self.listsViewController setDarkTextColor:self.darkTextColor];
+    [self.listsViewController setPlaylistType:@"Sleep"];
+    
+    [self.myViewController.navigationController pushViewController:self.listsViewController animated:YES];
+}
+
 - (void)layoutSubviews
 {
     self.appDelegate = [[UIApplication sharedApplication] delegate];
 
-    [self setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"settings-darkbg"]]];
+    if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+        [self setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"settings-darkbg"]]];
+    } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+        [self setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"settings-lightbgblue"]]];
+    }
     
     CGRect frameBtnSignOut = CGRectMake((self.frame.size.width - 78) / 4, self.frame.size.height - 125, 78, 28);
     if([[UIScreen mainScreen] bounds].size.height <= 480) {
@@ -145,8 +213,12 @@
     
     [btnSignOut.titleLabel setAdjustsFontSizeToFitWidth:YES];
     [btnSignOut setTitleColor:self.lightTextColor forState:UIControlStateNormal];
-    [btnSignOut setBackgroundImage:[UIImage imageNamed:@"settings-btn-signout"] forState:UIControlStateNormal];
-    [btnSignOut setBackgroundImage:[UIImage imageNamed:@"settings-btn-signout-pressed"] forState:UIControlStateHighlighted];
+    
+    if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+        [btnSignOut setBackgroundImage:[UIImage imageNamed:@"settings-btn-signout"] forState:UIControlStateNormal];
+        [btnSignOut setBackgroundImage:[UIImage imageNamed:@"settings-btn-signout-pressed"] forState:UIControlStateHighlighted];
+    } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+    }
     
     [btnSignOut addTarget:self action:@selector(logoutClicked) forControlEvents:UIControlEventTouchUpInside];
     
@@ -155,6 +227,14 @@
     if([[UIScreen mainScreen] bounds].size.height <= 480) {
         frameBtnContactUs = CGRectMake(((self.frame.size.width - 78) * 3) / 4, self.frame.size.height - 40, 78, 28);
     }
+    
+    if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+        frameBtnContactUs = CGRectMake(((self.frame.size.width - 78)) / 2, self.frame.size.height - 125, 78, 28);
+        if([[UIScreen mainScreen] bounds].size.height <= 480) {
+            frameBtnContactUs = CGRectMake(((self.frame.size.width - 78)) / 2, self.frame.size.height - 40, 78, 28);
+        }
+    }
+    
     UIButton *btnContactUs = [UIButton buttonWithType:UIButtonTypeCustom];
     [btnContactUs setFrame:frameBtnContactUs];
     [btnContactUs setTitle:[NSString stringWithFormat:@"%@", [NSLocalizedString(@"CONTACT US", nil) uppercaseString]] forState:UIControlStateNormal];
@@ -181,8 +261,13 @@
     [self.sliderSnooze setMinimumValue:1.0];
     [self.sliderSnooze setMaximumValue:30.0];
     [self.sliderSnooze setValue:[self.appDelegate.alarmClock snoozeTime] animated:NO];
-    [self.sliderSnooze setThumbImage:[UIImage imageNamed:@"settings-sliderknob"] forState:UIControlStateNormal];
-    [self.sliderSnooze setThumbImage:[UIImage imageNamed:@"settings-sliderknob"] forState:UIControlStateHighlighted];
+    if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+        [self.sliderSnooze setThumbImage:[UIImage imageNamed:@"settings-sliderknob"] forState:UIControlStateNormal];
+        [self.sliderSnooze setThumbImage:[UIImage imageNamed:@"settings-sliderknob"] forState:UIControlStateHighlighted];
+    } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+        [self.sliderSnooze setThumbImage:[UIImage imageNamed:@"setting-sliderknobblue"] forState:UIControlStateNormal];
+        [self.sliderSnooze setThumbImage:[UIImage imageNamed:@"setting-sliderknobblue"] forState:UIControlStateHighlighted];
+    }
     
     [self.sliderSnooze setMinimumTrackImage:[[UIImage imageNamed:@"settings-sliderbase"] stretchableImageWithLeftCapWidth:9 topCapHeight:0] forState:UIControlStateNormal];
     [self.sliderSnooze setMaximumTrackImage:[UIImage imageNamed:@"settings-sliderbase"] forState:UIControlStateNormal];
@@ -192,7 +277,12 @@
     [self addSubview:self.sliderSnooze];
     
     self.lblSnooze = [[UILabel alloc] initWithFrame:CGRectMake((self.frame.size.width - 280) / 2, 50, 280, 50)];
-    [self.lblSnooze setText:[NSString stringWithFormat:@"%@", [NSLocalizedString(@"SNOOZE SLIDER LABEL", nil) uppercaseString]]];
+    
+    if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+        [self.lblSnooze setText:[NSString stringWithFormat:@"%@", [NSLocalizedString(@"SNOOZE SLIDER LABEL", nil) uppercaseString]]];
+    } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+        [self.lblSnooze setText:[NSString stringWithFormat:@"%@", [NSLocalizedString(@"SNOOZE SLIDER LABEL MUSIC", nil) uppercaseString]]];
+    }
     
     //[_lblSnooze setTextColor:self.lightTextColor];
     [self.lblSnooze setTextColor:self.darkTextColor];
@@ -238,22 +328,49 @@
     [self.sliderSleep setMinimumValue:0.0];
     [self.sliderSleep setMaximumValue:60.0];
     [self.sliderSleep setValue:[self.appDelegate.alarmClock sleepTime] animated:NO];
-    [self.sliderSleep setThumbImage:[UIImage imageNamed:@"settings-sliderknob"] forState:UIControlStateNormal];
-    [self.sliderSleep setThumbImage:[UIImage imageNamed:@"settings-sliderknob"] forState:UIControlStateHighlighted];
+    
+    if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+        [self.sliderSleep setThumbImage:[UIImage imageNamed:@"settings-sliderknob"] forState:UIControlStateNormal];
+        [self.sliderSleep setThumbImage:[UIImage imageNamed:@"settings-sliderknob"] forState:UIControlStateHighlighted];
+    } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+        [self.sliderSleep setThumbImage:[UIImage imageNamed:@"setting-sliderknobblue"] forState:UIControlStateNormal];
+        [self.sliderSleep setThumbImage:[UIImage imageNamed:@"setting-sliderknobblue"] forState:UIControlStateHighlighted];
+    }
     
     [self.sliderSleep setMinimumTrackImage:[[UIImage imageNamed:@"settings-sliderbase"] stretchableImageWithLeftCapWidth:9 topCapHeight:0] forState:UIControlStateNormal];
     [self.sliderSleep setMaximumTrackImage:[UIImage imageNamed:@"settings-sliderbase"] forState:UIControlStateNormal];
     
     [self.sliderSleep addTarget:self action:@selector(updateSleepLabel) forControlEvents:UIControlEventAllEvents];
+    [self.sliderSleep addTarget:self action:@selector(showPlaylists) forControlEvents:UIControlEventTouchCancel];
+    [self.sliderSleep addTarget:self action:@selector(showPlaylists) forControlEvents:UIControlEventTouchDragExit];
+    [self.sliderSleep addTarget:self action:@selector(showPlaylists) forControlEvents:UIControlEventTouchUpInside];
     
-    self.lblSleep = [[UILabel alloc] initWithFrame:CGRectMake((self.frame.size.width - 280) / 2, 175, 280, 50)];
-    [self.lblSleep setText:[NSString stringWithFormat:@"%@", [NSLocalizedString(@"SLEEP SLIDER LABEL", nil) uppercaseString]]];
+    NSString *playlistName = @"rdio";
+    
+    if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+        playlistName = NSLocalizedString(@"MUSIC", nil);
+    }
+    
+    if(self.appDelegate.sleepPlaylist) {
+        playlistName = [self.appDelegate.sleepPlaylist playlistName];
+    }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateSleepPlaylistLabel) name:@"Sleep Playlist Found" object:nil];
+    
+    self.lblSleep = [[UILabel alloc] initWithFrame:CGRectMake((self.frame.size.width - 300) / 2, 175, 300, 50)];
+    //[self.lblSleep setText:[NSString stringWithFormat:[NSLocalizedString(@"SLEEP SLIDER LABEL", nil) uppercaseString], [playlistName uppercaseString]]];
     //[_lblSleep setTextColor:self.lightTextColor];
     [self.lblSleep setTextColor:self.darkTextColor];
     [self.lblSleep setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:18.0]];
     [self.lblSleep setBackgroundColor:[UIColor clearColor]];
-    [self.lblSleep setNumberOfLines:10];
-    [self.lblSleep setAdjustsFontSizeToFitWidth:YES];
+    [self.lblSleep setNumberOfLines:0];
+    [self updateSleepPlaylistLabel];
+    //[self.lblSleep setAdjustsFontSizeToFitWidth:YES];
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] init];
+    [tap addTarget:self action:@selector(showPlaylistsOnTap)];
+    
+    [self.lblSleep setUserInteractionEnabled:YES];
+    [self.lblSleep addGestureRecognizer:tap];
     
     [self.lblSleep setTextAlignment:NSTextAlignmentCenter];
     
@@ -287,14 +404,22 @@
     [self.lblSleepAmount setTextColor:self.lightTextColor];
     
     [self addSubview:self.lblSleepAmount];
+    [self addSubview:self.lblSleep];
+    [self addSubview:self.sliderSleep];
     
     UIImageView *imgSecondSettingsSeparator = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"settings-div"]];
     [imgSecondSettingsSeparator setFrame:CGRectMake(0.0, 307, [[UIScreen mainScreen] bounds].size.width, 1.0)];
     [self addSubview:imgSecondSettingsSeparator];
     
     self.sliderAutoStart = [[UISlider alloc] initWithFrame:CGRectMake((self.frame.size.width - 88), 322, 78, 28)];
-    [self.sliderAutoStart setThumbImage:[UIImage imageNamed:@"settings-onoff-knoboff"] forState:UIControlStateNormal];
-    [self.sliderAutoStart setThumbImage:[UIImage imageNamed:@"settings-onoff-knoboff"] forState:UIControlStateHighlighted];
+    
+    if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+        [self.sliderAutoStart setThumbImage:[UIImage imageNamed:@"settings-onoff-knoboff"] forState:UIControlStateNormal];
+        [self.sliderAutoStart setThumbImage:[UIImage imageNamed:@"settings-onoff-knoboff"] forState:UIControlStateHighlighted];
+    } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+        [self.sliderAutoStart setThumbImage:[UIImage imageNamed:@"settings-onoff-knoboffblue"] forState:UIControlStateNormal];
+        [self.sliderAutoStart setThumbImage:[UIImage imageNamed:@"settings-onoff-knoboffblue"] forState:UIControlStateHighlighted];
+    }
     
     [self.sliderAutoStart setMinimumTrackImage:[[UIImage imageNamed:@"settings-onoff-bg"] resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 15.0, 0.0, 15.0)] forState:UIControlStateNormal];
     [self.sliderAutoStart setMaximumTrackImage:[[UIImage imageNamed:@"settings-onoff-bg"] resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 15.0, 0.0, 15.0)] forState:UIControlStateNormal];
@@ -303,13 +428,13 @@
     
     [self addSubview:self.sliderAutoStart];
     
-    self.lblAutoStartNO = [[UILabel alloc] initWithFrame:CGRectMake(38,0,30,28)];
+    self.lblAutoStartNO = [[UILabel alloc] initWithFrame:CGRectMake(38,2,30,28)];
     [self.lblAutoStartNO setText:[NSString stringWithFormat:@"%@", [NSLocalizedString(@"LBLSLIDERNO", nil) uppercaseString]]];
     [self.lblAutoStartNO setBackgroundColor:[UIColor clearColor]];
     [self.lblAutoStartNO setTextColor:self.darkTextColor];
     [self.lblAutoStartNO setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12.0]];
     
-    self.lblAutoStartYES = [[UILabel alloc] initWithFrame:CGRectMake(18,0,30,28)];
+    self.lblAutoStartYES = [[UILabel alloc] initWithFrame:CGRectMake(18,2,30,28)];
     [self.lblAutoStartYES setText:[NSString stringWithFormat:@"%@", [NSLocalizedString(@"LBLSLIDERYES", nil) uppercaseString]]];
     [self.lblAutoStartYES setBackgroundColor:[UIColor clearColor]];
     [self.lblAutoStartYES setTextColor:self.lightTextColor];
@@ -321,8 +446,13 @@
     if ([self.appDelegate.alarmClock isAutoStart]) {
         [self.lblAutoStartNO setHidden:YES];
         [self.sliderShuffle setAccessibilityLabel:[NSString stringWithFormat:@"%@", [NSLocalizedString(@"LBLSLIDERYES", nil) uppercaseString]]];
-        [self.sliderAutoStart setThumbImage:[UIImage imageNamed:@"settings-onoff-knobon"] forState:UIControlStateNormal];
-        [self.sliderAutoStart setThumbImage:[UIImage imageNamed:@"settings-onoff-knobon"] forState:UIControlStateHighlighted];
+        if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+            [self.sliderAutoStart setThumbImage:[UIImage imageNamed:@"settings-onoff-knobon"] forState:UIControlStateNormal];
+            [self.sliderAutoStart setThumbImage:[UIImage imageNamed:@"settings-onoff-knobon"] forState:UIControlStateHighlighted];
+        } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+            [self.sliderAutoStart setThumbImage:[UIImage imageNamed:@"settings-onoff-knobonblue"] forState:UIControlStateNormal];
+            [self.sliderAutoStart setThumbImage:[UIImage imageNamed:@"settings-onoff-knobonblue"] forState:UIControlStateHighlighted];
+        }
         [self.sliderAutoStart setValue:0.95 animated:NO];
     } else {
         [self.sliderShuffle setAccessibilityLabel:[NSString stringWithFormat:@"%@", [NSLocalizedString(@"LBLSLIDERNO", nil) uppercaseString]]];
@@ -348,8 +478,13 @@
     [self addSubview:imgThirdSettingsSeparator];
     
     self.sliderShuffle = [[UISlider alloc] initWithFrame:CGRectMake((self.frame.size.width - 88), 377, 78, 28)];
-    [self.sliderShuffle setThumbImage:[UIImage imageNamed:@"settings-onoff-knoboff"] forState:UIControlStateNormal];
-    [self.sliderShuffle setThumbImage:[UIImage imageNamed:@"settings-onoff-knoboff"] forState:UIControlStateHighlighted];
+    if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+        [self.sliderShuffle setThumbImage:[UIImage imageNamed:@"settings-onoff-knoboff"] forState:UIControlStateNormal];
+        [self.sliderShuffle setThumbImage:[UIImage imageNamed:@"settings-onoff-knoboff"] forState:UIControlStateHighlighted];
+    } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+        [self.sliderShuffle setThumbImage:[UIImage imageNamed:@"settings-onoff-knoboffblue"] forState:UIControlStateNormal];
+        [self.sliderShuffle setThumbImage:[UIImage imageNamed:@"settings-onoff-knoboffblue"] forState:UIControlStateHighlighted];
+    }
     
     [self.sliderShuffle setMinimumTrackImage:[[UIImage imageNamed:@"settings-onoff-bg"] resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 15.0, 0.0, 15.0)] forState:UIControlStateNormal];
     [self.sliderShuffle setMaximumTrackImage:[[UIImage imageNamed:@"settings-onoff-bg"] resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 15.0, 0.0, 15.0)] forState:UIControlStateNormal];
@@ -359,13 +494,13 @@
     
     [self addSubview:self.sliderShuffle];
     
-    self.lblShuffleNO = [[UILabel alloc] initWithFrame:CGRectMake(38,0,30,28)];
+    self.lblShuffleNO = [[UILabel alloc] initWithFrame:CGRectMake(38,2,30,28)];
     [self.lblShuffleNO setText:[NSString stringWithFormat:@"%@", [NSLocalizedString(@"LBLSLIDERNO", nil) uppercaseString]]];
     [self.lblShuffleNO setBackgroundColor:[UIColor clearColor]];
     [self.lblShuffleNO setTextColor:self.darkTextColor];
     [self.lblShuffleNO setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12.0]];
     
-    self.lblShuffleYES = [[UILabel alloc] initWithFrame:CGRectMake(18,0,30,28)];
+    self.lblShuffleYES = [[UILabel alloc] initWithFrame:CGRectMake(18,2,30,28)];
     [self.lblShuffleYES setText:[NSString stringWithFormat:@"%@", [NSLocalizedString(@"LBLSLIDERYES", nil) uppercaseString]]];
     [self.lblShuffleYES setBackgroundColor:[UIColor clearColor]];
     [self.lblShuffleYES setTextColor:self.lightTextColor];
@@ -376,8 +511,13 @@
     
     if ([self.appDelegate.alarmClock isShuffle]) {
         [self.lblShuffleNO setHidden:YES];
-        [self.sliderShuffle setThumbImage:[UIImage imageNamed:@"settings-onoff-knobon"] forState:UIControlStateNormal];
-        [self.sliderShuffle setThumbImage:[UIImage imageNamed:@"settings-onoff-knobon"] forState:UIControlStateHighlighted];
+        if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+            [self.sliderShuffle setThumbImage:[UIImage imageNamed:@"settings-onoff-knobon"] forState:UIControlStateNormal];
+            [self.sliderShuffle setThumbImage:[UIImage imageNamed:@"settings-onoff-knobon"] forState:UIControlStateHighlighted];
+        } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+            [self.sliderShuffle setThumbImage:[UIImage imageNamed:@"settings-onoff-knobonblue"] forState:UIControlStateNormal];
+            [self.sliderShuffle setThumbImage:[UIImage imageNamed:@"settings-onoff-knobonblue"] forState:UIControlStateHighlighted];
+        }
         [self.sliderShuffle setValue:0.95 animated:NO];
     } else {
         [self.lblShuffleYES setHidden:YES];
@@ -404,8 +544,6 @@
     
     if ([self.appDelegate.rdioUser isLoggedIn]) {
         [self addSubview:btnSignOut];
-        [self addSubview:self.lblSleep];
-        [self addSubview:self.sliderSleep];
     }
     
     UIImageView *ivTexas = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ThickTexasVector"]];
@@ -427,6 +565,51 @@
         [self addSubview:ivTexas];
         [self addSubview:lblName];
     }
+}
+
+- (void) updateSleepPlaylistLabel
+{
+    NSString *playlistName = @"RDIO";
+    
+    if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+        playlistName = NSLocalizedString(@"MUSIC", nil);
+    }
+    
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.lineHeightMultiple = 50.0f;
+    paragraphStyle.maximumLineHeight = 50.0;
+    paragraphStyle.minimumLineHeight = 50.0f;
+    
+    NSDictionary *ats = @{
+                          NSForegroundColorAttributeName : self.lightTextColor,
+                          NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Bold" size:18.0],
+                          NSParagraphStyleAttributeName : paragraphStyle
+                          };
+    
+    if(self.appDelegate.sleepPlaylist) {
+        playlistName = [[self.appDelegate.sleepPlaylist playlistName] uppercaseString];
+    }
+    
+    if([playlistName length] > 6) {
+        playlistName = [playlistName substringToIndex: MIN(6, [playlistName length])];
+        
+        if([playlistName characterAtIndex:[playlistName length] - 1] == 32) {
+            playlistName = [playlistName substringToIndex: MIN(5, [playlistName length])];
+        }
+        
+        NSLog(@"%d", [playlistName characterAtIndex:[playlistName length] - 1]);
+        playlistName = [NSString stringWithFormat:@"%@...", playlistName];
+    }
+    
+    NSString *lblSleepText = [NSString stringWithFormat:[NSLocalizedString(@"SLEEP SLIDER LABEL", nil) uppercaseString], playlistName];
+    NSRange attributedRange = [lblSleepText rangeOfString:playlistName];
+    
+    NSMutableAttributedString *attSleepText = [[NSMutableAttributedString alloc] initWithString:lblSleepText];
+    [attSleepText addAttributes:ats range:attributedRange];
+    
+
+    //[self.lblSleep setText:[NSString stringWithFormat:[NSLocalizedString(@"SLEEP SLIDER LABEL", nil) uppercaseString], playlistName]];
+    [self.lblSleep setAttributedText:attSleepText];
 }
 
 /*

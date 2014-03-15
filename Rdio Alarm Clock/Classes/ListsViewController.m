@@ -30,7 +30,25 @@
     self.chooseMusic = [[UITableView alloc] initWithFrame:chooseMusicFrame style:UITableViewStylePlain];
     
     [self.chooseMusic setBackgroundColor:[UIColor clearColor]];
-    [self.chooseMusic setSeparatorColor:[UIColor colorWithRed:.09 green:.06 blue:.117 alpha:1.0]];
+    /*
+    if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+        if([[UIScreen mainScreen] bounds].size.height > 480) {
+            [self.chooseMusic setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Default-568h"]]];
+        } else {
+            [self.chooseMusic setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Default"]]];
+        }
+    } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+        if([[UIScreen mainScreen] bounds].size.height > 480) {
+            [self.chooseMusic setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Defaultblue-568h"]]];
+        } else {
+            [self.chooseMusic setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Defaultblue"]]];
+        }
+    }*/
+    UIToolbar* bgToolbar = [[UIToolbar alloc] initWithFrame:self.view.frame];
+    bgToolbar.barStyle = UIBarStyleBlackTranslucent;
+    [self.view insertSubview:bgToolbar belowSubview:self.chooseMusic];
+    
+    [self.chooseMusic setSeparatorColor:self.darkTextColor];
     [self.chooseMusic setBackgroundView:nil];
     [self.chooseMusic setDelegate:self];
     [self.chooseMusic setDataSource:self];
@@ -55,16 +73,28 @@
     AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     NSString *cellLabel = @"";
 
-    if (indexPath.section == 0) {
-        cellLabel = [[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row + [[self.numberOfRows objectAtIndex:0] integerValue]] playlistName];
-    } else if (indexPath.section == 1) {
-        cellLabel = [[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row + [[self.numberOfRows objectAtIndex:0] integerValue] + [[self.numberOfRows objectAtIndex:1] integerValue]] playlistName];
-    } else {
-        cellLabel = [[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row] playlistName];
-    }
-    
-    if(appDelegate.musicLibrary.hasNoPlaylists) {
-        cellLabel = [NSString stringWithFormat:NSLocalizedString(@"go make playlists", nil)];
+    if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+        if (indexPath.section == 0) {
+            cellLabel = [[[appDelegate.musicLibrary getPlaylistsInCategory:@"owned"] objectAtIndex:indexPath.row] playlistName];
+
+            //cellLabel = [[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row + [[self.numberOfRows objectAtIndex:0] integerValue]] playlistName];
+        } else if (indexPath.section == 1) {
+            cellLabel = [[[appDelegate.musicLibrary getPlaylistsInCategory:@"subscribed"] objectAtIndex:indexPath.row] playlistName];
+            //cellLabel = [[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row + [[self.numberOfRows objectAtIndex:0] integerValue] + [[self.numberOfRows objectAtIndex:1] integerValue]] playlistName];
+        } else {
+            cellLabel = [[[appDelegate.musicLibrary getPlaylistsInCategory:@"collab"] objectAtIndex:indexPath.row] playlistName];
+            //cellLabel = [[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row] playlistName];
+        }
+        
+        if(appDelegate.musicLibrary.hasNoPlaylists) {
+            cellLabel = [NSString stringWithFormat:NSLocalizedString(@"go make playlists", nil)];
+        }
+    } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+        if(appDelegate.musicLibrary.hasNoPlaylists) {
+            cellLabel = [NSString stringWithFormat:NSLocalizedString(@"go make playlists music", nil)];
+        } else {
+            cellLabel = [[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row] playlistName];
+        }
     }
     
     float rowHeight = [cellLabel sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:19.0] constrainedToSize:CGSizeMake(self.view.frame.size.width - 20, 100) lineBreakMode:NSLineBreakByWordWrapping].height + 20;
@@ -75,19 +105,23 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {    
     AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-    int selectedSection = 0;
-    
-    if(section == 0) {
-        selectedSection = 1;
-    } else if(section == 1) {
-        selectedSection = 2;
-    } else if(section == 2) {
-        selectedSection = 0;
-    }
-    
     int numberOfRows = 0;
     
-    numberOfRows = [[self.numberOfRows objectAtIndex:selectedSection] integerValue];
+    if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+        if(section == 0) {
+            numberOfRows = [[appDelegate.musicLibrary getPlaylistsInCategory:@"owned"] count];
+        } else if(section == 1) {
+            numberOfRows = [[appDelegate.musicLibrary getPlaylistsInCategory:@"subscribed"] count];
+        } else if(section == 2) {
+            numberOfRows = [[appDelegate.musicLibrary getPlaylistsInCategory:@"collab"] count];
+        }
+  
+        //numberOfRows = [[self.numberOfRows objectAtIndex:selectedSection] integerValue];
+    } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+        numberOfRows = [appDelegate.musicLibrary.playlists count];
+    }
+    
+    
     
     if(appDelegate.musicLibrary.hasNoPlaylists) {
         numberOfRows = 1;
@@ -105,22 +139,26 @@
     int numberOfRows = 0;
     NSString *lastPlaylistCategory = @"";
     
-    for(int x = 0; x < appDelegate.musicLibrary.playlists.count; x++) {
-        if([lastPlaylistCategory isEqualToString:@""]) {
+    if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+        for(int x = 0; x < appDelegate.musicLibrary.playlists.count; x++) {
+            if([lastPlaylistCategory isEqualToString:@""]) {
+                lastPlaylistCategory = [[appDelegate.musicLibrary.playlists objectAtIndex:x] playlistCategory];
+            }
+            if(![lastPlaylistCategory isEqualToString:[[appDelegate.musicLibrary.playlists objectAtIndex:x] playlistCategory]]) {
+                numberOfSections++;
+                [self.numberOfRows addObject:[NSNumber numberWithInt:numberOfRows]];
+                numberOfRows = 0;
+            }
+            numberOfRows++;
             lastPlaylistCategory = [[appDelegate.musicLibrary.playlists objectAtIndex:x] playlistCategory];
         }
-        if(![lastPlaylistCategory isEqualToString:[[appDelegate.musicLibrary.playlists objectAtIndex:x] playlistCategory]]) {
-            numberOfSections++;
+        
+        if(appDelegate.musicLibrary.playlists.count > 0) {
             [self.numberOfRows addObject:[NSNumber numberWithInt:numberOfRows]];
-            numberOfRows = 0;
+            numberOfSections++;
         }
-        numberOfRows++;
-        lastPlaylistCategory = [[appDelegate.musicLibrary.playlists objectAtIndex:x] playlistCategory];
-    }
-    
-    if(appDelegate.musicLibrary.playlists.count > 0) {
-        [self.numberOfRows addObject:[NSNumber numberWithInt:numberOfRows]];
-        numberOfSections++;
+    } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+        numberOfSections = 1;
     }
     
     if(appDelegate.musicLibrary.hasNoPlaylists) {
@@ -142,26 +180,39 @@
     
     AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     
-    if(appDelegate.musicLibrary.hasNoPlaylists) {
-        cellLabel = [NSString stringWithFormat:NSLocalizedString(@"go make playlists", nil)];
-    } else {
-        if (indexPath.section == 0) {
-            cellLabel = [[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row + [[self.numberOfRows objectAtIndex:0] integerValue]] playlistName];
-        } else if (indexPath.section == 1) {
-            cellLabel = [[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row + [[self.numberOfRows objectAtIndex:0] integerValue] + [[self.numberOfRows objectAtIndex:1] integerValue]] playlistName];
+    if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+        if(appDelegate.musicLibrary.hasNoPlaylists) {
+            cellLabel = [NSString stringWithFormat:NSLocalizedString(@"go make playlists", nil)];
+        } else {
+            if (indexPath.section == 0) {
+                cellLabel = [[[appDelegate.musicLibrary getPlaylistsInCategory:@"owned"] objectAtIndex:indexPath.row] playlistName];
+                
+                //cellLabel = [[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row + [[self.numberOfRows objectAtIndex:0] integerValue]] playlistName];
+            } else if (indexPath.section == 1) {
+                cellLabel = [[[appDelegate.musicLibrary getPlaylistsInCategory:@"subscribed"] objectAtIndex:indexPath.row] playlistName];
+                //cellLabel = [[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row + [[self.numberOfRows objectAtIndex:0] integerValue] + [[self.numberOfRows objectAtIndex:1] integerValue]] playlistName];
+            } else {
+                cellLabel = [[[appDelegate.musicLibrary getPlaylistsInCategory:@"collab"] objectAtIndex:indexPath.row] playlistName];
+                //cellLabel = [[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row] playlistName];
+            }
+        }
+    } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+        if(appDelegate.musicLibrary.hasNoPlaylists) {
+            cellLabel = [NSString stringWithFormat:NSLocalizedString(@"go make playlists music", nil)];
         } else {
             cellLabel = [[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row] playlistName];
         }
     }
     
-    cell.textLabel.textColor = [UIColor colorWithRed:0.48 green:0.37 blue:0.58 alpha:1.0];
+    cell.textLabel.textColor = self.lightTextColor;
     cell.textLabel.text = [cellLabel lowercaseString];
+    [cell setBackgroundColor:[UIColor clearColor]];
     [cell.textLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:19.0]];
     [cell.textLabel setLineBreakMode:NSLineBreakByWordWrapping];
     [cell.textLabel setNumberOfLines:0];
     
     UIView *bgColorView = [[UIView alloc] init];
-    [bgColorView setBackgroundColor:[UIColor colorWithRed:.09 green:.06 blue:.117 alpha:1.0]];
+    [bgColorView setBackgroundColor:self.darkTextColor];
     [cell setSelectedBackgroundView:bgColorView];
     
     return cell;
@@ -174,17 +225,23 @@
 
     UILabel *sectionView = [[UILabel alloc] initWithFrame:CGRectMake(40.0, 0.0, 200.0, 30.0)];
     
-    [sectionView setTextColor:[UIColor colorWithRed:0.48 green:0.37 blue:0.58 alpha:1.0]];
-    [sectionView setBackgroundColor:[UIColor colorWithRed:.09 green:.06 blue:.117 alpha:1.0]];
+    [sectionView setTextColor:self.lightTextColor];
+    [sectionView setBackgroundColor:self.darkTextColor];
     [sectionView setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12.0]];
     
-    if (section == 0) {
-        sectionView.text = [[NSString stringWithFormat:NSLocalizedString(@"OWNED HEADER", nil)] uppercaseString];
-    } else if (section == 1) {
-        sectionView.text = [[NSString stringWithFormat:NSLocalizedString(@"SUBSCRIBED HEADER", nil)] uppercaseString];
-    } else {
-        sectionView.text = [[NSString stringWithFormat:NSLocalizedString(@"COLLAB HEADER", nil)] uppercaseString];
+    if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+        if (section == 0) {
+            sectionView.text = [[NSString stringWithFormat:NSLocalizedString(@"OWNED HEADER", nil)] uppercaseString];
+        } else if (section == 1) {
+            sectionView.text = [[NSString stringWithFormat:NSLocalizedString(@"SUBSCRIBED HEADER", nil)] uppercaseString];
+        } else {
+            sectionView.text = [[NSString stringWithFormat:NSLocalizedString(@"COLLAB HEADER", nil)] uppercaseString];
+        }
+    } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+        sectionView.text = [[NSString stringWithFormat:NSLocalizedString(@"PLAYLISTS", nil)] uppercaseString];
     }
+    
+    
     
     if(appDelegate.musicLibrary.hasNoPlaylists) {
         sectionView.text = [[NSString stringWithFormat:NSLocalizedString(@"NO PLAYLISTS FOUND", nil)] uppercaseString];
@@ -197,12 +254,16 @@
 {
     NSString *sectionName = @"";
     
-    if (section == 0) {
-        sectionName = [NSString stringWithFormat:NSLocalizedString(@"COLLAB", nil)];
-    } else if (section == 1) {
-        sectionName = [NSString stringWithFormat:NSLocalizedString(@"OWNED", nil)];
-    } else {
-        sectionName = [NSString stringWithFormat:NSLocalizedString(@"SUBSCRIBED", nil)];    }
+    if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+        if (section == 0) {
+            sectionName = [NSString stringWithFormat:NSLocalizedString(@"COLLAB", nil)];
+        } else if (section == 1) {
+            sectionName = [NSString stringWithFormat:NSLocalizedString(@"OWNED", nil)];
+        } else {
+            sectionName = [NSString stringWithFormat:NSLocalizedString(@"SUBSCRIBED", nil)];    }
+        
+    } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+    }
     
     return sectionName;
     
@@ -216,30 +277,79 @@
     if(appDelegate.musicLibrary.hasNoPlaylists) {
         
     } else {
-        
-        int selectedSection = 0;
-        
-        if(indexPath.section == 0) {
-            selectedSection = 1;
-        } else if(indexPath.section == 1) {
-            selectedSection = 2;
-        } else if(indexPath.section == 2) {
-            selectedSection = 0;
+        if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+            int selectedSection = 0;
+            
+            if(indexPath.section == 0) {
+                selectedSection = 1;
+            } else if(indexPath.section == 1) {
+                selectedSection = 2;
+            } else if(indexPath.section == 2) {
+                selectedSection = 0;
+            }
+            
+            if([self.playlistType isEqualToString:@"Alarm"]) {
+                if (indexPath.section == 0) {
+                    [appDelegate setSelectedPlaylist:[[appDelegate.musicLibrary getPlaylistsInCategory:@"owned"] objectAtIndex:indexPath.row]];
+                } else if (indexPath.section == 1) {
+                    [appDelegate setSelectedPlaylist:[[appDelegate.musicLibrary getPlaylistsInCategory:@"subscribed"] objectAtIndex:indexPath.row]];
+                } else {
+                    [appDelegate setSelectedPlaylist:[[appDelegate.musicLibrary getPlaylistsInCategory:@"collab"] objectAtIndex:indexPath.row]];
+                }
+                /*
+                if (indexPath.section == 0) {
+                    [appDelegate setSelectedPlaylist:[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row + [[self.numberOfRows objectAtIndex:0] integerValue]]];
+                } else if (indexPath.section == 1) {
+                    [appDelegate setSelectedPlaylist:[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row + [[self.numberOfRows objectAtIndex:0] integerValue] + [[self.numberOfRows objectAtIndex:1] integerValue]]];
+                } else {
+                    [appDelegate setSelectedPlaylist:[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row]];
+                }*/
+                
+                [appDelegate.alarmClock setPlaylistKey:appDelegate.selectedPlaylist.playlistKey];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"Playlist Found" object:nil];
+                [appDelegate.selectedPlaylist setIsSelected:YES];
+
+            } else if([self.playlistType isEqualToString:@"Sleep"]) {
+                if (indexPath.section == 0) {
+                    [appDelegate setSleepPlaylist:[[appDelegate.musicLibrary getPlaylistsInCategory:@"owned"] objectAtIndex:indexPath.row]];
+                } else if (indexPath.section == 1) {
+                    [appDelegate setSleepPlaylist:[[appDelegate.musicLibrary getPlaylistsInCategory:@"subscribed"] objectAtIndex:indexPath.row]];
+                } else {
+                    [appDelegate setSleepPlaylist:[[appDelegate.musicLibrary getPlaylistsInCategory:@"collab"] objectAtIndex:indexPath.row]];
+                }
+                /*
+                if (indexPath.section == 0) {
+                    [appDelegate setSleepPlaylist:[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row + [[self.numberOfRows objectAtIndex:0] integerValue]]];
+                } else if (indexPath.section == 1) {
+                    [appDelegate setSleepPlaylist:[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row + [[self.numberOfRows objectAtIndex:0] integerValue] + [[self.numberOfRows objectAtIndex:1] integerValue]]];
+                } else {
+                    [appDelegate setSleepPlaylist:[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row]];
+                }
+                 */
+                
+                [appDelegate.alarmClock setSleepPlaylistKey:appDelegate.sleepPlaylist.playlistKey];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"Sleep Playlist Found" object:nil];
+                [appDelegate.sleepPlaylist setIsSelected:YES];
+            }
+        } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+            if([self.playlistType isEqualToString:@"Alarm"]) {
+                [appDelegate setSelectedPlaylist:[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row]];
+                                
+                [appDelegate.alarmClock setPlaylistKey:appDelegate.selectedPlaylist.playlistKey];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"Playlist Found" object:nil];
+                //[appDelegate.selectedPlaylist setIsSelected:YES];
+                
+            } else if([self.playlistType isEqualToString:@"Sleep"]) {
+                [appDelegate setSleepPlaylist:[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row]];
+                
+                [appDelegate.alarmClock setSleepPlaylistKey:appDelegate.sleepPlaylist.playlistKey];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"Sleep Playlist Found" object:nil];
+                //[appDelegate.sleepPlaylist setIsSelected:YES];
+            }
         }
-        
-        if (indexPath.section == 0) {
-            [appDelegate setSelectedPlaylist:[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row + [[self.numberOfRows objectAtIndex:0] integerValue]]];
-        } else if (indexPath.section == 1) {
-            [appDelegate setSelectedPlaylist:[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row + [[self.numberOfRows objectAtIndex:0] integerValue] + [[self.numberOfRows objectAtIndex:1] integerValue]]];
-        } else {
-            [appDelegate setSelectedPlaylist:[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row]];
-        }
-        
-        [appDelegate.alarmClock setPlaylistKey:appDelegate.selectedPlaylist.playlistKey];
         
         NSLog(@"section selected: %d, row selected: %d", indexPath.section, indexPath.row);
         [appDelegate.alarmClock setPlaylistName:[tableView cellForRowAtIndexPath:indexPath].textLabel.text];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"Playlist Found" object:nil];
     }
         
     [self.navigationController popViewControllerAnimated:YES];

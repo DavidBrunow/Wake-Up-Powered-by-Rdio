@@ -19,10 +19,12 @@
 @property (nonatomic) NSString *settingsPath;
 @property (nonatomic, retain) NSString *playlistName;
 @property (nonatomic, retain) NSString *playlistKey;
+@property (nonatomic, retain) NSString *sleepPlaylistKey;
 @property (nonatomic, retain) NSDate *alarmTime;
 @property (nonatomic) NSString *timeSeparator;
 
 -(NSString *) getAlarmTimeString;
 -(void) setAlarmTime:(NSDate *)alarmTime save:(bool)needToSave;
+-(void) refreshAlarmTime;
 
 @end

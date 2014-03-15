@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "AlarmNavController.h"
 #import "Credentials.h"
+#import "DHBForecast.h"
 
 @implementation AppDelegate
 
@@ -19,10 +20,10 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [TestFlight takeOff:@"397a28383f7de900ab3c235f67199d7d_Nzk2MTU4MjAxMi0xMi0xOSAyMjo1OTowOS42MDk1MzM"];
-    
+    //self.currentWeather = [[DHBForecast alloc] init];
+
     [application setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
-        
+    
     self.alarmIsSet = NO;
     self.alarmIsPlaying = NO;
     self.originalBrightness = [UIScreen mainScreen].brightness;
@@ -34,36 +35,56 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
 
-    [self.window setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Default-568h"]]];
+    self.alarmClock = [[DHBAlarmClock alloc] init];
     
-    self.rdio = [[Rdio alloc] initWithConsumerKey:CONSUMER_KEY andSecret:CONSUMER_SECRET delegate:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkNetworkStatus:) name:kReachabilityChangedNotification object:nil];
-    
+    if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+        //[TestFlight takeOff:@"397a28383f7de900ab3c235f67199d7d_Nzk2MTU4MjAxMi0xMi0xOSAyMjo1OTowOS42MDk1MzM"];
+
+        self.rdio = [[Rdio alloc] initWithConsumerKey:CONSUMER_KEY andSecret:CONSUMER_SECRET delegate:nil];
+        self.rdioUser = [[RdioUser alloc] init];
+        if([self.rdioUser isLoggedIn]) {
+            [self loadData];
+        }
+        hostReachable = [Reachability reachabilityWithHostname: @"www.rdio.com"];
+        [hostReachable startNotifier];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkNetworkStatus:) name:kReachabilityChangedNotification object:nil];
+        [self.window setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Default-568h"]]];
+    } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+        [self.window setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Defaultblue-568h"]]];
+        [self loadData];
+    } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"org.Brunow.Wake-Up-to-the-Cloud"]) {
+        [self.window setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Defaultblue-568h"]]];
+        [self loadData];
+    }
+
     //internetReachable = [Reachability reachabilityForInternetConnection];
     //[internetReachable startNotifier];
     
     // check if a pathway to a random host exists
-    hostReachable = [Reachability reachabilityWithHostname: @"www.rdio.com"];
-    [hostReachable startNotifier];
     
     // now patiently wait for the notification
             
     self.mainNav = [[AlarmNavController alloc] init];
 
     [self.mainNav setNavigationBarHidden:YES];
-    [self.window setRootViewController:self.mainNav];
-    
-    self.rdioUser = [[RdioUser alloc] init];
-    self.selectedPlaylist = [[DHBPlaylist alloc] init];
-
-    self.musicLibrary = [[DHBMusicLibrary alloc] init];
-        
-    self.alarmClock = [[DHBAlarmClock alloc] init];
+    [self.window setRootViewController:self.mainNav];  
     
     [self.window makeKeyAndVisible];
-
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadData) name:@"User Logged In" object:nil];
+    
     return YES;
+}
+
+- (void) loadData
+{
+    if(self.musicLibrary == nil) {
+        self.musicLibrary = [[DHBMusicLibrary alloc] init];
+    }
+    
+    if(self.alarmClock == nil) {
+        self.alarmClock = [[DHBAlarmClock alloc] init];
+    }
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -141,7 +162,6 @@
         [[UIApplication sharedApplication] cancelLocalNotification:self.backupAlarm];
         [application setIdleTimerDisabled:YES];
     } else if (!self.alarmIsPlaying) {
-        [self.window setRootViewController:self.mainNav];
         
         if(self.rdioUser == nil) {
             self.rdioUser = [[RdioUser alloc] init];
@@ -157,6 +177,12 @@
         
         if(self.alarmClock == nil) {
             self.alarmClock = [[DHBAlarmClock alloc] init];
+        }
+        
+        [self.window setRootViewController:self.mainNav];
+        
+        if(![self.rdioUser isLoggedIn]) {
+            [self.rdioUser login];
         }
     }
 }

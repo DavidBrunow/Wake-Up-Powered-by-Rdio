@@ -13,4 +13,6 @@
 
 @property (nonatomic, retain) AlarmViewController *alarmVC;
 
+- (void) handleLoginState;
+
 @end

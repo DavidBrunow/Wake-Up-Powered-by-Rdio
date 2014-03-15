@@ -15,6 +15,7 @@
 #import "DHBAlarmClock.h"
 #import "DHBMusicLibrary.h"
 #import "DHBPlaylist.h"
+#import "DHBForecast.h"
 #import "RdioUser.h"
 
 @interface AppDelegate : NSObject <UIApplicationDelegate>
@@ -39,8 +40,10 @@
 @property (nonatomic, retain) RdioUser *rdioUser;
 @property (nonatomic, retain) DHBMusicLibrary *musicLibrary;
 @property (nonatomic, retain) DHBPlaylist *selectedPlaylist;
+@property (nonatomic, retain) DHBPlaylist *sleepPlaylist;
 @property (nonatomic, retain) UILocalNotification *backupAlarm;
 @property (nonatomic, retain) UILocalNotification *mustBeInApp;
+@property (nonatomic, retain) DHBForecast *currentWeather;
 
 + (Rdio *) rdioInstance;
 - (void) checkNetworkStatus:(NSNotification *)notice;

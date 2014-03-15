@@ -14,6 +14,7 @@
 #import <MediaPlayer/MPVolumeView.h>
 #import <MediaPlayer/MPMusicPlayerController.h>
 #import <MediaPlayer/MediaPlayer.h>
+#import <AVFoundation/AVFoundation.h>
 #import "AppDelegate.h"
 #import "DHBTextField.h"
 
@@ -47,14 +48,19 @@
 @property (nonatomic, retain) MPVolumeView *hideVolume;
 @property (nonatomic, retain) UILabel *lblWakeUpTo;
 @property (nonatomic, retain) UILabel *lblPlaylist;
+@property (nonatomic, retain) UILabel *lblAutoSetPlaylistName;
 @property (nonatomic) ListsViewController *listsViewController;
 @property (nonatomic) AppDelegate *appDelegate;
 @property (nonatomic) bool settingsOpen;
-@property (nonatomic) DHBTextField *timeTextField;
+@property (nonatomic) UITextField *timeTextField;
 @property (nonatomic) UIColor *lightTextColor;
 @property (nonatomic) UIColor *darkTextColor;
 @property (nonatomic) UIView *alarmTimeView;
 @property (nonatomic) UIView *currentTimeView;
+@property (nonatomic) UIView *currentWeatherView;
+@property (nonatomic, retain) NSMutableArray *songsToPlay;
+@property (nonatomic) bool isSnoozing;
+@property (nonatomic, retain) NSTimer *clockTimer;
 
 - (void) setAlarmClicked;
 - (void) alarmSounding;

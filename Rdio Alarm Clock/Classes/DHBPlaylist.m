@@ -13,8 +13,6 @@
 
 - (id)init
 {
-    self.trackKeys = [[NSMutableArray alloc] init];
-    
     return self;
 }
 
@@ -44,6 +42,7 @@
         x++;
     }
     */
+    self.trackKeys = [self getEnough:self.trackKeys];
 }
 
 - (void)rdioRequest:(RDAPIRequest *)request didFailWithError:(NSError*)error {
@@ -60,13 +59,26 @@
     }
 }
 
+- (void)setIsSelected:(bool)isSelected
+{
+    _isSelected = isSelected;
+    
+    if(isSelected) {
+        if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+            [self setTrackKeys:self.trackKeys clean:NO];
+        } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+            self.trackKeys = [self getEnough:self.trackKeys];
+        }
+    }
+}
+
 - (void) determineStreamableSongs
 {
     self.trackKeys = [self removeDuplicatesInPlaylist:self.trackKeys];
 
     NSString *songsToPlayString = @"";
     int totalNumberOfTracks = self.trackKeys.count;
-    int chunkSize = 250;
+    int chunkSize = 500;
     
     if(totalNumberOfTracks < chunkSize) {
         for (int x = 0; x < self.trackKeys.count; x++) {
@@ -119,6 +131,46 @@
     }
     
     return playlist;
+}
+
+- (NSMutableArray *)getShuffledTrackKeys
+{
+    NSMutableArray *tempTrackKeys = [[NSMutableArray alloc] initWithArray:_trackKeys];
+    
+    tempTrackKeys = [self shuffle:tempTrackKeys];
+    
+    return tempTrackKeys;
+}
+
+- (NSMutableArray *) getEnough: (NSMutableArray *) list
+{
+    NSMutableArray *newList = [[NSMutableArray alloc] initWithCapacity:[list count]];
+    
+    while (newList.count < 120 && list.count > 0) {
+        [newList addObjectsFromArray:list];
+    }
+    
+    if(newList.count > 500) {
+        [newList removeObjectsInRange:NSMakeRange(500, newList.count - 501)];
+    }
+    
+    return newList;
+}
+
+- (NSMutableArray *) shuffle: (NSMutableArray *) list
+{
+    NSMutableArray *newList = [[NSMutableArray alloc] initWithCapacity:[list count]];
+    int oldListCount = list.count;
+    
+    while (oldListCount != newList.count) {
+        int listIndex = (arc4random() % list.count);
+        NSString *testObject = [list objectAtIndex:listIndex];
+        
+        [newList  addObject:testObject];
+        [list removeObjectAtIndex:listIndex];
+    }
+    
+    return newList;
 }
 
 @end

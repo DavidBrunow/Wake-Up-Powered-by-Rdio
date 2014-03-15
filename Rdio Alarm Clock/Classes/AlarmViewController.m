@@ -113,7 +113,7 @@
     self.appDelegate.alarmIsSet = YES;
     CGRect screenRect = [[UIScreen mainScreen] bounds];
     CGRect sleepLabelRect = CGRectMake(10.0, 90.0, 280.0, 200.0);
-    CGRect alarmLabelRect = CGRectMake(10.0, 10.0, [[UIScreen mainScreen] bounds].size.width, 30.0);
+    CGRect alarmLabelRect = CGRectMake(10.0, -20.0, [[UIScreen mainScreen] bounds].size.width, 45.0);
     CGRect chargingLabelRect = CGRectMake(10.0, 260.0, 280.0, 200.0);
     
     NSString *alarmTimeText;
@@ -251,22 +251,104 @@
     
     [fader invalidate];
     
-    if ([self.appDelegate.alarmClock sleepTime] != 0) {
-        if ([[AppDelegate rdioInstance] player].state == RDPlayerStatePaused) {
-            [[[AppDelegate rdioInstance] player] togglePause];
+    if ([self.appDelegate.alarmClock sleepTime] != 0 && ![self isSnoozing]) {
+        if([self.appDelegate.alarmClock isShuffle]) {
+            self.songsToPlay = [self.appDelegate.sleepPlaylist getShuffledTrackKeys];
         } else {
-            if([self.appDelegate.alarmClock isShuffle]) {
-                self.appDelegate.selectedPlaylist.trackKeys = [self shuffle:self.appDelegate.selectedPlaylist.trackKeys];
+            self.songsToPlay = self.appDelegate.sleepPlaylist.trackKeys;
+        }
+        
+        if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+            [[[AppDelegate rdioInstance] player] playSources:self.songsToPlay];
+        } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+            NSMutableArray *songsForPlaying = [[NSMutableArray alloc] init];
+            for(int x = 0; x < self.songsToPlay.count; x++) {
+                MPMediaPropertyPredicate *predicate = [MPMediaPropertyPredicate predicateWithValue:[self.songsToPlay objectAtIndex:x] forProperty:MPMediaItemPropertyPersistentID];
+                
+                //finding songs for predicate
+                MPMediaQuery *mySongQuery = [[MPMediaQuery alloc] init];
+                [mySongQuery addFilterPredicate: predicate];
+                [songsForPlaying addObject:[[mySongQuery items] objectAtIndex:0]];
             }
-            self.appDelegate.selectedPlaylist.trackKeys = [self getEnough:self.appDelegate.selectedPlaylist.trackKeys];
-            [[[AppDelegate rdioInstance] player] playSources:self.appDelegate.selectedPlaylist.trackKeys];
+            
+            [self.music setQueueWithItemCollection:[[MPMediaItemCollection alloc] initWithItems:songsForPlaying]];
+            [self.music play];
         }
         fader = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(fadeScreenOut) userInfo:nil repeats:YES];
     } else {
-        fader = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(fadeScreenOut) userInfo:nil repeats:YES]; 
+        fader = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(fadeScreenOut) userInfo:nil repeats:YES];
     }
     
     self.appDelegate.originalVolume = self.music.volume;
+    //AVAudioPlayer *thisPlayer = [[AVAudioPlayer alloc] init];
+    
+}
+
+- (void) setupCurrentWeatherView
+{
+    if(self.currentWeatherView == nil) {
+        self.currentWeatherView = [[UIView alloc] initWithFrame:CGRectMake(0, 124.0, [UIScreen mainScreen].bounds.size.width, 200.0)];
+    }
+    
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.lineHeightMultiple = 28.0f;
+    paragraphStyle.maximumLineHeight = 28.0f;
+    paragraphStyle.minimumLineHeight = 28.0f;
+    
+    NSMutableParagraphStyle *medParagraphStyle = [[NSMutableParagraphStyle alloc] init];
+    medParagraphStyle.lineHeightMultiple = 50.0f;
+    medParagraphStyle.maximumLineHeight = 50.0f;
+    medParagraphStyle.minimumLineHeight = 50.0f;
+
+    NSDictionary *ats = @{
+                          NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Bold" size:50.0],
+                          NSParagraphStyleAttributeName : medParagraphStyle
+                          };
+    
+    NSDictionary *atsSmall = @{
+                               NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Bold" size:19.0],
+                               NSParagraphStyleAttributeName : paragraphStyle
+                               };
+    UILabel *currentLabel = [[UILabel alloc] initWithFrame:CGRectMake(10.0, 10.0, [[UIScreen mainScreen] bounds].size.width, 40.0)];
+    [currentLabel setTextColor:[UIColor whiteColor]];
+    [currentLabel setBackgroundColor:[UIColor clearColor]];
+    [currentLabel setNumberOfLines:1];
+    [currentLabel setAttributedText:[[NSAttributedString alloc] initWithString:[[NSString stringWithFormat:NSLocalizedString(@"TODAY WILL BE", nil)] uppercaseString] attributes:atsSmall]];
+    
+    UILabel *currentWeatherLabel = [[UILabel alloc] initWithFrame:CGRectMake([[UIScreen mainScreen] bounds].size.width - 100, 40.0, 90.0, 120.0)];
+    [currentWeatherLabel setTextColor:[UIColor whiteColor]];
+    [currentWeatherLabel setBackgroundColor:[UIColor clearColor]];
+    [currentWeatherLabel setNumberOfLines:0];
+    [currentWeatherLabel setAttributedText:[[NSAttributedString alloc] initWithString:[[NSString stringWithFormat:@"now:\t%.0fº\nhigh:\t%.0fº\nlow:\t%.0fº", [self.appDelegate.currentWeather currentTempF], [self.appDelegate.currentWeather highTempF], [self.appDelegate.currentWeather lowTempF]] lowercaseString] attributes:atsSmall]];
+    [currentWeatherLabel sizeToFit];
+    
+    UILabel *currentConditionsLabel = [[UILabel alloc] initWithFrame:CGRectMake(10.0, 40.0, 200, 120.0)];
+    [currentConditionsLabel setTextColor:[UIColor whiteColor]];
+    [currentConditionsLabel setBackgroundColor:[UIColor clearColor]];
+    [currentConditionsLabel setNumberOfLines:0];
+    [currentConditionsLabel setAttributedText:[[NSAttributedString alloc] initWithString:[[NSString stringWithFormat:@"%@", [self.appDelegate.currentWeather conditions]] lowercaseString] attributes:ats]];
+    [currentConditionsLabel sizeToFit];
+    
+    UILabel *weatherAPIAcknowledgment = [[UILabel alloc] initWithFrame:CGRectMake(25.0, [[UIScreen mainScreen] bounds].size.height - 142.0, [[UIScreen mainScreen] bounds].size.width - 50, 20.0)];
+    [weatherAPIAcknowledgment setTextColor:[UIColor whiteColor]];
+    [weatherAPIAcknowledgment setBackgroundColor:[UIColor clearColor]];
+    [weatherAPIAcknowledgment setNumberOfLines:0];
+    [weatherAPIAcknowledgment setTextAlignment:NSTextAlignmentCenter];
+    [weatherAPIAcknowledgment setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:13.0]];
+    [weatherAPIAcknowledgment setText:[[NSString stringWithFormat:@"%@", @"Weather Provided by World Weather Online"] lowercaseString]];
+    [weatherAPIAcknowledgment sizeToFit];
+    
+    UIImageView *currentConditionsImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:self.appDelegate.currentWeather.conditions]];
+    [currentConditionsImage setFrame:CGRectMake(30.0, 60.0, 96.0, 96.0)];
+    
+    if([self.appDelegate.currentWeather conditions] == nil) {
+    } else {
+        NSLog(@"This is the current weather");
+        [self.currentWeatherView addSubview:currentConditionsLabel];
+        [self.currentWeatherView addSubview:currentLabel];
+        [self.currentWeatherView addSubview:currentWeatherLabel];
+        [self.currentWeatherView addSubview:weatherAPIAcknowledgment];
+    }
 }
 
 - (void) setupCurrentTimeView
@@ -303,17 +385,28 @@
                                NSParagraphStyleAttributeName : paragraphStyle
                                };
     
-    UILabel *currentLabel = [[UILabel alloc] initWithFrame:CGRectMake(10.0, 10.0, [[UIScreen mainScreen] bounds].size.width, 30.0)];
+    UILabel *currentLabel = [[UILabel alloc] initWithFrame:CGRectMake(10.0, -20.0, [[UIScreen mainScreen] bounds].size.width, 45.0)];
     [currentLabel setTextColor:self.darkTextColor];
+    if(self.appDelegate.alarmIsPlaying) {
+        [currentLabel setTextColor:[UIColor whiteColor]];
+    } else {
+        [currentLabel setTextColor:self.darkTextColor];
+    }
+    
     [currentLabel setBackgroundColor:[UIColor clearColor]];
     [currentLabel setNumberOfLines:1];
     [currentLabel setAttributedText:[[NSAttributedString alloc] initWithString:[[NSString stringWithFormat:NSLocalizedString(@"CURRENT TIME IS", nil)] uppercaseString] attributes:atsSmall]];
     
     UILabel *currentTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(10.0, 30.0, [[UIScreen mainScreen] bounds].size.width, 120.0)];
     [currentTimeLabel setTextColor:self.darkTextColor];
+    if(self.appDelegate.alarmIsPlaying) {
+        [currentTimeLabel setTextColor:[UIColor whiteColor]];
+    } else {
+        [currentTimeLabel setTextColor:self.darkTextColor];
+    }
     [currentTimeLabel setBackgroundColor:[UIColor clearColor]];
     [currentTimeLabel setNumberOfLines:0];
-    
+
     NSString *currentTimeText = [formatter stringFromDate:[NSDate date]];
 
     currentTimeText = [currentTimeText stringByReplacingOccurrencesOfString:@":" withString:_timeSeparator];
@@ -328,6 +421,9 @@
         [lblCurrentAMPM setLineBreakMode:NSLineBreakByWordWrapping];
         [lblCurrentAMPM setText:[NSString stringWithFormat:@"%@", [currentAMPM lowercaseString]]];
         [lblCurrentAMPM setTextColor:self.darkTextColor];
+        if(self.appDelegate.alarmIsPlaying) {
+            [lblCurrentAMPM setTextColor:[UIColor whiteColor]];
+        }
         [lblCurrentAMPM setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:35.0]];
         [self.currentTimeView addSubview:lblCurrentAMPM];
         
@@ -391,18 +487,22 @@
         sleepTimeSeconds = 100;
     }
     
-    if ([UIScreen mainScreen].brightness <= 0.0) {
+    if (self.music.volume <= 0.0) {
         [fader invalidate];
         if ([self.appDelegate.alarmClock sleepTime] != 0) {
-            [[[AppDelegate rdioInstance] player] togglePause];
+            if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+                [[[AppDelegate rdioInstance] player] togglePause];
+            } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+                [self.music pause];
+            }
         }
         self.appDelegate.appBrightness = 0.0;
         [self.alarmTimeView setHidden:YES];
         [_chargingLabel removeFromSuperview];
-    } else {
-        float increment = (self.appDelegate.originalBrightness - 0.0)/(sleepTimeSeconds);
-        float newBrightness = [UIScreen mainScreen].brightness - increment;
-        [[UIScreen mainScreen] setBrightness:newBrightness];
+    } else { 
+        //float increment = (self.appDelegate.originalBrightness - 0.0)/(sleepTimeSeconds);
+        //float newBrightness = [UIScreen mainScreen].brightness - increment;
+        //[[UIScreen mainScreen] setBrightness:newBrightness];
         
         float incrementVolume = (self.appDelegate.originalVolume - 0.0)/(sleepTimeSeconds);
         float newVolume = self.music.volume - incrementVolume;
@@ -427,10 +527,10 @@
         [fader invalidate];
     } else {
         if ([UIScreen mainScreen].brightness < self.appDelegate.originalBrightness) {
-            float incrementScreen = (self.appDelegate.originalBrightness - 0.0)/100.0;
-            float newBrightness = [UIScreen mainScreen].brightness + incrementScreen;
-            [[UIScreen mainScreen] setBrightness:newBrightness];
-            self.appDelegate.appBrightness = newBrightness;
+            //float incrementScreen = (self.appDelegate.originalBrightness - 0.0)/100.0;
+            //float newBrightness = [UIScreen mainScreen].brightness + incrementScreen;
+            //[[UIScreen mainScreen] setBrightness:newBrightness];
+            //self.appDelegate.appBrightness = newBrightness;
         }
         
         if (self.music.volume < self.appDelegate.originalVolume) {
@@ -438,6 +538,7 @@
             float newVolume = self.music.volume + incrementVolume;
             if (self.appDelegate.appVolume < self.appDelegate.originalVolume) {
                 [self.music setVolume:newVolume];
+                
                 self.appDelegate.appVolume = newVolume;
             }
         }
@@ -452,13 +553,28 @@
     CGRect screenRect = [[UIScreen mainScreen] bounds];
     [sleepView removeFromSuperview];
     
-    if ([[AppDelegate rdioInstance] player].state == RDPlayerStatePaused) {
-        [[[AppDelegate rdioInstance] player] togglePause];
+    if([self.appDelegate.alarmClock isShuffle]) {
+        self.songsToPlay = [self.appDelegate.selectedPlaylist getShuffledTrackKeys];
     } else {
-        if ([self.appDelegate.alarmClock isShuffle]) {
-            self.appDelegate.selectedPlaylist.trackKeys = [self shuffle:self.appDelegate.selectedPlaylist.trackKeys];
+        self.songsToPlay = self.appDelegate.selectedPlaylist.trackKeys;
+    }
+    
+    if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+        [[[AppDelegate rdioInstance] player] playSources:self.songsToPlay];
+    } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+        NSMutableArray *songsForPlaying = [[NSMutableArray alloc] init];
+        for(int x = 0; x < self.songsToPlay.count; x++) {
+            MPMediaPropertyPredicate *predicate = [MPMediaPropertyPredicate predicateWithValue:[self.songsToPlay objectAtIndex:x] forProperty:MPMediaItemPropertyPersistentID];
+            
+            //finding songs for predicate
+            MPMediaQuery *mySongQuery = [[MPMediaQuery alloc] init];
+            [mySongQuery addFilterPredicate: predicate];
+            [songsForPlaying addObject:[[mySongQuery items] objectAtIndex:0]];
         }
-        [[[AppDelegate rdioInstance] player] playSources:self.appDelegate.selectedPlaylist.trackKeys];
+        
+        [self.music setQueueWithItemCollection:[[MPMediaItemCollection alloc] initWithItems:songsForPlaying]];
+
+        [self.music play];
     }
     
     wakeView = [[UIView alloc] initWithFrame:screenRect];
@@ -467,12 +583,14 @@
     UIPanGestureRecognizer *slideViewGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanGesture:)];
     //[wakeView addGestureRecognizer:slideViewGesture];
     
-    CGRect snoozeFrame = CGRectMake(40, 170, 240, 80);
-    UIButton *snoozeButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    CGRect snoozeFrame = CGRectMake(40, self.view.frame.size.height - 210, 240, 80);
+    UIButton *snoozeButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [snoozeButton setFrame:snoozeFrame];
     
     [snoozeButton setTitle:NSLocalizedString(@"SNOOZE", nil) forState: UIControlStateNormal];
-    [snoozeButton setTintColor:[UIColor colorWithRed:241.0/255 green:147.0/255 blue:20.0/255 alpha:1.0]];
+    //[snoozeButton setTintColor:[UIColor colorWithRed:241.0/255 green:147.0/255 blue:20.0/255 alpha:1.0]];
+    
+    [snoozeButton setTintColor:[UIColor whiteColor]];
     [snoozeButton setBackgroundColor:[UIColor clearColor]];
     [snoozeButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:58.0]];
     [snoozeButton.titleLabel setTextColor:[UIColor blackColor]];
@@ -491,8 +609,22 @@
     [offButton addTarget:self action:@selector(bounceView) forControlEvents:UIControlEventTouchUpInside];
     [offButton addGestureRecognizer:slideViewGesture];
     //[offButton addTarget:self action:@selector(slideViewUp) forControlEvents:UIControlEventTouchDragInside];
-    [wakeView addSubview:offButton]; 
+    [wakeView addSubview:offButton];
+    [self setupCurrentTimeView];
+    //[self.appDelegate.currentWeather addObserver:self forKeyPath:@"isUpdated" options:NSKeyValueObservingOptionNew context:nil];
+    //[self.appDelegate.currentWeather updateWeather];
+    //[self setupCurrentWeatherView];
+    [self.currentTimeView setHidden:NO];
+    [wakeView addSubview:self.currentTimeView];
+    //[wakeView addSubview:self.currentWeatherView];
     [self.view addSubview:wakeView];
+}
+
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    //if([self.appDelegate.currentWeather conditions] != nil) {
+    //    [self setupCurrentWeatherView];
+    //}
 }
 
 - (void) bounceView
@@ -513,7 +645,7 @@
             [sleepView removeFromSuperview];
             [self cancelAlarm];
             [self setAccessibilityLabel:NSLocalizedString(@"ALARM CANCELED", nil)];
-                    } else {
+        } else {
             [wakeView removeFromSuperview];
             [self stopAlarm];
             [self setAccessibilityLabel:NSLocalizedString(@"ALARM STOPPED", nil)]; 
@@ -521,69 +653,45 @@
     }
 }
 
-- (NSMutableArray *) shuffle: (NSMutableArray *) list
-{
-    NSMutableArray *newList = [[NSMutableArray alloc] initWithCapacity:[list count]];
-    int x = 0;
-    int oldListCount = list.count;
-    
-    while (oldListCount != newList.count) {         
-        int listIndex = (arc4random() % list.count);
-        NSString *testObject = [list objectAtIndex:listIndex];
-
-        if ([[_canBeStreamed objectAtIndex:listIndex] isEqualToString:@"YES"]) {
-            [newList  addObject:testObject];
-            [list removeObjectAtIndex:listIndex];
-            [_canBeStreamed removeObjectAtIndex:listIndex];
-            
-            x++;
-        } else {
-            //NSLog(@"list item not added: %@", [list objectAtIndex:listIndex]);
-            [list removeObjectAtIndex:listIndex];
-            [_canBeStreamed removeObjectAtIndex:listIndex];
-            oldListCount--;
-        }
-    }
-    
-    return newList;
-}
-
-- (NSMutableArray *) getEnough: (NSMutableArray *) list
-{
-    NSMutableArray *newList = [[NSMutableArray alloc] initWithCapacity:[list count]];
-    
-    while (newList.count < 120) {
-        [newList addObjectsFromArray:list];
-    }
-    
-    return newList;
-}
-
 - (void) startSnooze {
-    //double currentPosition = [[AppDelegate rdioInstance] player].position; 
-    [[[AppDelegate rdioInstance] player] togglePause];
+    if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+        [[[AppDelegate rdioInstance] player] togglePause];
+    } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+        [self.music pause];
+    }
+    
+    [self setIsSnoozing:YES];
     
     int snoozeTimeSeconds = [self.appDelegate.alarmClock snoozeTime] * 60;
     [self.appDelegate.alarmClock setAlarmTime:[NSDate dateWithTimeIntervalSinceNow:snoozeTimeSeconds] save:NO];
     
     t = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(tick) userInfo:nil repeats:YES];
     [wakeView removeFromSuperview];
+    self.appDelegate.alarmIsPlaying = NO;
+
     [self displaySleepScreen];
 }
 
 - (void) stopAlarm {
-    MPMusicPlayerController *music = [[MPMusicPlayerController alloc] init];
     self.appDelegate.alarmIsSet = NO;
     self.appDelegate.alarmIsPlaying = NO;
     
     [[UIApplication sharedApplication] setIdleTimerDisabled:false];
-    [music setVolume:self.appDelegate.originalVolume];
+    [self.music setVolume:self.appDelegate.originalVolume];
+
     [[UIScreen mainScreen] setBrightness:self.appDelegate.originalBrightness];
     self.navigationController.navigationBarHidden = YES;
 
-    [[[AppDelegate rdioInstance] player] stop];
+    if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+        [[[AppDelegate rdioInstance] player] stop];
+    } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+        [self.music stop];
+    }
     //[self determineStreamableSongs];
-    [[UIApplication sharedApplication] setIdleTimerDisabled:true];
+    //[[UIApplication sharedApplication] setIdleTimerDisabled:true];
+    
+    [self setIsSnoozing:NO];
+    [self.appDelegate.alarmClock refreshAlarmTime];
     //[wakeView removeFromSuperview];
     //[self.view addSubview:setAlarmView];
 }
@@ -606,9 +714,6 @@
 }
 */
 
-- (void) logoutClicked {
-    [self.appDelegate.rdioUser logout];
-}
 
 - (void) changeBatteryLabel
 {
@@ -633,9 +738,19 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.clockTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
 
-    self.lightTextColor = [UIColor colorWithRed:(122.0/255.0) green:(94.0/255.0) blue:(148.0/255.0) alpha:(1.0)];
-    self.darkTextColor = [UIColor colorWithRed:(23.0/255.0) green:(16.0/255.0) blue:(30.0/255.0) alpha:(1.0)];
+    if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+        self.lightTextColor = [UIColor colorWithRed:(122.0/255.0) green:(94.0/255.0) blue:(148.0/255.0) alpha:(1.0)];
+        self.darkTextColor = [UIColor colorWithRed:(23.0/255.0) green:(16.0/255.0) blue:(30.0/255.0) alpha:(1.0)];
+    } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+        self.lightTextColor = [UIColor colorWithRed:(17.0/255.0) green:(96.0/255.0) blue:(118.0/255.0) alpha:(1.0)];
+        self.darkTextColor = [UIColor colorWithRed:(4.0/255.0) green:(26.0/255.0) blue:(32.0/255.0) alpha:(1.0)];
+    } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"org.Brunow.Wake-Up-to-the-Cloud"]) {
+        self.lightTextColor = [UIColor colorWithRed:(17.0/255.0) green:(96.0/255.0) blue:(118.0/255.0) alpha:(1.0)];
+        self.darkTextColor = [UIColor colorWithRed:(4.0/255.0) green:(26.0/255.0) blue:(32.0/255.0) alpha:(1.0)];
+    }
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.lineHeightMultiple = 50.0f;
     paragraphStyle.maximumLineHeight = 50.0;
@@ -645,17 +760,8 @@
                           NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Bold" size:50.0],
                           NSParagraphStyleAttributeName : paragraphStyle
                           };
-    NSDictionary *atsBig = @{
-                             NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Bold" size:92.0],
-                             NSParagraphStyleAttributeName : paragraphStyle
-                             };
-    
-    NSDictionary *atsSmall = @{
-                               NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Bold" size:19.0],
-                               NSParagraphStyleAttributeName : paragraphStyle
-                               };
     self.music = [[MPMusicPlayerController alloc] init];
-
+    
     [self.navigationController setNavigationBarHidden:YES];
     self.appDelegate = [[UIApplication sharedApplication] delegate];
 
@@ -691,19 +797,32 @@
     
     setAlarmView = [[UIView alloc] initWithFrame:fullScreen];
     
-    if([[UIScreen mainScreen] bounds].size.height > 480) {
-        [setAlarmView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Default-568h"]]];
-    } else {
-        [setAlarmView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Default"]]];
+    if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+        if([[UIScreen mainScreen] bounds].size.height > 480) {
+            [setAlarmView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Default-568h"]]];
+        } else {
+            [setAlarmView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Default"]]];
+        }
+    } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+        if([[UIScreen mainScreen] bounds].size.height > 480) {
+            [setAlarmView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Defaultblue-568h"]]];
+        } else {
+            [setAlarmView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Defaultblue"]]];
+        }
     }
     
+    
     CGRect setAlarmFrame = CGRectMake((self.view.frame.size.width - 240) / 2, self.view.frame.size.height - 150, 240, 50);
-    setAlarmButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    setAlarmButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [setAlarmButton setFrame:setAlarmFrame];
     
-    [setAlarmButton setBackgroundImage:[UIImage imageNamed:@"btn-setalarm"] forState:UIControlStateNormal];
+    if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+        [setAlarmButton setBackgroundImage:[UIImage imageNamed:@"btn-setalarm"] forState:UIControlStateNormal];
+    } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+        [setAlarmButton setBackgroundImage:[UIImage imageNamed:@"btn-setalarmblue"] forState:UIControlStateNormal];
+        [setAlarmButton setBackgroundImage:[UIImage imageNamed:@"btn-setalarm-pressedblue"] forState:UIControlStateHighlighted];
+    }
     [setAlarmButton setTitle:NSLocalizedString(@"SET ALARM", nil) forState: UIControlStateNormal];
-    [setAlarmButton setBackgroundColor:[UIColor grayColor]];
     [setAlarmButton.titleLabel setAdjustsFontSizeToFitWidth:TRUE];
     [setAlarmButton addTarget:self action:@selector(setAlarmClicked) forControlEvents:UIControlEventTouchUpInside];
     [setAlarmButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:35.0]];
@@ -726,11 +845,11 @@
         [toolbarAutoAMPM setText:[NSLocalizedString(@"AUTOSET AM PM", nil) lowercaseString]];
     }
     [toolbarAutoAMPM setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:15]];
-    [toolbarAutoAMPM setTextColor:self.lightTextColor];
+    [toolbarAutoAMPM setTextColor:self.darkTextColor];
     [toolbarAutoAMPM setBackgroundColor:[UIColor clearColor]];
 
     
-    CGRect timeTextFrame = CGRectMake(10, 5, self.view.frame.size.width, 92);
+    CGRect timeTextFrame = CGRectMake(10, 10, self.view.frame.size.width, 92);
     UIImage *timeTextBackground = [UIImage imageNamed:@"timeSetRoundedRect"];
     UIImageView *timeTextBackgroundView = [[UIImageView alloc] initWithImage:timeTextBackground];
     [timeTextBackgroundView setFrame:timeTextFrame];
@@ -739,7 +858,7 @@
     UIToolbar* numberToolbar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, 320, 50)];
     
     UIBarButtonItem *doneButton = [[UIBarButtonItem alloc]initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(doneWithNumberPad)];
-    [doneButton setTintColor:self.darkTextColor];
+    [doneButton setTintColor:self.lightTextColor];
     
     numberToolbar.barStyle = UIBarStyleBlackTranslucent;
     numberToolbar.items = [NSArray arrayWithObjects:
@@ -749,8 +868,8 @@
     [numberToolbar sizeToFit];
     
     
-    self.timeTextField = [[DHBTextField alloc] initWithFrame:timeTextFrame];
-    [self.timeTextField.cursor setBackgroundColor:self.lightTextColor];
+    self.timeTextField = [[UITextField alloc] initWithFrame:timeTextFrame];
+    [self.timeTextField setTintColor:self.lightTextColor];
     [self.timeTextField setDelegate:self];
     [self.timeTextField setBackgroundColor:[UIColor clearColor]];
     [self.timeTextField setTextAlignment:NSTextAlignmentLeft];
@@ -763,7 +882,7 @@
     [self.timeTextField addTarget:self action:@selector(textFieldValueChange:) forControlEvents:UIControlEventEditingChanged];
     //[timeTextField setAdjustsFontSizeToFitWidth:YES];
     self.timeTextField.inputAccessoryView = numberToolbar;
-    [self.timeTextField setKeyboardAppearance:UIKeyboardAppearanceAlert];
+    [self.timeTextField setKeyboardAppearance:UIKeyboardAppearanceDark];
     NSString *timeTextString = [NSString stringWithFormat:@"%@",[self.appDelegate.alarmClock getAlarmTimeString] ];
     NSLog(@"Time text string: %@", timeTextString);
     if (timeTextString == nil) {
@@ -793,6 +912,7 @@
     [setAlarmView addSubview:self.lblWakeUpTo];
 
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] init];
+
     self.lblPlaylist = [[UILabel alloc] initWithFrame:CGRectMake(10, 154.0, 300, 200.0)];
     if (self.view.frame.size.height > 480) {
         [self.lblPlaylist setNumberOfLines:4];
@@ -800,7 +920,7 @@
         [self.lblPlaylist setNumberOfLines:3];
     }
     //if (self.appDelegate.loggedIn) {
-        [self.lblPlaylist setAttributedText:[[NSAttributedString alloc] initWithString:[[NSString stringWithFormat:@"\n\n\n\n"] lowercaseString] attributes:ats]];
+        [self.lblPlaylist setAttributedText:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@", [NSLocalizedString(@"LOADING", nil) lowercaseString]] attributes:ats]];
         CGRect frame = CGRectMake(10, 154.0, 300.0, 200.0);
         [self.lblPlaylist setFrame:frame];
         [self.lblPlaylist sizeToFit];
@@ -859,6 +979,9 @@
     UIPanGestureRecognizer *slideViewGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleSettingsPanGesture:)];
     
     UIImage *settingsButtonImage = [UIImage imageNamed:@"icon-settings"];
+    if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+        settingsButtonImage = [UIImage imageNamed:@"icon-settingsblue"];
+    }
     UIButton *btnSettings = [UIButton buttonWithType:UIButtonTypeCustom];
     [btnSettings setImage:settingsButtonImage forState:UIControlStateNormal];
     [btnSettings setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"CHANGE SETTINGS", nil)]];
@@ -874,7 +997,17 @@
     
     [self setAMPMLabel];
     
-    if ([self.appDelegate.alarmClock isAutoStart] && ![timeTextString isEqualToString:@""]) {
+    NSDictionary *atsBig = @{
+                             NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Bold" size:92.0],
+                             NSParagraphStyleAttributeName : paragraphStyle
+                             };
+    
+    NSDictionary *atsSmall = @{
+                               NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Bold" size:19.0],
+                               NSParagraphStyleAttributeName : paragraphStyle
+                               };
+    
+    if ([self.appDelegate.alarmClock isAutoStart] && self.appDelegate.alarmClock.alarmTime != nil && self.appDelegate.selectedPlaylist != nil && self.appDelegate.selectedPlaylist.playlistName != nil && [self.appDelegate.rdioUser isLoggedIn]) {
         //[self getAlarmTime];
         NSString *alarmTimeText;
         NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
@@ -887,28 +1020,37 @@
         alarmTimeText = [alarmTimeText stringByReplacingOccurrencesOfString:@":" withString:_timeSeparator];
         self.navigationController.navigationBarHidden = YES;
         autoStartAlarmView = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-        if([[UIScreen mainScreen] bounds].size.height > 480) {
-            [autoStartAlarmView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Default-568h"]]];
-        } else {
-            [autoStartAlarmView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Default"]]];
+        
+        if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+            if([[UIScreen mainScreen] bounds].size.height > 480) {
+                [autoStartAlarmView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Default-568h"]]];
+            } else {
+                [autoStartAlarmView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Default"]]];
+            }
+        } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
+            if([[UIScreen mainScreen] bounds].size.height > 480) {
+                [autoStartAlarmView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Defaultblue-568h"]]];
+            } else {
+                [autoStartAlarmView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Defaultblue"]]];
+            }
         }
         
         UILabel *autoStartAlarmViewLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, -20, [[UIScreen mainScreen] bounds].size.width, 45)];
         [autoStartAlarmViewLabel setBackgroundColor:[UIColor clearColor]];
         [autoStartAlarmViewLabel setLineBreakMode:NSLineBreakByWordWrapping];
-
+        
         [autoStartAlarmViewLabel setAttributedText:[[NSAttributedString alloc] initWithString:[[NSString stringWithFormat:NSLocalizedString(@"AUTO ALARM BEING SET", nil)] uppercaseString] attributes:atsSmall]];
         [autoStartAlarmViewLabel setNumberOfLines:0];
         [autoStartAlarmViewLabel setTextColor:self.darkTextColor];
-        [autoStartAlarmView addSubview:autoStartAlarmViewLabel];        
+        [autoStartAlarmView addSubview:autoStartAlarmViewLabel];
         
-        UILabel *lblAutoSetPlaylist = [[UILabel alloc] initWithFrame:CGRectMake(10, 131,[[UIScreen mainScreen] bounds].size.width, 40)];
+        UILabel *lblAutoSetPlaylist = [[UILabel alloc] initWithFrame:CGRectMake(10, 106,[[UIScreen mainScreen] bounds].size.width, 45)];
         [lblAutoSetPlaylist setAttributedText:[[NSAttributedString alloc] initWithString:[NSLocalizedString(@"AUTO ALARM PLAYLIST", nil) uppercaseString] attributes:atsSmall]];
         [lblAutoSetPlaylist setBackgroundColor:[UIColor clearColor]];
         [lblAutoSetPlaylist setTextColor:self.darkTextColor];
         
         [autoStartAlarmView addSubview:lblAutoSetPlaylist];
-
+        
         UILabel *alarmTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(10.0, 30.0, [[UIScreen mainScreen] bounds].size.width, 120.0)];
         [alarmTimeLabel setTextColor:self.darkTextColor];
         [alarmTimeLabel setBackgroundColor:[UIColor clearColor]];
@@ -935,25 +1077,25 @@
         }
         [alarmTimeLabel setAttributedText:[[NSAttributedString alloc] initWithString:[[NSString stringWithFormat:@"%@", alarmTimeText] lowercaseString] attributes:atsBig]];
         
-        UILabel *lblAutoSetPlaylistName = [[UILabel alloc] initWithFrame:CGRectMake(10, 154.0, [[UIScreen mainScreen] bounds].size.width - 20, 200.0)];
-        [lblAutoSetPlaylistName setAttributedText:[[NSAttributedString alloc] initWithString:[[NSString stringWithFormat:@"%@", [self.appDelegate.selectedPlaylist playlistName]] lowercaseString] attributes:ats]];
-        [lblAutoSetPlaylistName setTextColor:self.lightTextColor];
-        [lblAutoSetPlaylistName setBackgroundColor:[UIColor clearColor]];
+        self.lblAutoSetPlaylistName = [[UILabel alloc] initWithFrame:CGRectMake(10, 154.0, [[UIScreen mainScreen] bounds].size.width - 20, 200.0)];
+        [self.lblAutoSetPlaylistName setAttributedText:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\n\n\n", [NSString stringWithFormat:@"%@", [NSLocalizedString(@"LOADING", nil) lowercaseString]]] attributes:ats]];
+        [self.lblAutoSetPlaylistName setTextColor:self.lightTextColor];
+        [self.lblAutoSetPlaylistName setBackgroundColor:[UIColor clearColor]];
         if (self.view.frame.size.height > 480) {
-            [lblAutoSetPlaylistName setNumberOfLines:4];
+            [self.lblAutoSetPlaylistName setNumberOfLines:4];
         } else {
-            [lblAutoSetPlaylistName setNumberOfLines:3];
+            [self.lblAutoSetPlaylistName setNumberOfLines:3];
         }
-        [lblAutoSetPlaylistName sizeToFit];
-        [lblAutoSetPlaylistName setContentMode:UIViewContentModeTop];
-        [autoStartAlarmView addSubview:lblAutoSetPlaylistName];
+        [self.lblAutoSetPlaylistName sizeToFit];
+        [self.lblAutoSetPlaylistName setContentMode:UIViewContentModeTop];
+        [autoStartAlarmView addSubview:self.lblAutoSetPlaylistName];
         [autoStartAlarmView addSubview:alarmTimeLabel];
-
+        
         UILabel *lblTapToCancel = [[UILabel alloc] initWithFrame:CGRectMake(10, [[UIScreen mainScreen] bounds].size.height - 220, [[UIScreen mainScreen] bounds].size.width - 20, 200)];
         [lblTapToCancel setText:[[NSString stringWithFormat:@"tap to cancel"] lowercaseString]];
         [lblTapToCancel setTextColor:self.darkTextColor];
         [lblTapToCancel setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:35.0]];
-
+        
         [lblTapToCancel setBackgroundColor:[UIColor clearColor]];
         [lblTapToCancel setNumberOfLines:0];
         
@@ -962,19 +1104,18 @@
         [self.view addSubview:autoStartAlarmView];
         [delay invalidate];
         delay = [NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(delayAutoStart) userInfo:nil repeats:NO];
-
+        
     }
     
     [self getAlarmTime];
     [self setAMPMLabel];
+
 }
 
 -(void) hideVolumeView
 {
-    NSLog(@"Here");
     self.hideVolume = [[MPVolumeView alloc] initWithFrame:CGRectMake(-100, 0, 10, 0)];
     [self.hideVolume sizeToFit];
-    //[self.view addSubview:self.hideVolume];
 }
 
 -(void) doneWithNumberPad
@@ -985,6 +1126,9 @@
 -(void) showPlaylists
 {
     self.listsViewController = [[ListsViewController alloc] init];
+    [self.listsViewController setLightTextColor:self.lightTextColor];
+    [self.listsViewController setDarkTextColor:self.darkTextColor];
+    [self.listsViewController setPlaylistType:@"Alarm"];
     
     [self.navigationController pushViewController:self.listsViewController animated:YES];
 }
@@ -1068,31 +1212,46 @@
                           NSParagraphStyleAttributeName : paragraphStyle
                           };
     
-    if([self.appDelegate.selectedPlaylist playlistName]) {
+    if(self.appDelegate.selectedPlaylist != nil && self.appDelegate.selectedPlaylist.playlistName != nil) {
         [self.lblPlaylist setAttributedText:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\n\n\n", [[self.appDelegate.selectedPlaylist playlistName] lowercaseString]] attributes:ats]];
+        [self.lblAutoSetPlaylistName setAttributedText:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\n\n\n", [[self.appDelegate.selectedPlaylist playlistName] lowercaseString]] attributes:ats]];
     } else {
         [self.lblPlaylist setAttributedText:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\n\n\n", [NSLocalizedString(@"CHOOSE PLAYLIST", nil) lowercaseString]] attributes:ats]];
+        [self.lblAutoSetPlaylistName setAttributedText:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\n\n\n", [NSLocalizedString(@"CHOOSE PLAYLIST", nil) lowercaseString]] attributes:ats]];
     }
+    
+    
     
     CGRect frame = CGRectMake(10, 154.0, 300.0, 200.0);
     [self.lblPlaylist setFrame:frame];
     [self.lblPlaylist sizeToFit];
     frame.size.height = self.lblPlaylist.frame.size.height;
     [self.lblPlaylist setFrame:frame];
+        
+    [self.lblAutoSetPlaylistName setFrame:frame];
+    [self.lblAutoSetPlaylistName sizeToFit];
+    frame.size.height = self.lblAutoSetPlaylistName.frame.size.height;
+    [self.lblAutoSetPlaylistName setFrame:frame];
     
     [self testToEnableAlarmButton];
+
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     
-    if(self.appDelegate.selectedPlaylist.playlistName == nil) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadPlaylistName) name:@"Playlist Found" object:nil];
-    } else {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadPlaylistName) name:@"Playlist Found" object:nil];
+    
+    if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
+        if(self.appDelegate.selectedPlaylist != nil) {
+            [self loadPlaylistName];
+        }
+    } else if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Wake-Up-to-Music"]) {
         [self loadPlaylistName];
     }
     
+    [self setIsSnoozing:NO];
 }
 
 - (void) testToEnableAlarmButton
@@ -1294,6 +1453,17 @@
     _lastLength = textField.text.length;
 }
 
+- (void) updateTime
+{
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    
+    [formatter setDateFormat:@"ss"];
+    
+    if ([[formatter stringFromDate:[NSDate date]] isEqualToString:@"00"]) {
+        [self setupCurrentTimeView];
+    }
+}
+
 - (void) tick
 {
     NSLog(@"current time: %@\nalarm time: %@", [NSDate date], [self.appDelegate.alarmClock alarmTime]);
@@ -1356,6 +1526,9 @@
     return NO;
 }
 
-
+- (void)rdioRequest:(RDPlayer *)request didFailWithError:(NSError *)error andSourceKeys:keys
+{
+    NSLog(@"Hi! I am the RDPlayer error handler :)");
+}
 
 @end
