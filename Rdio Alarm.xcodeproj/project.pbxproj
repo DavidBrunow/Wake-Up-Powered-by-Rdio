@@ -214,7 +214,6 @@
 		23D93A4C18C401D9006240C9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A0F0E114BFB57A0055390F /* main.m */; };
 		23D93A4D18C401EB006240C9 /* Wake Up to the Cloud-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 23D93A0F18C3FD9F006240C9 /* Wake Up to the Cloud-Info.plist */; };
 		23D93A4E18C40258006240C9 /* Settingsv4.plist in Resources */ = {isa = PBXBuildFile; fileRef = 23A625C11710F5A9004EBA42 /* Settingsv4.plist */; };
-		23DD667818D4E04B00919820 /* AVAudioPlayerCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 23DD667718D4E04B00919820 /* AVAudioPlayerCategory.m */; };
 		23F0E3BE172E616900C62288 /* btn-setalarm-pressedblue.png in Resources */ = {isa = PBXBuildFile; fileRef = 23F0E3AD172E616900C62288 /* btn-setalarm-pressedblue.png */; };
 		23F0E3BF172E616900C62288 /* btn-setalarm-pressedblue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 23F0E3AE172E616900C62288 /* btn-setalarm-pressedblue@2x.png */; };
 		23F0E3C0172E616900C62288 /* btn-setalarmblue.png in Resources */ = {isa = PBXBuildFile; fileRef = 23F0E3AF172E616900C62288 /* btn-setalarmblue.png */; };
@@ -421,8 +420,6 @@
 		23D93A2818C3FD9F006240C9 /* Wake Up to the CloudTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Wake Up to the CloudTests-Info.plist"; sourceTree = "<group>"; };
 		23D93A2A18C3FD9F006240C9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		23D93A2C18C3FD9F006240C9 /* Wake_Up_to_the_CloudTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Wake_Up_to_the_CloudTests.m; sourceTree = "<group>"; };
-		23DD667618D4E04B00919820 /* AVAudioPlayer+PGFade.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AVAudioPlayer+PGFade.h"; sourceTree = "<group>"; };
-		23DD667718D4E04B00919820 /* AVAudioPlayerCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVAudioPlayerCategory.m; sourceTree = "<group>"; };
 		23F0E3AD172E616900C62288 /* btn-setalarm-pressedblue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "btn-setalarm-pressedblue.png"; path = "Rdio Alarm Clock/Assets/Blue/btn-setalarm-pressedblue.png"; sourceTree = SOURCE_ROOT; };
 		23F0E3AE172E616900C62288 /* btn-setalarm-pressedblue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "btn-setalarm-pressedblue@2x.png"; path = "Rdio Alarm Clock/Assets/Blue/btn-setalarm-pressedblue@2x.png"; sourceTree = SOURCE_ROOT; };
 		23F0E3AF172E616900C62288 /* btn-setalarmblue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "btn-setalarmblue.png"; path = "Rdio Alarm Clock/Assets/Blue/btn-setalarmblue.png"; sourceTree = SOURCE_ROOT; };
@@ -549,8 +546,6 @@
 				239A97DF17288AFC00B8CBBA /* DHBForecast.m */,
 				239A97E1172C280B00B8CBBA /* DHBGeoLocation.h */,
 				239A97E2172C280B00B8CBBA /* DHBGeoLocation.m */,
-				23DD667618D4E04B00919820 /* AVAudioPlayer+PGFade.h */,
-				23DD667718D4E04B00919820 /* AVAudioPlayerCategory.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1098,7 +1093,6 @@
 				1128DA9D14F1E3D300230CCB /* Reachability.m in Sources */,
 				11E2331214F2DBBA00E2159F /* SimpleKeychain.m in Sources */,
 				115302FB151B69EB00B75800 /* AlarmNavController.m in Sources */,
-				23DD667818D4E04B00919820 /* AVAudioPlayerCategory.m in Sources */,
 				11DD79891524B0CE0076D6CB /* ListsViewController.m in Sources */,
 				234A619116F5146100E9EC4A /* DHBAlarmClock.m in Sources */,
 				234A619216F5146100E9EC4A /* DHBPlaylist.m in Sources */,
