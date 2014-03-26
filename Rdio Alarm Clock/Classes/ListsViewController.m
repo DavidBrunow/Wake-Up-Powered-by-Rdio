@@ -15,6 +15,16 @@
 
 @implementation ListsViewController
 
+-(void)viewDidAppear:(BOOL)animated
+{
+    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    
+    [super viewDidAppear:animated];
+    
+    [appDelegate.musicLibrary getMediaPlaylists];
+    
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -74,14 +84,14 @@
     NSString *cellLabel = @"";
 
     if([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.DavidBrunow.Rdio-Alarm"]) {
-        if (indexPath.section == 0) {
+        if (indexPath.section == 0 && [appDelegate.musicLibrary getPlaylistsInCategory:@"owned"].count > 0) {
             cellLabel = [[[appDelegate.musicLibrary getPlaylistsInCategory:@"owned"] objectAtIndex:indexPath.row] playlistName];
 
             //cellLabel = [[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row + [[self.numberOfRows objectAtIndex:0] integerValue]] playlistName];
-        } else if (indexPath.section == 1) {
+        } else if (indexPath.section == 1 && [appDelegate.musicLibrary getPlaylistsInCategory:@"subscribed"].count > 0) {
             cellLabel = [[[appDelegate.musicLibrary getPlaylistsInCategory:@"subscribed"] objectAtIndex:indexPath.row] playlistName];
             //cellLabel = [[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row + [[self.numberOfRows objectAtIndex:0] integerValue] + [[self.numberOfRows objectAtIndex:1] integerValue]] playlistName];
-        } else {
+        } else if([appDelegate.musicLibrary getPlaylistsInCategory:@"collab"].count > 0) {
             cellLabel = [[[appDelegate.musicLibrary getPlaylistsInCategory:@"collab"] objectAtIndex:indexPath.row] playlistName];
             //cellLabel = [[appDelegate.musicLibrary.playlists objectAtIndex:indexPath.row] playlistName];
         }
@@ -348,7 +358,6 @@
             }
         }
         
-        NSLog(@"section selected: %d, row selected: %d", indexPath.section, indexPath.row);
         [appDelegate.alarmClock setPlaylistName:[tableView cellForRowAtIndexPath:indexPath].textLabel.text];
     }
         

@@ -17,5 +17,6 @@
 
 - (DHBPlaylist *) getPlaylistFromKey:(id) key;
 - (NSArray *) getPlaylistsInCategory: (NSString *)category;
+- (void) getMediaPlaylists;
 
 @end

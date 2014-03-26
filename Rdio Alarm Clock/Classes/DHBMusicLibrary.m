@@ -33,6 +33,7 @@
 
 - (void) getMediaPlaylists
 {
+    self.playlists = [[NSMutableArray alloc] init];
     AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
 
     MPMediaQuery *playlistQuery = [[MPMediaQuery alloc] init];
@@ -59,12 +60,8 @@
         NSMutableArray *trackKeys = [[NSMutableArray alloc] init];
         
         [playlistItems enumerateObjectsUsingBlock:^(MPMediaItem *song, NSUInteger idx, BOOL *stop) {
-            NSString *songTitle = [song valueForProperty: MPMediaItemPropertyTitle];
             NSString *trackKey = [song valueForProperty:MPMediaItemPropertyPersistentID];
             [trackKeys addObject:trackKey];
-            NSInteger mediaValue = [[song valueForProperty:MPMediaItemPropertyMediaType] integerValue];
-            if (mediaValue != 1)
-                NSLog(@"title: %@ - media type value: %d", songTitle, mediaValue);
         }];
         
         [playlist setTrackKeys:trackKeys];
@@ -117,7 +114,6 @@
         //For each type of playlist in data ([0] = collab; [1] = owned; [2] = subscribed)
         for(NSString *key in [data allKeys]) {
             //[self.playlists addObject:[data objectForKey:key]];
-            //NSLog(@"playlist added: %@", [data objectForKey:key]);
             for (int x = 0; x < [[data objectForKey:key] count]; x++) {
                 [playlist setPlaylistCategory:key];
                 [playlist setPlaylistName:[[[data objectForKey:key] objectAtIndex:x] objectForKey:@"name"]];
