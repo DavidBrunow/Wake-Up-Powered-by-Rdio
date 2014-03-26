@@ -105,7 +105,6 @@
         self.mustBeInApp = [[UILocalNotification alloc] init];
         
         self.mustBeInApp.fireDate = [NSDate dateWithTimeIntervalSinceNow:5];
-        NSLog(@"alarm will go off: %@", self.mustBeInApp.fireDate);
         self.mustBeInApp.timeZone = [NSTimeZone systemTimeZone];
         
         self.mustBeInApp.alertBody = [NSString stringWithFormat:NSLocalizedString(@"APP MUST BE OPEN REMINDER", nil)];
@@ -117,7 +116,6 @@
         self.backupAlarm = [[UILocalNotification alloc] init];
         
         self.backupAlarm.fireDate = [self.alarmClock alarmTime];
-        NSLog(@"alarm will go off: %@", self.backupAlarm.fireDate);
         self.backupAlarm.timeZone = [NSTimeZone systemTimeZone];
         
         self.backupAlarm.alertBody = @"Good morning, time to wake up.";
@@ -192,6 +190,7 @@
     if (self.alarmIsSet || self.alarmIsPlaying) {
         [application setIdleTimerDisabled:YES];
     }
+    
     /*
      Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
      */
@@ -227,21 +226,18 @@
         {
             //UIAlertView * alert  = [[UIAlertView alloc] initWithTitle:@"No Internet Connection" message:@"Internet is needed for this app. Enable internet, or try again later." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil ];
             //[alert show];
-            NSLog(@"The internet is down.");
             
             break;
             
         }
         case ReachableViaWiFi:
         {               
-            NSLog(@"The internet is working via WIFI.");
             
             break;
             
         }
         case ReachableViaWWAN:
         {
-            NSLog(@"The internet is working via WWAN.");
             
             break;
             
@@ -254,7 +250,6 @@
     {
         case NotReachable:
         {
-            NSLog(@"A gateway to the host server is down.");
             UIAlertView * alert  = [[UIAlertView alloc] initWithTitle:@"Website Unreachable" message:[NSString stringWithFormat:NSLocalizedString(@"CANNOT CONNECT TO RDIO", nil)] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil ];
             [alert show];
             break;
@@ -262,14 +257,12 @@
         }
         case ReachableViaWiFi:
         {
-            NSLog(@"A gateway to the host server is working via WIFI.");
             
             break;
             
         }
         case ReachableViaWWAN:
         {
-            NSLog(@"A gateway to the host server is working via WWAN.");
             
             break;
             

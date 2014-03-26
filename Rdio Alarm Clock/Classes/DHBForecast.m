@@ -38,7 +38,7 @@
     NSString *latLon = [NSString stringWithFormat:@"%f,%f", self.currentLocation.latitude, self.currentLocation.longitude];
 
     NSString *weatherURLString = [NSString stringWithFormat:@"http://api.worldweatheronline.com/free/v1/weather.ashx?key=%@&q=%@&num_of_days=1&format=json&extra=localobstime", WEATHER_API_KEY, latLon];
-    //NSLog(@"Weather URL String:%@", weatherURLString);
+
     NSURLRequest *weatherURLRequest  = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:weatherURLString]];
     //[self.webView loadRequest:storeDataURLRequest];
     NSURLConnection *weatherDataURLConnection = [[NSURLConnection alloc] initWithRequest:weatherURLRequest delegate:self];
@@ -59,7 +59,6 @@
 {
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     NSString *weatherDataString = [[NSString alloc] initWithData:self.weatherData encoding:NSUTF8StringEncoding];
-    NSLog(@"Data String: '%@'", weatherDataString);
     
     
     NSMutableDictionary *weatherDictionary = [NSJSONSerialization JSONObjectWithData:self.weatherData options:0 error:nil];
@@ -83,8 +82,6 @@
     [self setConditions:[[[todaysConditions valueForKey:@"value"] objectAtIndex:0] objectAtIndex:0]];
     
     if(self.conditions != nil) {
-        NSLog(@"Conditions: %@, current temperature: %f", self.conditions, self.currentTempF);
-        NSLog(@"Fetched the current weather");
         [self setIsUpdated:YES];
     } else if([weatherDataString rangeOfString:@"data"].location == NSNotFound) {
         [self.updateTimer invalidate];

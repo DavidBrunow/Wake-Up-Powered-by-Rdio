@@ -70,7 +70,6 @@
     else
         dvalue = roundf(svalue);
     sleepTimeValue = dvalue * 10;
-    //NSLog(@"%f", sleepTimeValue);
     //if ((int)_sliderSleep.value == 1) {
     
     //
@@ -379,7 +378,7 @@
     [self addSubview:sleepBubble];
     
     self.lblSleepAmount = [[UILabel alloc] initWithFrame:CGRectMake((self.frame.size.width - 126) / 2, 215, 126, 43)];
-    NSLog(@"Sleep time: %d", [self.appDelegate.alarmClock sleepTime]);
+
     if ([self.appDelegate.alarmClock sleepTime] == 0) {
         [self.lblSleepAmount setText:[NSString stringWithFormat:@"%@", [NSLocalizedString(@"INNER TIME BUBBLE TEXT DISABLED", nil) uppercaseString]]];
         [self.lblSleepAmount setFrame:CGRectMake((self.frame.size.width - 124) / 2, 212, 126, 43)];
@@ -597,7 +596,6 @@
             playlistName = [playlistName substringToIndex: MIN(5, [playlistName length])];
         }
         
-        NSLog(@"%d", [playlistName characterAtIndex:[playlistName length] - 1]);
         playlistName = [NSString stringWithFormat:@"%@...", playlistName];
     }
     

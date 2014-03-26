@@ -40,14 +40,11 @@
     [self setIsLoggedIn:NO];
     [[AppDelegate rdioInstance] logout];
     bool success = [SFHFKeychainUtils deleteItemForUsername:USER_NAME andServiceName:SERVICE_NAME error:nil];
-    NSLog(@"Success: %d", success);
 }
 
 #pragma mark -
 #pragma mark RdioDelegate
 - (void) rdioDidAuthorizeUser:(NSDictionary *)user withAccessToken:(NSString *)accessToken {
-    NSLog(@"got here rdio did auth");
-    NSLog(@"got here");
     [self setIsLoggedIn:YES];
     bool success = [SFHFKeychainUtils storeUsername:USER_NAME andPassword:accessToken forServiceName:SERVICE_NAME updateExisting:TRUE error:nil];
     if(!success)
@@ -55,7 +52,6 @@
         bool success = [SFHFKeychainUtils deleteItemForUsername:USER_NAME andServiceName:SERVICE_NAME error:nil];
         if(!success)
         {
-            NSLog(@"Deleting keychain entry not successful.");
         }
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:@"User Logged In" object:nil];
@@ -68,7 +64,6 @@
     bool success = [SFHFKeychainUtils deleteItemForUsername:USER_NAME andServiceName:SERVICE_NAME error:nil];
     if(!success)
     {
-        NSLog(@"Deleting keychain entry not successful.");
     }
 }
 
@@ -82,7 +77,6 @@
     bool success = [SFHFKeychainUtils deleteItemForUsername:USER_NAME andServiceName:SERVICE_NAME error:nil];
     if(!success)
     {
-        NSLog(@"Deleting keychain entry not successful.");
     }
 }
 

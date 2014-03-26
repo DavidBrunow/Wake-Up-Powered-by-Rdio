@@ -18,7 +18,6 @@
     if([CLLocationManager locationServicesEnabled]) {
         [self updateCurrentLocation];
     } else {
-        NSLog(@"Location Services Not Enabled");
     }
     
     return self;
@@ -37,12 +36,10 @@
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
 {
-    NSLog(@"Error: %@", error);
 }
 
 -(void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 {
-    NSLog(@"Auth status: %d", status);
 }
 
 -(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
@@ -58,9 +55,6 @@
         self.latitude = currentLocation.coordinate.latitude;
         //[self setValue:@"YES" forKey:@"isCurrent"];
         [self setIsCurrent:YES];
-        NSLog(@"latitude %+.6f, longitude %+.6f\n",
-              currentLocation.coordinate.latitude,
-              currentLocation.coordinate.longitude);
     }
 }
 

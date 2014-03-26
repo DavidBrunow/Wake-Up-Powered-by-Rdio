@@ -23,7 +23,6 @@
                                  format:&format
                                  errorDescription:&errorDesc];
     if (!self.settings) {
-        NSLog(@"Error reading plist: %@, format: %d", errorDesc, format);
     }
     
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
@@ -87,8 +86,6 @@
     } else {
         [dateFormatter setDateFormat:@"hh:mm"];
     }
-    NSLog(@"Setting this string as the alarm time: %@", alarmTime);
-    NSLog(@"Setting this date as the alarm time: %@", [dateFormatter dateFromString:alarmTime]);
 
     [self setAlarmTime:[dateFormatter dateFromString:alarmTime] save:NO];
 }
@@ -105,9 +102,7 @@
             [dateFormatter setDateFormat:@"hh:mm"];
         }
         NSString *alarmTimeString = [dateFormatter stringFromDate:alarmTime];
-        NSLog(@"alarmTime: %@", alarmTime);
 
-        NSLog(@"alarmTimeString: %@", alarmTimeString);
         if (needToSave) {
             [self.settings setValue:alarmTimeString forKey:@"Alarm Time"];
             [self writeSettings];
@@ -151,7 +146,6 @@
     _sleepTime = sleepTime;
     
     [self.settings setValue:[NSString stringWithFormat:@"%d", sleepTime] forKey:@"Sleep Time"];
-    NSLog(@"Setting sleep time: %d", sleepTime);
     [self writeSettings];
 }
 
@@ -212,7 +206,6 @@
                                              format:&format
                                              errorDescription:&errorDesc];
             if (!self.settings) {
-                NSLog(@"Error reading plist: %@, format: %d", errorDesc, format);
             }
             NSString *sleepTimeString = [self.settings valueForKey:@"Sleep Time"];
             NSString *snoozeTimeString = [self.settings valueForKey:@"Snooze Time"];
@@ -242,7 +235,6 @@
                                              format:&format
                                              errorDescription:&errorDesc];
             if (!self.settings) {
-                NSLog(@"Error reading plist: %@, format: %d", errorDesc, format);
             }
             NSString *sleepTimeString = [self.settings valueForKey:@"Sleep Time"];
             NSString *snoozeTimeString = [self.settings valueForKey:@"Snooze Time"];
@@ -273,7 +265,6 @@
                                          format:&format
                                          errorDescription:&errorDesc];
             if (!self.settings) {
-                NSLog(@"Error reading plist: %@, format: %d", errorDesc, format);
             }
             //NSDictionary *root = [temp objectForKey:@"root"];
             NSString *sleepTimeString = [self.settings valueForKey:@"Sleep Time"];

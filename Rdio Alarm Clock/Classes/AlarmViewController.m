@@ -34,7 +34,6 @@
     if (self.timeTextField.text.length == 4 && [[self.timeTextField.text substringWithRange:colonRange] isEqualToString:_timeSeparator]) {
         self.timeTextField.text = [self.timeTextField.text stringByReplacingOccurrencesOfString:_timeSeparator withString:@""];
         self.timeTextField.text = [NSString stringWithFormat:@"%@%@%@", [self.timeTextField.text substringToIndex:1], _timeSeparator, [self.timeTextField.text substringFromIndex:1]];
-        NSLog(@"newtime: %@", self.timeTextField.text);
     }
     
     [self setAlarm];
@@ -70,7 +69,6 @@
             }
         }
     } else if ([self.appDelegate.alarmClock is24h]) {
-        NSLog(@"Is 24 Hours");
         if ([[self.appDelegate.alarmClock alarmTime] earlierDate:[NSDate date]]==[self.appDelegate.alarmClock alarmTime]) {
             [self.appDelegate.alarmClock setAlarmTime:[[self.appDelegate.alarmClock alarmTime] dateByAddingTimeInterval:86400] save:NO];
             if ([[self.appDelegate.alarmClock alarmTime] earlierDate:[NSDate date]]==[self.appDelegate.alarmClock alarmTime]) {
@@ -91,7 +89,6 @@
         nightlyReminder = [[UILocalNotification alloc] init];
         
         nightlyReminder.fireDate = [NSDate dateWithTimeIntervalSinceNow:86400];
-        //NSLog(@"alarm will go off: %@", nightlyReminder.fireDate);
         nightlyReminder.timeZone = [NSTimeZone systemTimeZone];
         
         nightlyReminder.alertBody = @"Are you ready to set your nightly alarm?";
@@ -122,7 +119,6 @@
         [formatter setDateFormat:@"h:mm a"];
     } else if ([self.appDelegate.alarmClock is24h]) {
         [formatter setDateFormat:@"H:mm"];
-        //NSLog(@"this is 24 hour clock");
     }
     alarmTimeText = [formatter stringFromDate:[self.appDelegate.alarmClock alarmTime]];
     alarmTimeText = [alarmTimeText stringByReplacingOccurrencesOfString:@":" withString:_timeSeparator];
@@ -343,7 +339,6 @@
     
     if([self.appDelegate.currentWeather conditions] == nil) {
     } else {
-        NSLog(@"This is the current weather");
         [self.currentWeatherView addSubview:currentConditionsLabel];
         [self.currentWeatherView addSubview:currentLabel];
         [self.currentWeatherView addSubview:currentWeatherLabel];
@@ -357,7 +352,6 @@
     if (self.currentTimeView == nil) {
         self.currentTimeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 150.0)];
     } else {
-        NSLog(@"%d",[self.currentTimeView.subviews count]);
         for(int x = 0; x < [self.currentTimeView.subviews count]; x++) {
             [[self.currentTimeView.subviews objectAtIndex:x] removeFromSuperview];
         }
@@ -884,7 +878,6 @@
     self.timeTextField.inputAccessoryView = numberToolbar;
     [self.timeTextField setKeyboardAppearance:UIKeyboardAppearanceDark];
     NSString *timeTextString = [NSString stringWithFormat:@"%@",[self.appDelegate.alarmClock getAlarmTimeString] ];
-    NSLog(@"Time text string: %@", timeTextString);
     if (timeTextString == nil) {
         timeTextString = [NSString stringWithFormat:@""];
     } else {
@@ -1289,7 +1282,6 @@
     }
     
     NSRange secondCharRange = NSRangeFromString(@"1,1");
-    //NSLog(@"%@", secondCharRange);
     if (textField.text.length > 1) {
         secondChar = [textField.text substringWithRange:secondCharRange];
     }
@@ -1466,7 +1458,6 @@
 
 - (void) tick
 {
-    NSLog(@"current time: %@\nalarm time: %@", [NSDate date], [self.appDelegate.alarmClock alarmTime]);
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     
     [formatter setDateFormat:@"ss"];

@@ -21,24 +21,19 @@
     
     if ([method isEqualToString:@"get"]) {
         for(NSString *key in [data allKeys]) {
-            //NSLog(@"CanStream: %@", [[data objectForKey:key] objectForKey:@"canStream"]);
             if ([[[data objectForKey:key] objectForKey:@"canStream"] isEqual:[NSNumber numberWithBool:YES]]) {
             } else {
-                //NSLog(@"Number of trackKeys: %d - current key: %@", [self.trackKeys count], key);
                 for(int x = 0; x < self.trackKeys.count; x++) {
                     if([[self.trackKeys objectAtIndex:x] isEqualToString:key]) {
                         [self.trackKeys removeObjectAtIndex:x];
                     }
                 }
-                //NSLog(@"Number of trackKeys: %d - current key: %@", [self.trackKeys count], key);
             }
         }
     }
-    //NSLog(@"Got tracks for playlist name: %@", self.playlistName);
     /*
     int x = 0;
     for(NSString *trackKey in self.trackKeys) {
-        NSLog(@"Key %d: %@", x, trackKey);
         x++;
     }
     */
@@ -46,7 +41,6 @@
 }
 
 - (void)rdioRequest:(RDAPIRequest *)request didFailWithError:(NSError*)error {
-    //NSLog(@"Got error on playlist name: %@", self.playlistName);
     [[AppDelegate rdioInstance] callAPIMethod:@"get" withParameters:request.parameters delegate:self];
 }
 
@@ -100,7 +94,6 @@
                     songsToPlayString = [NSString stringWithFormat:@"%@", [self.trackKeys objectAtIndex:y]];
                 } else {
                     songsToPlayString = [NSString stringWithFormat:@"%@, %@", songsToPlayString, [self.trackKeys objectAtIndex:y]];
-                //NSLog(@"Submitted Key %d: %@", y, [self.trackKeys objectAtIndex:y]);
                 }
             }
             NSDictionary *trackInfo = [[NSDictionary alloc] initWithObjectsAndKeys:songsToPlayString, @"keys", @"0", @"canStream", nil];
@@ -112,7 +105,6 @@
                 songsToPlayString = [NSString stringWithFormat:@"%@", [self.trackKeys objectAtIndex:y]];
             } else {
                 songsToPlayString = [NSString stringWithFormat:@"%@, %@", songsToPlayString, [self.trackKeys objectAtIndex:y]];
-                //NSLog(@"Submitted Key %d: %@", y, [self.trackKeys objectAtIndex:y]);
             }
         }
         NSDictionary *trackInfo = [[NSDictionary alloc] initWithObjectsAndKeys:songsToPlayString, @"keys", @"0", @"canStream", nil];

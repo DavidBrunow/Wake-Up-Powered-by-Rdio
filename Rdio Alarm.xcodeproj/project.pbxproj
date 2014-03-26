@@ -228,6 +228,8 @@
 		23F0E3CC172E616900C62288 /* setting-sliderknobblue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 23F0E3BB172E616900C62288 /* setting-sliderknobblue@2x.png */; };
 		23F0E3CD172E616900C62288 /* settings-lightbgblue.png in Resources */ = {isa = PBXBuildFile; fileRef = 23F0E3BC172E616900C62288 /* settings-lightbgblue.png */; };
 		23F0E3CE172E616900C62288 /* settings-lightbgblue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 23F0E3BD172E616900C62288 /* settings-lightbgblue@2x.png */; };
+		23FD81A718E3400A00726C48 /* Rdio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23CDB39718D33FFE00E43668 /* Rdio.framework */; };
+		23FD81A818E3400C00726C48 /* Rdio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23CDB39718D33FFE00E43668 /* Rdio.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -468,6 +470,7 @@
 				2391E94D171A230500FE0EAA /* libz.dylib in Frameworks */,
 				2391E94F171A230500FE0EAA /* QuartzCore.framework in Frameworks */,
 				2391E950171A230500FE0EAA /* MediaPlayer.framework in Frameworks */,
+				23FD81A718E3400A00726C48 /* Rdio.framework in Frameworks */,
 				2391E951171A230500FE0EAA /* AVFoundation.framework in Frameworks */,
 				2391E952171A230500FE0EAA /* Security.framework in Frameworks */,
 				2391E953171A230500FE0EAA /* AudioToolbox.framework in Frameworks */,
@@ -490,6 +493,7 @@
 				23D93A4618C3FE26006240C9 /* AudioToolbox.framework in Frameworks */,
 				23D93A4218C3FE26006240C9 /* QuartzCore.framework in Frameworks */,
 				23D93A4818C3FE26006240C9 /* CFNetwork.framework in Frameworks */,
+				23FD81A818E3400C00726C48 /* Rdio.framework in Frameworks */,
 				23D93A0B18C3FD9F006240C9 /* CoreGraphics.framework in Frameworks */,
 				23D93A0C18C3FD9F006240C9 /* UIKit.framework in Frameworks */,
 				23D93A4518C3FE26006240C9 /* Security.framework in Frameworks */,
@@ -1350,11 +1354,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: David Brunow (M2JB2FZF76)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: David Brunow (M2JB2FZF76)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Rdio Alarm Clock/External Frameworks\"",
+					"$(PROJECT_DIR)/Rdio",
+					Alarm,
+					Clock/External,
+					Frameworks,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Rdio Alarm Clock/Supporting Files/Rdio Alarm-Prefix.pch";
@@ -1364,10 +1372,11 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/Rdio Alarm Clock/Classes/TestFlightSDK1\"",
 				);
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-all_load";
 				PRODUCT_NAME = "Wake Up to Music";
-				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "7A6F4F9F-D374-4B68-BF3D-9608509BC143";
+				PROVISIONING_PROFILE = "53E92E2A-3D4E-4BB3-A982-33B3CD501565";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "53E92E2A-3D4E-4BB3-A982-33B3CD501565";
 				VALID_ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1378,11 +1387,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: David Brunow (97U5N2XGB9)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: David Brunow (97U5N2XGB9)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Rdio Alarm Clock/External Frameworks\"",
+					"$(PROJECT_DIR)/Rdio",
+					Alarm,
+					Clock/External,
+					Frameworks,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Rdio Alarm Clock/Supporting Files/Rdio Alarm-Prefix.pch";
@@ -1394,8 +1407,8 @@
 				);
 				OTHER_LDFLAGS = "-all_load";
 				PRODUCT_NAME = "Wake Up to Music";
-				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "7A6F4F9F-D374-4B68-BF3D-9608509BC143";
+				PROVISIONING_PROFILE = "3143B834-A903-447A-AD9C-7AE54496160A";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "3143B834-A903-447A-AD9C-7AE54496160A";
 				VALID_ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1424,6 +1437,10 @@
 					Clock/External,
 					Frameworks,
 					"/Users/davidhbrunow/Downloads/rdio-ios-1.3.6",
+					"$(PROJECT_DIR)/Rdio",
+					Alarm,
+					Clock/External,
+					Frameworks,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Wake Up to the Cloud/Wake Up to the Cloud-Prefix.pch";
@@ -1467,6 +1484,10 @@
 					Clock/External,
 					Frameworks,
 					"/Users/davidhbrunow/Downloads/rdio-ios-1.3.6",
+					"$(PROJECT_DIR)/Rdio",
+					Alarm,
+					Clock/External,
+					Frameworks,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Wake Up to the Cloud/Wake Up to the Cloud-Prefix.pch";
